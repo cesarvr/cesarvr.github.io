@@ -20,13 +20,13 @@ lazy.loadjs(["//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js",
 					 applicacion.objetos.cubo.rotation.y += 0.01;
 					 applicacion.objetos.cubo.rotation.x += 0.01;
 					 
-					 linear+= 0.02;
+					/* linear+= 0.02;
 					 var arco_x = Math.cos(linear);
 					 var arco_y = Math.sin(linear);
 					 //applicacion.objetos.cubo.position.z  += arco_x;
 					 applicacion.objetos.cubo.position.x  += arco_y;
 					 console.log(linear);
-
+					*/
 			 	 }
 
 			 	 
