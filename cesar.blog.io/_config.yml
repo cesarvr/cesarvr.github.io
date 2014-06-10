@@ -1,0 +1,11 @@
+# Site settings
+title: Hypersphere
+email: cesarv01@gmail.com
+description: "Just a guy who Loves Programming, Graphics and Math"
+baseurl: ""
+url: "http://yourdomain.com"
+
+# Build settings
+markdown: kramdown
+permalink: pretty
+highlighter: pygments
