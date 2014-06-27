@@ -1,9 +1,14 @@
----
-layout: post
-title:  "WebGL"
-date:   2014-06-10 21:55:25
-categories: graphics javascript
----
+[page]
+{
+	 "layout": "post",
+	 "title":  "Hello World with Webgl",
+ 	 "description": "WebGL Development",
+	 "date":   "2014-06-26 21:55:25",
+	 "img" : "https://github.com/kobe84/WebGL/blob/master/webgl/screenshot/8bit.png?raw=true", 
+	 "categories": "graphics javascript"
+
+}
+[_page]
 
 #WebGL
 
