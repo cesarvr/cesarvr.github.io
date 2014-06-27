@@ -126,7 +126,8 @@ var posts = {};
 	lazy.History = function(){
 
 		this.urls = [];
-		this.post_template = { url:'#home',   resource: 'template/posts.html' };
+		this.home = '#home';
+		this.post_template = { url: this.home,   resource: 'template/posts.html' };
 
 
 		var add_posts =  function(_posts){
@@ -181,46 +182,54 @@ var posts = {};
 			return str.substring(str.indexOf('[_page]') + '[_page]'.length, str.length); 
 		}
 
-		var navigation = function(event){
+
+		var navigate_to = function(nav){
+			var el = document.querySelector("content");
+			var my_nav = nav; 
+			lazy.load_resources([nav.resource], function(tmplData){
+						
+				var data = "";
+				if(my_nav.resource.search('.markdown') !== -1){
+					data = marked( remove_page_tag(tmplData) );
+
+				}else{
+					lazy.template.compile(tmplData,null);
+					data = lazy.template.execute();
+				}
+
+				el.innerHTML = data; 
+
+			});
+
+		} 
 
 
+		var get_resource = function(hash){
 
-
-
-				var nav = "";
-				
-				for (var i = 0; i < this.urls.length; i++) {
+			for (var i = 0; i < this.urls.length; i++) {
 					
-					if(this.urls[i].url === window.location.hash){
-					 	nav = this.urls[i]; break;
-					}
-				};	
+				if(this.urls[i].url === window.location.hash){
+				 	return this.urls[i]; 
+				}
+
+			};	
+		}
+
+		var navigation  = function(event){
+
+				var nav = get_resource(window.location.hash);
+				
+			
 
 				if(nav){
 
-					var el = document.querySelector("content");
-					var my_nav = nav; 
-					lazy.load_resources([nav.resource], function(tmplData){
-						
-						var data = "";
-						if(my_nav.resource.search('.markdown') !== -1){
-
-							data = marked( remove_page_tag(tmplData) );
-
-						}else{
-							lazy.template.compile(tmplData,null);
-							data = lazy.template.execute();
-						}
-
-
-						el.innerHTML = data; 
-
-					});
+					navigate_to(nav);
 
 				}else{
 
 					var stateObj = { home: "begin" };
 					history.pushState(stateObj, "page 2", "#home");
+					navigate_to(get_resource(home));
 
 				}
 
