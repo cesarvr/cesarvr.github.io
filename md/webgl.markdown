@@ -10,19 +10,19 @@
 }
 [_page]
 
-#WebGL
+##Hello World with Webgl
 
-##hola_mundo
+Ejemplos sencillos y OOP de una app WebGL usando Three.js, resuelve el problema del boilerplate necesario para iniciar una aplicación en WebGL, ademas de poseer una gran cantidad de tecnicas como raycasting, object picking es una pasada. 
 
-Ejemplos sencillos y OOP de una app WebGL. 
+aqui esta mi hola mundo en webgl.
+
 ![Alt text](https://github.com/kobe84/WebGL/blob/master/webgl/screenshot/hello.png?raw=true "hello")
 
-
-##textura_mario 
 
 La misma pero con soporte para texturas, muy facil en Three.js. 
 ![Alt text](https://github.com/kobe84/WebGL/blob/master/webgl/screenshot/8bit.png?raw=true "texturing")
 
+ 
 codigo: [webgl][web_gl]
 
 

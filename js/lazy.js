@@ -282,7 +282,7 @@ var posts = {};
 
 		var normalize = function(str){
 			str = str.trim();
-			return str.replace(/\"/g , " \\\" ");
+			return str.replace(/\"/g , "\\\"");
 		}
 
 		var replace_special_char = function(str){
@@ -401,7 +401,10 @@ var posts = {};
 			
 					
 					if(typeof line === "undefined") break;	
-					if(line.trim() === "") continue;
+				
+					var line = line.trim();
+
+					if(line === "") continue;
 					line = replace_special_char(line);
 				
 		
