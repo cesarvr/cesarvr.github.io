@@ -1,26 +1,32 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
   font-family: 'Open Sans', sans-serif;
-  font-size: 28px;
+  font-size: 23px;
 }
 
+header{
+	padding: 0px; 
 
+}
 
 #blog-cabecera{
 	text-align: center;
 	text-decoration: none;	
+	
+}
+
+#blog-cabecera a{
+	text-decoration: none;
 }
 
 #blog-cabecera h1{
 	color: rgba(79, 20, 20, .5);
 	margin: 0;
-	text-decoration: none;
-
 }
 
 #blog-cabecera p{
-	color: rgba(79, 20, 20, .5);
-	margin: 0;
+	color: rgba(59, 15, 15, .5);
+	margin: 10px;
 }
 
 .contenido{
@@ -35,8 +41,7 @@ small{
 }
 
 #barra{
-
-	padding-bottom: 60px;
+	padding-bottom: 4px;
 
 }
 
@@ -53,14 +58,11 @@ small{
 	font-weight: bold;
 }
 
-
-
-
 #nav {
 	font-family: 'Open Sans', sans-serif;
 	font-style: normal;
 	font-size: 19px;
-    list-style-type: none;
+    list-style-type: none;	
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -72,20 +74,27 @@ small{
 }
 
 #nav li a {
-	color: rgba(15, 15, 15, .5);
+	text-align: center;
 	text-decoration: none;
     display: block;
-    margin-right: 25px;
-    margin-left: 25px;
-    width: 100px;
+    margin-right: 0px;
+    margin-left: 9px;
+    width: 100%;
+    -webkit-transition: all 0.5s ease;
+  	color: #000000;  /*rgba(15, 15, 15, .5); */
+
+}
+#nav li a:hover{
+	color: #A90000;
+	box-shadow: 1px 1px 5px #888888;
 }
 
 
 #contenido {
-	padding-left: 60px;
-	padding-right: 60px;
+	padding-left: 90px;
+	padding-right: 90px;
 	text-align: center;
-	padding-top: 50px;
+
 }
 
 #contenido > h1 {

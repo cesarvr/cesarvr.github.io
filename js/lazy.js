@@ -1,5 +1,3 @@
-
-
 var doc   	= window.document;
 var lazy  	= lazy || {};
 lazy.utils  = lazy.utils || {};
@@ -9,9 +7,6 @@ var routes = {};
 var posts = {};
 
 (function () {
-
-
-
 
 	var _script = [];
 	var _cnt = 0;
@@ -69,9 +64,6 @@ var posts = {};
 		var xhr = new XMLHttpRequest();
 		xhr.open(method, url, true);
 
-		// Hack to pass bytes through unprocessed.
-		//xhr.overrideMimeType('text/plain; charset=x-user-defined');
-		
 		xhr.onreadystatechange = function(e) {
 		  if (this.readyState == 4 && this.status == 200) {
 		    	callback(this.responseText);
@@ -102,33 +94,11 @@ var posts = {};
 
 	}
 
-
-
-
-	/*
-		Load all necesary resources & templates.
-	*/
-
-	lazy.init = function(){
-
-			
-	}
-	
-
-	lazy.load_custom_tag = function(){
-		
-	
-					
-
-	}
-
-	
 	lazy.History = function(){
 
 		this.urls = [];
 		this.home = '#home';
 		this.post_template = { url: this.home,   resource: 'template/posts.html' };
-
 
 		var add_posts =  function(_posts){
 
@@ -156,15 +126,11 @@ var posts = {};
 				posts 	= JSON.parse(routes); 
 
 				add_posts(posts);
-				document.querySelector("head").innerHTML = headHTML;	
+				document.querySelector("head").innerHTML = lazy.template.compile_execute(headHTML);	
 				
 				
-				document.querySelector("body").innerHTML = bodyHTML;
-
-
-				var doc = document.querySelector("html");	
-				lazy.template.compile(doc.innerHTML, null);
-				doc.innerHTML = lazy.template.execute();
+				document.querySelector("body").innerHTML = lazy.template.compile_execute(bodyHTML);
+				
 
 				window.onpopstate = navigation;
 				navigation();
@@ -175,13 +141,8 @@ var posts = {};
 		}
 
 		var remove_page_tag = function(str){
-		
-
-
-
 			return str.substring(str.indexOf('[_page]') + '[_page]'.length, str.length); 
 		}
-
 
 		var navigate_to = function(nav){
 			var el = document.querySelector("content");
@@ -218,23 +179,14 @@ var posts = {};
 		var navigation  = function(event){
 
 				var nav = get_resource(window.location.hash);
-				
-			
 
 				if(nav){
-
 					navigate_to(nav);
-
 				}else{
-
 					var stateObj = { home: "begin" };
-					history.pushState(stateObj, "page 2", "#home");
+					history.pushState(stateObj, "n_info", home);
 					navigate_to(get_resource(home));
-
 				}
-
-
-
 			}
 
 
@@ -242,23 +194,13 @@ var posts = {};
 			
 			init : function(){
 
-
-
-
 				urls.push(post_template);
-				
-				
-				
-
-				
 				build_page();
 			},
 
-			 
-
-			
-
-
+			add_page: function(nav){
+				urls.push(nav);
+			}
 		}
 	}();
 
@@ -286,7 +228,6 @@ var posts = {};
 		}
 
 		var replace_special_char = function(str){
-
 			return str.replace('&lt;', "<").replace('&gt;', ">");
 		}
 			
@@ -303,11 +244,6 @@ var posts = {};
 				this.fnParams = parse[1].split(',');			
 			}
 		}
-		
-		
-	
-
-
 
 		var _value = function(value){
 			if(typeof value === 'object'){
@@ -330,7 +266,6 @@ var posts = {};
 
 		var _out = function(){
 					
-			
 			var line = arguments[0];
 			var regx = /{{(.+)}}/;
 			var js_prop = regx.exec(line);			
@@ -357,8 +292,6 @@ var posts = {};
 			config_scope(code);
 			this.strbuild += normalize(code);  
 		}
-
-		
 
 		var clean = function(){
 			this.strbuild="";
@@ -434,6 +367,11 @@ var posts = {};
 				}			
 
 
+			},
+
+			compile_execute:function(tmplt){
+				this.compile(tmplt);
+				return this.execute();
 			},
 
 			execute: function(){
