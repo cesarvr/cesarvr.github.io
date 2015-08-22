@@ -17,3 +17,6 @@ module GravatarFilter
     end
   end
 end
+
+Liquid::Template.register_filter(Jekyll::GravatarFilter)
+
