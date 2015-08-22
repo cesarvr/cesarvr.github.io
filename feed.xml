@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Cesar Valdez</title>
+    <description>Computer Graphics &amp; Javascript</description>
+    <link>http://cesarvr-github.io/fractal-gl</link>
+    <atom:link href="http://cesarvr-github.io/fractal-gl/feed.xml" rel="self" type="application/rss+xml" />
+    
+      <item>
+        <title>Koch Fractal</title>
+        
+        
+          <description>&lt;p&gt;This is my first attempt to develop a WebGL library just to learn the API and to continue my self-teaching Geometry, to be able to do more advance demos. &lt;/p&gt;
+</description>
+        
+        <pubDate>Sun, 10 Nov 2013 10:18:00 +0000</pubDate>
+        <link>http://cesarvr-github.io/fractal-gl/2013/first_entry/</link>
+        <guid isPermaLink="true">http://cesarvr-github.io/fractal-gl/2013/first_entry/</guid>
+      </item>
+    
+  </channel>
+</rss>
