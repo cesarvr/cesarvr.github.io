@@ -1,9 +1,11 @@
 <div class="profile">
     <section id="wrapper">
         <header id="header">
-            <a href='{{ site.baseurl }}about'>
-                <img id="avatar" class="2x" src="/assets/images/avatar.png"/>
-            </a>
+        <a href='{{ site.baseurl }}about'>
+
+            <img id="avatar" class="2x" src="{{ 'cesarv01@yahoo.com' | get_gravatar }}?s=600"/>
+        
+        </a>
             <h1>{{ site.author }}</h1>
             <h2>{{ site.description }}</h2>
         </header>
