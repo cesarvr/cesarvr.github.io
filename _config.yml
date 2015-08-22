@@ -1,0 +1,42 @@
+name: Cesar Valdez
+description: Computer Graphics & Javascript  
+meta_description: "My Graphics Demos"
+
+aboutPage: true
+
+markdown: redcarpet
+highlighter: pygments
+
+paginate: 20
+baseurl: /
+domain_name: 'http://cesarvr-github.io/fractal-gl'
+google_analytics: 'UA-XXXXXXXX-X'
+disqus: false
+disqus_shortname: 'your-disqus-shortname'
+
+# Details for the RSS feed generator
+url:            'http://cesarvr-github.io/fractal-gl'
+author:         'Cesar Valdez'
+authorTwitter:  'cvaldezr'
+
+permalink:       /:year/:title/
+
+defaults:
+    -
+        scope:
+            path: "" # empty string for all files
+            type: pages
+        values:
+            layout: default
+    -
+        scope:
+            path: "" # empty string for all files
+            type: posts
+        values:
+            layout: post
+    -
+        scope:
+            path: ""
+            type: drafts
+        values:
+            layout: post
