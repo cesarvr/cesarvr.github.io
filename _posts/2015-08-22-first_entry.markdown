@@ -1,13 +1,14 @@
 ---
 title:  "Koch Fractal"
-date:   2013-11-10 10:18:00
+date:   2015-08-23 10:18:00
 description: Computer Graphics
 ---
 
-This is my first attempt to develop a WebGL library just to learn the API and to continue my self-teaching Geometry, to be able to do more advance demos. 
+This is me trying to do some kind of morphing, for now my approach is to modify the entire Array (5500+) entries, with new interpolated position between (a, b).
 
-Here i try to create a Koch fractal using my homemade WebGL API. My approach is to try to recursively calculate all the position and save it in object space, so i only use one array, then send it to the GPU, and get it printed in the screen.  
+The effect look satisfying, but i think it can been done a little better, but well not bad for a first attempt. 
 
-the fractal is here: [koch]
 
-[koch]: http://cesarvr.github.io/fractal-gl/koch_fractal.html
+this is the same Koch but with some "morphing": [koch]
+
+[koch]: http://cesarvr.github.io/fractal-gl/lerp_draw.html
