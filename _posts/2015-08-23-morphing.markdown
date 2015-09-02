@@ -112,7 +112,7 @@ well here we can see the fractal animation: [koch].
 
 For the whole code is in [github]
 
-this is the koch with 5 level of recursion only for powerful machines :P [koch_lvl5]
+this is the koch with 5 level of recursion and streaming more than 3K vertex to gpu only for powerful machines :P [koch_lvl5]
 
 
 [koch]: http://cesarvr.github.io/fractal-gl/lerp_draw.html
