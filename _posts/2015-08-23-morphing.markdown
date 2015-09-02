@@ -112,6 +112,9 @@ well here we can see the fractal animation: [koch].
 
 For the whole code is in [github]
 
+this is the koch with 5 level of recursion only for powerful machines :P [koch_lvl5]
+
 
 [koch]: http://cesarvr.github.io/fractal-gl/lerp_draw.html
+[koch_lvl5]: http://cesarvr.github.io/fractal-gl/lerp_draw_plus.html
 [github]: https://github.com/cesarvr/fractal-gl/blob/master/demos/lerp_draw.js
