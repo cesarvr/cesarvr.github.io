@@ -1,6 +1,6 @@
 ---
 title:  "Vim Shortcuts"
-date:   2015-09-07 10:18:00
+date:   2015-09-10 10:18:00
 description: Computer Graphics
 ---
 
