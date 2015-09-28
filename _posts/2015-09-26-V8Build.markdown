@@ -1,5 +1,5 @@
 ---
-title:  "Building V8 Javascript Engine."
+title:  "Building V8 Javascript Engine"
 date:   2015-09-26 10:18:00
 description: Javascript
 ---
@@ -69,10 +69,7 @@ $ make ia32
 
 ### What to do now ?
 
-You can now execute the V8 REPL and start play with this.
-
-
-to had global access just add the binary to the system vars.
+You can now execute the V8 REPL and load Javascript files, do profiling, and tons of other stuff. To had global access just add the binary to the system vars.
 
 ```sh
 $ export $PATH:/home/cesar/v8/out/x64.release/d8
@@ -90,7 +87,7 @@ For those interested in how the VM works some useful links:
 
 
 [how it work inside]: <https://docs.google.com/document/d/1hOaE7vbwdLLXWj3C8hTnnkpE0qSa2P--dtDvwXXEeD0/pub>
-[v8 intrinsics]: <http://wingolog.org/tags/v8>
+[nice blog, the author write about v8 intrinsics]: <http://wingolog.org/tags/v8>
 [Unofficial V8 API]: <http://v8.paulfryzel.com/docs/master/>
 [Here]: <https://github.com/cesarvr/v8-hacking>
 [this]: <https://www.youtube.com/watch?v=UJPdhx5zTaw>
