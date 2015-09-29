@@ -11,8 +11,8 @@ paginate: 20
 baseurl: /
 domain_name: 'http://cesarvr-github.io/fractal-gl'
 google_analytics: 'UA-XXXXXXXX-X'
-disqus: false
-disqus_shortname: 'your-disqus-shortname'
+disqus: true
+disqus_shortname: 'cesarvr'
 
 # Details for the RSS feed generator
 url:            'http://cesarvr-github.io/fractal-gl'
