@@ -9,7 +9,7 @@ description: Javascript
 
 ### Introduction
 
-I was thinking long ago about start hacking with V8, reasons besides that I work every day with Javascript, is that the team do a very good job making V8 fast and efficient, for some task good Javascript code is faster than C++, don't believe me check [this].
+I was thinking long ago about starting hacking with V8, reasons besides that I work every day with Javascript, is that the Chromium engineers are doing a very good job making V8 fast and efficient, for some task good Javascript code is faster than C++, here is a great talk about the sophisticated JIT generation in Javascript.
 
 After many days of procrastination, I put my hands-on and start the task of downloading the project and pray that everything just work, like many things in life it doesn't work the first time, here I document all the steps, if somebody wants to start playing with this, hopefully this makes his life more easy.  
 
@@ -78,10 +78,10 @@ $ export $PATH:/home/cesar/v8/out/x64.release/d8
 Or, what I found more interesting is use VM inside native programs and learn how to take advantage of a high level language like Javascript and give it some new abilities like Socket, Disk, etc. [Here] you can find a basic Hello World C++ program that run Javascript inside just need to clone it and start hack.
 
 
-For those interested in how the VM works some useful links: 
+For those interested in how the VM works some useful links:
 
-- [how it work inside] 
-- [nice blog, the author write about v8 intrinsics] 
+- [how it work inside]
+- [nice blog, the author write about v8 intrinsics]
 - [Unofficial V8 API]
 
 
@@ -90,4 +90,4 @@ For those interested in how the VM works some useful links:
 [nice blog, the author write about v8 intrinsics]: <http://wingolog.org/tags/v8>
 [Unofficial V8 API]: <http://v8.paulfryzel.com/docs/master/>
 [Here]: <https://github.com/cesarvr/v8-hacking>
-[this]: <https://www.youtube.com/watch?v=UJPdhx5zTaw>
+[great talk]: <https://www.youtube.com/watch?v=UJPdhx5zTaw>
