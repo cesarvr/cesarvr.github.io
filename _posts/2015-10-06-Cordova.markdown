@@ -22,15 +22,24 @@ From a painful experience working with Cordova here some notes.
   <preference name="KeyboardDisplayRequiresUserAction" value="false" />
   ```
 
+<br>
 ####RequireJS doesn't find my files, what I going to do!?: 
 
   - Remember IOS filesystem is case sensitive. 
 
+<br>
 ####HTML5 Audio API Doesn't work in IOS: 
 
-  - It works but they think is a good idea to wait for user interaction. 
+  - It works but they think is a "good idea" to wait for user interaction, if you want to reproduce audio the user needs to click some button. 
 
+<br>
+
+####Touch response is slow: 
+
+  - [fast-click]
+<br>
 
 
 
 [ionic keyboard]: https://github.com/driftyco/ionic-plugin-keyboard
+[fast-click]: https://github.com/ftlabs/fastclick
