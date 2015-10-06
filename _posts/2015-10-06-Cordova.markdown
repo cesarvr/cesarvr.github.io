@@ -1,0 +1,36 @@
+---
+title:  "Cordova Faq"
+date:   2015-10-09 10:18:00
+description: Javascript
+---
+
+# Building V8 Javascript Engine.
+
+
+### Introduction
+
+From a painful experience working with Cordova here some notes.
+
+### FAQ.
+
+####Problem with input focus: 
+
+  - First check you have [ionic keyboard] installed. 
+  - Put this in your config.xml. 
+
+  ```xml
+  <preference name="KeyboardDisplayRequiresUserAction" value="false" />
+  ```
+
+####RequireJS doesn't find my files, what I going to do!?: 
+
+  - Remember IOS filesystem is case sensitive. 
+
+####HTML5 Audio API Doesn't work in IOS: 
+
+  - It works but they think is a good idea to wait for user interaction. 
+
+
+
+
+[ionic keyboard]: https://github.com/driftyco/ionic-plugin-keyboard
