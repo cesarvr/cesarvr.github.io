@@ -39,6 +39,17 @@ From a painful experience working with Cordova here some notes.
   - [fast-click]
 <br>
 
+####Touch response is slow: 
+  
+  - This problem happens cause the view want to do some crazy animation when keyboard came up, for Ionic you need to do. 
+
+  ```js
+    window.cordova.plugins.Keyboard.disableScroll(true); 
+  ```
+
+<br>
+
+
 
 
 [ionic keyboard]: https://github.com/driftyco/ionic-plugin-keyboard
