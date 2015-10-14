@@ -4,14 +4,13 @@ date:   2015-10-09 10:18:00
 description: Javascript
 ---
 
-# Building V8 Javascript Engine.
+# Cordova: tips and tricks.
 
 
 ### Introduction
 
-From a painful experience working with Cordova here some notes.
+From a painful working experience with Cordova here some notes.
 
-### FAQ.
 
 ####Problem with input focus: 
 
@@ -37,11 +36,13 @@ From a painful experience working with Cordova here some notes.
 ####Touch response is slow: 
 
   - [fast-click]
+
 <br>
 
-####Touch response is slow: 
-  
-  - This problem happens cause the view want to do some crazy animation when keyboard came up, for Ionic you need to do. 
+
+####Screen is jumping: 
+
+  - if you leave this enabled you're looking for trouble, IOS even stop the Javascript execution until scroll has finish. so save yourself some problems and download [ionic keyboard] plugin and disable the native scroll.
 
   ```js
     window.cordova.plugins.Keyboard.disableScroll(true); 
@@ -49,8 +50,16 @@ From a painful experience working with Cordova here some notes.
 
 <br>
 
+####Emulate it with IScroll: 
+  
+  - Problem is you don't have control over the native scroll on IOS, so in hybrid apps where you need full control of the viewport the best bet is to emulal it and then disabling the default scrolling as was described before.
+  - [iscroll]
+<br>
+
+
 
 
 
 [ionic keyboard]: https://github.com/driftyco/ionic-plugin-keyboard
 [fast-click]: https://github.com/ftlabs/fastclick
+[iscroll]: http://iscrolljs.com/
