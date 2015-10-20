@@ -52,8 +52,17 @@ From a painful working experience with Cordova here some notes.
 
 ####Emulate it with IScroll: 
   
-  - Problem is you don't have control over the native scroll on IOS, so in hybrid apps where you need full control of the viewport the best bet is to emulal it and then disabling the default scrolling as was described before.
+  - Problem is you don't have control over the native scroll on IOS, so in hybrid apps where you need full control of the viewport the best bet is to emulate it and then disabling the default scrolling as was described before.
   - [iscroll]
+  
+  ```js
+   var iscroll = new IScroll('.content');
+  ```
+  - if you are adding nodes to the DOM dynamicaly you need to tell IScroll to update the geometry using the refresh() method. 
+
+
+
+
 <br>
 
 
