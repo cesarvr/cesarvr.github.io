@@ -59,7 +59,7 @@ From a painful working experience with Cordova here some notes.
    var iscroll = new IScroll('.content');
   ```
   - if you are adding nodes to the DOM dynamicaly you need to tell IScroll to update the geometry using the refresh() method. 
-
+  - beware of the padding in the divs, for some reason the whole div doesn't report the right height. 
 
 
 
