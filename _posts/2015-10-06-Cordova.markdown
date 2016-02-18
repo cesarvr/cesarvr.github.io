@@ -65,10 +65,13 @@ From a painful working experience with Cordova here some notes.
 
 <br>
 
+#### Whitelisting network resource. 
 
+  - This plugin implements a whitelist policy for navigating the application webview on Cordova 4.0. [Whitelisting].  
 
 
 
 [ionic keyboard]: https://github.com/driftyco/ionic-plugin-keyboard
 [fast-click]: https://github.com/ftlabs/fastclick
 [iscroll]: http://iscrolljs.com/
+[whitelisting]: https://github.com/apache/cordova-plugin-whitelist
