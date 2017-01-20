@@ -1,8 +1,7 @@
----
-title:  "Building V8 Javascript Engine"
-date:   2015-09-26 10:18:00
-description: Javascript
----
++++
+date = "2017-01-20T19:43:10Z"
+title = "Javascript v8"
++++
 
 # Building V8 Javascript Engine.
 
@@ -10,6 +9,7 @@ description: Javascript
 ### Introduction
 
 I was thinking sometime ago about starting hacking with V8, aside from the fact that I work every day with Javascript, is that the Chromium engineers are doing a very good job making V8 fast and efficient and for some task good Javascript code is faster than C++, here is a great talk about the sophisticated JIT generation in Javascript.
+
 
 After many days of procrastination, I put my hands-on and start the task of downloading the project and prayed that everything would just work, like many things in life it didn't work the first time, here I documented all the steps, if somebody wants to start playing with this, hopefully this will make their life easy.  
 
