@@ -10,7 +10,6 @@ title = "Javascript v8"
 
 I was thinking sometime ago about starting hacking with V8, aside from the fact that I work every day with Javascript, is that the Chromium engineers are doing a very good job making V8 fast and efficient and for some task good Javascript code is faster than C++, here is a great talk about the sophisticated JIT generation in Javascript.
 
-
 After many days of procrastination, I put my hands-on and start the task of downloading the project and prayed that everything would just work, like many things in life it didn't work the first time, here I documented all the steps, if somebody wants to start playing with this, hopefully this will make their life easy.  
 
 For my hacking session I just make a VM based in Archlinux, but the same step could apply to other Linux Distributions.   
