@@ -67,10 +67,7 @@ User interaction is require, this means that if you don't interact with the UI t
 <br>
 
 ### Whitelisting network resource.
-
-  - This plugin implements a whitelist policy for navigating the application webview on Cordova 4.0. [Whitelisting].  
-
-<br>
+This plugin implements a whitelist policy for navigating the application webview on Cordova 4.0. [Whitelisting].  
 
 [ionic keyboard]: https://github.com/driftyco/ionic-plugin-keyboard
 [fast-click]: https://github.com/ftlabs/fastclick

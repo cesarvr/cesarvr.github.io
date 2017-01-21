@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>César</title>
+    <link>http://cesarvr.github.io/index.xml</link>
+    <description>Recent content on César</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 20 Jan 2017 19:43:10 +0000</lastBuildDate>
+    <atom:link href="http://cesarvr.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Javascript v8</title>
+      <link>http://cesarvr.github.io/post/javascript-v8/</link>
+      <pubDate>Fri, 20 Jan 2017 19:43:10 +0000</pubDate>
+      
+      <guid>http://cesarvr.github.io/post/javascript-v8/</guid>
+      <description>
+
+&lt;h1 id=&#34;building-v8-javascript-engine&#34;&gt;Building V8 Javascript Engine.&lt;/h1&gt;
+
+&lt;h3 id=&#34;introduction&#34;&gt;Introduction&lt;/h3&gt;
+
+&lt;p&gt;I was thinking sometime ago about starting hacking with V8, aside from the fact that I work every day with Javascript, is that the Chromium engineers are doing a very good job making V8 fast and efficient and for some task good Javascript code is faster than C++, here is a great talk about the sophisticated JIT generation in Javascript.&lt;/p&gt;
+
+&lt;p&gt;After many days of procrastination, I put my hands-on and start the task of downloading the project and prayed that everything would just work, like many things in life it didn&amp;rsquo;t work the first time, here I documented all the steps, if somebody wants to start playing with this, hopefully this will make their life easy.&lt;/p&gt;
+
+&lt;p&gt;For my hacking session I just make a VM based in Archlinux, but the same step could apply to other Linux Distributions.&lt;/p&gt;
+
+&lt;h3 id=&#34;building&#34;&gt;Building.&lt;/h3&gt;
+
+&lt;p&gt;First we need is to install Git and install the all necessary build tools in others dist is called build-essentials in arch is called base-devel.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;$ pacman -Sy base-devel git
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we need to download from Chromium project their specific tool depot_tools, this will allow us to checkout specifics projects from their repo in this case V8, then we add this directory to our PATH.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;$ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+$ export PATH=$PWD/depot_tools:$PATH
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you had python2 by default jump this step, in my case Arch came with Python3 by default so i need to re-direct the global /usr/bin/python to point the /usr/bin/python2.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;$ ln -s /usr/bin/python2 /usr/bin/python
+$ ln -s /usb/bin/python2-config /usr/bin/python-config
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For 64 bits machine like mine i need to made a symlink to libtinfo.so.5&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;$ ln -s /usr/lib/libncurses.so.5.7 /lib64/libtinfo.so.5
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If everything go is fine now you should be able to execute gclient from console.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;$ gclient config url-v8-git-project
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This make a folder in your root dir named v8, this could be done better but I’m using a virtual machine, so no problem.&lt;/p&gt;
+
+&lt;p&gt;go inside the created dir /home/user/v8 in my case.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;$ make x64
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;or if you are in a 32bit machine.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;$ make ia32
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;what-to-do-now&#34;&gt;What to do now ?&lt;/h3&gt;
+
+&lt;p&gt;You can now execute the V8 REPL and load Javascript files, do profiling, and tons of other stuff. To had global access just add the binary to the system vars.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;$ export $PATH:/home/cesar/v8/out/x64.release/d8
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Or, what I found more interesting is use VM inside native programs and learn how to take advantage of a high level language like Javascript and give it some new abilities like Socket, Disk, etc. &lt;a href=&#34;https://github.com/cesarvr/v8-hacking&amp;gt;&#34;&gt;Here&lt;/a&gt; you can find a basic Hello World C++ program that run Javascript inside just need to clone it and start hack.&lt;/p&gt;
+
+&lt;p&gt;For those interested in how the VM works some useful links:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.google.com/document/d/1hOaE7vbwdLLXWj3C8hTnnkpE0qSa2P--dtDvwXXEeD0/pub&amp;gt;&#34;&gt;how it work inside&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://wingolog.org/tags/v8&amp;gt;&#34;&gt;nice blog, the author write about v8 intrinsics&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://v8.paulfryzel.com/docs/master/&amp;gt;&#34;&gt;Unofficial V8 API&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Cordova Tips and Tricks</title>
+      <link>http://cesarvr.github.io/post/cordova/</link>
+      <pubDate>Fri, 09 Oct 2015 20:33:08 +0000</pubDate>
+      
+      <guid>http://cesarvr.github.io/post/cordova/</guid>
+      <description>
+
+&lt;h3 id=&#34;introduction&#34;&gt;Introduction&lt;/h3&gt;
+
+&lt;p&gt;From a painful working experience with Cordova here some notes.&lt;/p&gt;
+
+&lt;h3 id=&#34;problems-with-input-focus&#34;&gt;Problems with input focus&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;First check you have &lt;a href=&#34;https://www.npmjs.com/package/ionic-plugin-keyboard&#34;&gt;ionic keyboard&lt;/a&gt; installed.&lt;/li&gt;
+&lt;li&gt;Put this in your config.xml.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;    &amp;lt;preference name=&amp;quot;KeyboardDisplayRequiresUserAction&amp;quot; value=&amp;quot;false&amp;quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;can-t-find-your-files-in-ios&#34;&gt;Can&amp;rsquo;t find your files in IOS:&lt;/h3&gt;
+
+&lt;p&gt;&lt;br&gt;
+  Remember IOS file system is case sensitive.&lt;br&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;    myfile.txt !== MyFile.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;html5-audio-api-doesn-t-work-in-ios&#34;&gt;HTML5 Audio API Doesn&amp;rsquo;t work in IOS:&lt;/h3&gt;
+
+&lt;p&gt;User interaction is require, this means that if you don&amp;rsquo;t interact with the UI the OS will mute the volume in your app, a quick workaround to avoid this is, when the user click just emit a low volume sound, this will unmute the mixer and you should be able to reproduce audio.&lt;/p&gt;
+
+&lt;h3 id=&#34;touch-response-is-slow&#34;&gt;Touch response is slow:&lt;/h3&gt;
+
+&lt;p&gt;&lt;br&gt;
+&lt;a href=&#34;https://github.com/ftlabs/fastclick&#34;&gt;fast-click&lt;/a&gt; Good library to solve the touch delay.&lt;/p&gt;
+
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;screen-is-jumping&#34;&gt;Screen is jumping:&lt;/h3&gt;
+
+&lt;p&gt;IOS stop the Javascript execution until scroll has finish, sometimes you need to emulate the scroll to have full control over the UI this can be done by getting the &lt;a href=&#34;https://www.npmjs.com/package/ionic-plugin-keyboard&#34;&gt;ionic keyboard&lt;/a&gt; plugin and disable the native scroll.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;    window.cordova.plugins.Keyboard.disableScroll(true);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;if-you-need-to-emulate-the-scroll-use-iscroll&#34;&gt;If you need to emulate the scroll use IScroll:&lt;/h3&gt;
+
+&lt;p&gt;This is a very good library to emulate scrolling, you get a similar feeling than a native scroll but less performant.
+  - &lt;a href=&#34;http://iscrolljs.com/&#34;&gt;iscroll&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;   var iscroll = new IScroll(&#39;.content&#39;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you are adding nodes to the DOM dynamically, you need to tell IScroll to update the geometry using the refresh() method.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;
+    //adding new stuff to the DOM. Ex $.append(el);
+    iscroll.refresh();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Beware of the padding in the div&amp;rsquo;s, for some reason the whole div doesn&amp;rsquo;t report the right height.&lt;/p&gt;
+
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;whitelisting-network-resource&#34;&gt;Whitelisting network resource.&lt;/h3&gt;
+
+&lt;p&gt;This plugin implements a whitelist policy for navigating the application webview on Cordova 4.0. &lt;a href=&#34;https://github.com/apache/cordova-plugin-whitelist&#34;&gt;Whitelisting&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Arch Linux install cheat sheet</title>
+      <link>http://cesarvr.github.io/post/archlinux-install/</link>
+      <pubDate>Thu, 10 Sep 2015 19:51:38 +0000</pubDate>
+      
+      <guid>http://cesarvr.github.io/post/archlinux-install/</guid>
+      <description>
+
+&lt;p&gt;Arch Linux installation instruction for the impatient.&lt;/p&gt;
+
+&lt;h1 id=&#34;partition&#34;&gt;Partition&lt;/h1&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;
+fdisk /dev/d #sda all disk in my case.
+
+#15 GB partition.
+Command (m for help):    #type n and press Enter
+Partition type: Select (default p): #press Enter
+Partition number (1-4, default 1): #press Enter
+First sector (2048-209715199, default 2048): #press Enter start in the beginning.
+Last sector, +sectors or +size...():  #type +19G and press Enter.
+
+
+#SWAP 1GB
+Command (m for help): #type n and press Enter
+Partition type: Select (default p): #press Enter
+Partition number (1-4, default 2): #press Enter
+First sector (): #press Enter
+Last sector, +sectors or +size...():  # +1G press Enter.
+
+#type o *to see if the changes are right.
+#type w *to write the changes
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;formating-and-swap&#34;&gt;Formating and Swap.&lt;/h1&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;mkfs.ext4 /dev/sda1
+mkfs.ext4 /dev/sda2
+
+mkswap /dev/sdaX —&amp;gt; mines is sda2 1GB
+swapon /dev/sdaX —&amp;gt; mines is sda2 1GB
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;mount-and-install&#34;&gt;Mount and Install.&lt;/h1&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;cd /mnt
+mkdir disk
+mount /dev/sda1 disk
+pacstrap disk/ base &amp;lt;— take a coffe
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;
+#genfstab generates fstab file based on the devices mounted under the mount point.
+#assuming you are inside /mnt
+genfstab -p disk/ &amp;gt; disk/etc/fstab
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;quick-config&#34;&gt;Quick config&lt;/h1&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;#chroot
+arch-chroot mnt/ #folder
+
+
+# echo computer_name &amp;gt; /etc/hostname
+
+#locale configuration
+locale-gen
+
+#choose your locale configuration.
+echo LANG=your_locale &amp;gt; /etc/locale.conf
+
+#example echo LANG=en_IE.ISO-8859-15@EURO &amp;gt; /etc/locale.conf
+#you can uncomment your locale inside the file /etc/locale.conf
+
+#keymap configuration.
+echo KEYMAP=es &amp;gt; /etc/vconsole.conf
+
+#root password
+passwd
+
+#Installing the bootloader.
+pacman -Sy grub  &amp;lt;— install
+grub-install --target=i386-pc --recheck --debug /dev/sdx #sda, never sda1..x
+grub-mkconfig -o /boot/grub/grub.cfg
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

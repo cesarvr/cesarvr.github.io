@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title> Arch Linux install cheat sheet &middot; César </title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.18.1" />
+
+
+<link rel="stylesheet" href="http://cesarvr.github.io/css/vec.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://cesarvr.github.io/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="http://cesarvr.github.io/favicon.ico">
+
+
+<link href="" rel="alternate" type="application/rss+xml" title="César" />
+
+</head>
+
+<body>
+  <header>
+  <nav>
+    <ul>
+      
+      
+      <li class="pull-left ">
+        <a href="http://cesarvr.github.io/">/home/césar</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="http://cesarvr.github.io/post">~/posts</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="https://github.com/cesarvr">~/projects</a>
+      </li>
+      
+      
+      <li class="pull-left ">
+        <a href="https://ie.linkedin.com/in/cesarvr">~/resume</a>
+      </li>
+      
+  
+      <li class="pull-right"><a href=""><i class="fa fa-rss"></i></a></li>
+    </ul>
+  </nav>
+</header>
+  <div class="content">
+    
+    
+    <section class="post">
+      <h1 class="post-title"><a href="http://cesarvr.github.io/post/archlinux-install/">Arch Linux install cheat sheet</a></h1>
+      <span class="post-date">Sep 10, 2015 </span>
+      <div class="post-content">
+        
+
+<p>Arch Linux installation instruction for the impatient.</p>
+
+<h1 id="partition">Partition</h1>
+
+<pre><code class="language-sh">
+fdisk /dev/d #sda all disk in my case.
+
+#15 GB partition.
+Command (m for help):    #type n and press Enter
+Partition type: Select (default p): #press Enter
+Partition number (1-4, default 1): #press Enter
+First sector (2048-209715199, default 2048): #press Enter start in the beginning.
+Last sector, +sectors or +size...():  #type +19G and press Enter.
+
+
+#SWAP 1GB
+Command (m for help): #type n and press Enter
+Partition type: Select (default p): #press Enter
+Partition number (1-4, default 2): #press Enter
+First sector (): #press Enter
+Last sector, +sectors or +size...():  # +1G press Enter.
+
+#type o *to see if the changes are right.
+#type w *to write the changes
+</code></pre>
+
+<h1 id="formating-and-swap">Formating and Swap.</h1>
+
+<pre><code class="language-sh">mkfs.ext4 /dev/sda1
+mkfs.ext4 /dev/sda2
+
+mkswap /dev/sdaX —&gt; mines is sda2 1GB
+swapon /dev/sdaX —&gt; mines is sda2 1GB
+</code></pre>
+
+<h1 id="mount-and-install">Mount and Install.</h1>
+
+<pre><code class="language-sh">cd /mnt
+mkdir disk
+mount /dev/sda1 disk
+pacstrap disk/ base &lt;— take a coffe
+
+</code></pre>
+
+<pre><code class="language-sh">
+#genfstab generates fstab file based on the devices mounted under the mount point.
+#assuming you are inside /mnt
+genfstab -p disk/ &gt; disk/etc/fstab
+
+</code></pre>
+
+<h1 id="quick-config">Quick config</h1>
+
+<pre><code class="language-sh">#chroot
+arch-chroot mnt/ #folder
+
+
+# echo computer_name &gt; /etc/hostname
+
+#locale configuration
+locale-gen
+
+#choose your locale configuration.
+echo LANG=your_locale &gt; /etc/locale.conf
+
+#example echo LANG=en_IE.ISO-8859-15@EURO &gt; /etc/locale.conf
+#you can uncomment your locale inside the file /etc/locale.conf
+
+#keymap configuration.
+echo KEYMAP=es &gt; /etc/vconsole.conf
+
+#root password
+passwd
+
+#Installing the bootloader.
+pacman -Sy grub  &lt;— install
+grub-install --target=i386-pc --recheck --debug /dev/sdx #sda, never sda1..x
+grub-mkconfig -o /boot/grub/grub.cfg
+</code></pre>
+
+      </div>
+    </section>
+    
+    <section class="pagination clearfix">
+       
+      
+      <a class="btn next " href="http://cesarvr.github.io/post/cordova/"> Cordova Tips and Tricks </a> 
+      
+    </section>
+    
+    
+  </div>
+  
+  <footer>
+  <div class="footer-info">
+    <p>
+      <a href="mailto:?subject="><i class="fa fa-envelope-o"></i>  </a>
+      {
+        <a href="https://gohugo.io/" title="Hugo :: A fast and modern static website engine">Hugo 0.18.1</a>,
+        <a href="https://github.com/IvanChou/yii.im" title="vec">Vec</a> 
+      }
+      {<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/" title="CC BY-NC-ND 3.0">CC BY-NC-ND 3.0</a>}
+    </p>
+  </div>
+</footer>
+  
+  <script src="http://cesarvr.github.io/js/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-21473132-2', 'auto');
+ga('send', 'pageview');
+
+</script>
+
+
+</body>
+
+</html>

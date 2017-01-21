@@ -50,11 +50,12 @@ pacstrap disk/ base <— take a coffe
 
 ```
 
-#FSTAB
-genfstab generates output suitable for addition to an fstab file based on the devices mounted under the mountpoint specified by the given root.
+
 
 
 ```sh
+
+#genfstab generates fstab file based on the devices mounted under the mount point.
 #assuming you are inside /mnt
 genfstab -p disk/ > disk/etc/fstab
 

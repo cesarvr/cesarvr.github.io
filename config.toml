@@ -1,19 +1,30 @@
 baseurl = "http://cesarvr.github.io/"
-title = "Brain Drops"
+title = "César"
 author = "Cesar Valdez"
 canonifyurls = true
 languagecode = "en"
-theme = "black-and-light"
+theme = "vec"
+paginate = 15
 
-pygmentsstyle       = "bw"
-pygmentscodefences  = true
+#pygmentsstyle       = "bw"
+#pygmentscodefences  = true
+
+# Enable analytics by entering your Google Analytics tracking ID
+googleAnalytics = "UA-21473132-2"
+
 
 [params]
   sitename = "César"
+  Keywords = "key, 关键字, キーワード"
+  Description = "There are some words to describe your site"
+
+  Avater = "img/avatar.jpg"
+  SelfIntro = "Mobile & Node.js Developer"
+
 
 [[menu.main]]
-    name = "About"
-    url  = "https://github.com/davidhampgonsalves/hugo-black-and-light-theme"
+    name = "Posts"
+    url  = "/post"
 [[menu.main]]
     name = "Projects"
     url  = "https://github.com/cesarvr"
