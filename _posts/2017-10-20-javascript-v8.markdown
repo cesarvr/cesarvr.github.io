@@ -1,7 +1,8 @@
-+++
-date = "2017-01-20T19:43:10Z"
-title = "Javascript v8"
-+++
+---
+layout: post
+date: 2017-01-20
+title: "Embedding Javascript v8"
+---
 
 # Building V8 Javascript Engine.
 
@@ -37,7 +38,7 @@ $ ln -s /usr/bin/python2 /usr/bin/python
 $ ln -s /usb/bin/python2-config /usr/bin/python-config
 ```
 
-For 64 bits machine like mine i need to made a symlink to libtinfo.so.5
+For 64 bits machine like mine I need to made a symlink to libtinfo.so.5
 
 ```sh
 $ ln -s /usr/lib/libncurses.so.5.7 /lib64/libtinfo.so.5
@@ -80,7 +81,7 @@ Or, what I found more interesting is use VM inside native programs and learn how
 For those interested in how the VM works some useful links:
 
 - [how it work inside]
-- [nice blog, the author write about v8 intrinsics]
+- [nice Blog, the author write about v8 intrinsics]
 - [Unofficial V8 API]
 
 
