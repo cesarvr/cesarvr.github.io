@@ -15,23 +15,92 @@ Once ```oc cluster up``` finish you should have an Openshift installation up and
 
 ```
 oc login https://127.0.0.1:8443/  
-oc new-project my-project
+oc new-project hello
 ```
 
-The last command will create a project and will keep it as the one in use so all commands will affect just my-project.
+The last command will create a project and will keep it as the one in use, so all commands will affect just hello project.
 
 
 # Exporting your image
 
-In this example we are going to import a lightweight NodeJS image [mhart/alpine-node](https://github.com/mhart/alpine-node), to import it we are going to use the following command.
+To import an image you run ```oc import-image``` this command will create a new image stream object pointing the image you want to use.
 
 ```
-oc import-image alpine-node:latest --from=registry.hub.docker.com/mhart/alpine-node --confirm
+  oc import-image cvr-node:latest --from=docker.io/cvaldezr/nodejs --confirm
 ```
 
-This command will grab the [mhart/alpine-node](https://github.com/mhart/alpine-node) base image form docker hub and will place it inside the Openshift private docker registry and made it available to the project.
 
+# Using the image
+After successfully importing the image now is time to use it, so to demonstrate this let create a simple Pod object, with  a Node.js application.
+
+First we need the URL of our ImageStream let get it by doing.
 
 ```
-oc run task --restart=Never --image=172.30.1.1:5000/my-project/alpine-node -- node -e "console.log('checking unit test: '); setTimeout(()=>console.log('...done'), 2000)   "
+$ oc get is
+
+NAME       DOCKER REPO                      TAGS      UPDATED
+cvr-node   172.30.1.1:5000/hello/cvr-node   latest    39 seconds ago
+```
+
+Next let define our Pod, I want to create a simple app so I'm going to use the example Node.JS.
+
+```yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: node-example
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: 172.30.1.1:5000/hello/cvr-node  # Our imported image
+    command: ['/bin/sh', '-c']
+    args:
+    - cd /app/node-openshift-master/;
+      echo folder:$PWD;
+      npm install;
+      nodemon $(node -e "console.log(require('./package.json').main)")
+
+
+    volumeMounts:
+    - mountPath: /app
+      name: app-volume
+    - mountPath: /.npm  
+      name: npm-cache
+
+    ports:
+    - containerPort: 8080
+  initContainers:
+  - name: cloning  
+    image: busybox
+    command: ['/bin/sh', '-c']
+    args:
+    - cd /app/;
+      wget -O src.zip https://github.com/cesarvr/node-openshift/archive/master.zip;
+      unzip src.zip -d /app/;  
+      rm src.zip;
+
+    volumeMounts:
+    - mountPath: /app
+      name: app-volume
+  volumes:
+  - name: app-volume
+    emptyDir: {}    
+  - name: npm-cache
+    emptyDir: {}   
+```
+
+We create the Pod
+
+```sh
+oc create -f node.yml  
+```
+
+After some initialization, assuming that everything is fine we should our Pod running, next thing is to expose it.
+
+```sh
+oc expose pod node-example
+oc expose service node-example  
 ```
