@@ -103,7 +103,7 @@ oc expose service node-example
 
 ### Demo
 
-[![asciicast](https://asciinema.org/a/IJURr9cdQZTX1Q5Ue8jr1S3Zc.png)](https://asciinema.org/a/IJURr9cdQZTX1Q5Ue8jr1S3Zc)
+<script type="text/javascript" src="https://asciinema.org/a/IJURr9cdQZTX1Q5Ue8jr1S3Zc.js" id="asciicast-IJURr9cdQZTX1Q5Ue8jr1S3Zc" async></script>
 
 
 
