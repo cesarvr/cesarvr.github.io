@@ -6,7 +6,7 @@ title: "Exporting external images to Openshift"
 
 # Getting Started
 
-First you need to have an Openshift installation on the cloud or in your machine, the second option is the easiest one thanks to the ```oc cluster up command.```, this will create a small local installation of openshift in your machine, if your are not familiar take a quick look at the [documentation](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md#getting-started).
+First you need to have an Openshift installation on the cloud or in your machine, the second option is the easiest one thanks to the ```oc cluster up``` command, this will create a small local installation of openshift in your machine, if your are not familiar take a quick look at the [documentation](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md#getting-started).
 
 # Creating a project
 
