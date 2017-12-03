@@ -1,6 +1,6 @@
 ---
 layout: post
-date: "2015-09-10T19:51:38Z"
+date: "2017-12-01T19:51:38Z"
 title: "How to generate a PDF using Cordova, Android and IOS"
 ---
 
