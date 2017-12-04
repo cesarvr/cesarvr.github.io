@@ -4,7 +4,7 @@ date: "2017-12-01T19:51:38Z"
 title: "How to generate a PDF Documents using Cordova, for Android and IOS"
 ---
 
-'### Why 
+### Why 
 
 Some of my work at Red Hat is to design and develop end-to-end mobile/desktop application using Apache Cordova and using Node.JS, One of the typical challenges I face, when working with some costumer, is how to generate reports in PDF format, the usual way to solve this was to use a server side API render the document there and send it to the phone, this is not nice, the first reason, you need network connectivity for this to work, the second is the lack of good and free PDF API's in the server side, so I decide to write a plugin to move this job to the mobile device, the advantages of doing this are:
 
