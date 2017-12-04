@@ -4,9 +4,9 @@ date: "2017-12-01T19:51:38Z"
 title: "How to generate a PDF Documents using Cordova, for Android and IOS"
 ---
 
-### Why 
+'### Why 
 
-Some of my work at Red Hat is to desing and develop end-to-end mobile/desktop application using Apache Cordova and using Node.JS, One of the typical challenges I face, when working with some costumer, is how to generate reports in PDF format, the usual way to solve this was to use a server side API render the document there and send it to the phone, this is not nice, the first reason, you need network connectivity for this to work, the second is the lack of good and free PDF API's in the server side, so I decide to write a plugin to move this job to the mobile device, the advantages of doing this are:
+Some of my work at Red Hat is to design and develop end-to-end mobile/desktop application using Apache Cordova and using Node.JS, One of the typical challenges I face, when working with some costumer, is how to generate reports in PDF format, the usual way to solve this was to use a server side API render the document there and send it to the phone, this is not nice, the first reason, you need network connectivity for this to work, the second is the lack of good and free PDF API's in the server side, so I decide to write a plugin to move this job to the mobile device, the advantages of doing this are:
 
 - You can use this functionality off-line. 
 - The user has more control over the experience. 
@@ -15,7 +15,7 @@ Some of my work at Red Hat is to desing and develop end-to-end mobile/desktop ap
 
 ### How it works
 
-So basically to make this easy I wanted to use HTML/CSS as the template engine, so you can use this familiar markup languages to defined how your PDF is going to look, then I load this inside on a offscreen Webkit provided by the target OS and print it.
+So basically to make this easy I wanted to use HTML/CSS as the template engine, so you can use this familiar markup languages to define how your PDF is going to look, then I load this inside on a offscreen Webkit provided by the target OS and print it.
 
 ### Quick demo
 
@@ -66,7 +66,7 @@ var app = {
 app.initialize();
 ```
 
-We need to go to the function ```receivedEvent``` this function will be called after cordova is done initializing the framework, so its the place where we should put our code.
+We need to go to the function ```receivedEvent``` this function will be called after cordova is done initializing the framework, so it's the place where we should put our code.
 
 ```js
 var app = {
@@ -85,8 +85,7 @@ var app = {
             fileName: 'v8-tutorial.pdf' //it will use this filename as a place-holder
         }
         
-        pdf.fromURL('http://cesarvr.github.io/2015/11/20/javascript-v8.html'
-                opts)
+        pdf.fromURL('http://cesarvr.github.io/2015/11/20/javascript-v8.html', opts)
         .then((status) => console.log('success->', status))
         .catch((error) => console.log(error));
 
@@ -102,13 +101,14 @@ app.initialize();
 We run this by doing: 
 
 ```sh
-cordova prepare
+#put our www/ folder inside our target platform.
+cordova prepare 
 
-# To deploy in Android 
-cordova run android 
+#Deploy in Android.
+cordova run android
 
-# To deploy in iOS 
-cordova run ios 
+#Deploy in iOS.
+cordova run ios
 ```
 ![snapshot](/static/adb-snapshot.png "Logo Title Text 1")
 
