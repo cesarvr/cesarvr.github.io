@@ -1,5 +1,4 @@
 ---
-layout: post
 date: "2015-09-10T19:51:38Z"
 title: "Arch Linux install cheat sheet"
 ---

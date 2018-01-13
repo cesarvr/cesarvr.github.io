@@ -1,5 +1,4 @@
 ---
-layout: post
 date: 2015-11-20
 title: "Embedding Javascript v8"
 ---

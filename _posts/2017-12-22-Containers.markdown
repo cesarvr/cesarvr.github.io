@@ -1,5 +1,4 @@
 ---
-layout: post
 date: "2017-12-22"
 title: "Using Containers For Beginners"
 ---
