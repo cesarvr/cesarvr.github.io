@@ -241,7 +241,8 @@ stop_mongo
 stop_redis
 ```
 
-The Advantages are zero configuration or installation, if you don't need them they just terminate and remove.
+Now you will be able to deploy a local MongoDB or Redis instance on-demand with zero configuration, and one advantage (at least in my view) is that the data in this instances are ephemeral meaning that when you terminate the container it will reset as well the database releasing the occupied space.   
+
 
 # Linux security
 
