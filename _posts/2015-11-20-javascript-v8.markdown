@@ -1,6 +1,7 @@
 ---
 date: 2015-11-20
 title: "Embedding Javascript v8"
+layout: post
 ---
 
 # Building V8 Javascript Engine.

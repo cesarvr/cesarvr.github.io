@@ -1,6 +1,7 @@
 ---
 date: "2017-11-12"
 title: "Exporting external images to Openshift"
+layout: post
 ---
 
 # Getting Started

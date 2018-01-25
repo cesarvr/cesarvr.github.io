@@ -1,6 +1,7 @@
 ---
 date: "2017-12-01T19:51:38Z"
 title: "How to generate a PDF Documents using Cordova, for Android and IOS"
+layout: post
 ---
 
 ### Why 
