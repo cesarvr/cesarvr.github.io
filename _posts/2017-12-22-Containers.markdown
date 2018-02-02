@@ -47,7 +47,7 @@ Once you finished the installation we should try a small **Hello World!** for co
 sudo docker run --name hello -it busybox echo "Hello World!" # Hello World!
 ```
 
-Using **sudo** is only necessary if you are running some Linux distributions, but keep in mind that Docker require admin rights to create the containment, in OSX and Windows at the moment of writing this article they use some Linux based virtual machine behind the scene, so Docker command can be run without privilege user.
+Using **sudo** is only necessary if you are running some Linux distributions, but keep in mind that Docker require admin rights to create the containment, in OSX and Windows at the moment of writing this article they use some Linux based virtual machine behind the scene, so Docker command can be run without privilege user in those systems.
 
 #### How it works
 
