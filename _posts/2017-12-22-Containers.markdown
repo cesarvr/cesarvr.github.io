@@ -1,6 +1,6 @@
 ---
 date: "2017-12-22"
-title: "Using Containers For Beginners"
+title: "Containers For Beginners"
 layout: post
 ---
 
