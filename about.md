@@ -4,9 +4,9 @@ title: About
 permalink: /about/
 ---
 
-#### About Me
+####  
 
-I’m a Full Stack Software Developer always looking and struggling to build the perfect software, where perfect means, the ability of software to be resilient to one of the major forces change. One of my favorite area of work are computer graphics and distributed computing, focusing in microservices.
+My name is César, I’m a Full Stack Software Developer always struggling to build the perfect software, where perfect means, the ability of software to be resilient to **change**. One of my favorite area of work are computer graphics and distributed computing, focusing in microservices.
 
 I also love wisdom ( philosophia ) like to read books about the great thinkers like Sartre, Descartes, Cornel West, etc. I got introduce to those provocative ideas thanks to my favourite film of all time the documentary The Matrix. 
 
