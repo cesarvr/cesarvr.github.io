@@ -111,7 +111,7 @@ Let's start our virtualization journey, first of all let run something inside ou
 
 ```
 createChild([](void *args) -> int {
-    run(0,"/bin/bash");
+    run("/bin/bash");
 }, SIGCHLD);
 ```
 
@@ -130,7 +130,7 @@ first we going to start with some simple isolation like environment variables, i
 ```cpp
 createChild([](void *args) -> int {
     clearenv();
-    run(0,"/bin/bash");
+    run("/bin/bash");
 }, SIGCHLD);
 ```
 That was easy, we are clearing the vars before start but hey, its a good start.
@@ -145,7 +145,7 @@ We are going to achieve this by adding a new flag through our beautiful high lev
 ```cpp
 createChild([](void *args) -> int {
     clearenv();
-    run(0,"/bin/bash");
+    run("/bin/bash");
 }, CLONE_NEWUTS | SIGCHLD);
 ```
 
@@ -187,7 +187,7 @@ Each time you execute a program in Linux the system grant this process and id an
     clearenv();
     string hostname = "my-container";
     sethostname(hostname.c_str(), hostname.size());
-    run(0,"/bin/sh");
+    run("/bin/sh");
 
   }, CLONE_NEWUTS | CLONE_NEWPID | SIGCHLD);
  ```
@@ -208,25 +208,15 @@ current process id: 1 # this one belong to the Anonymous Function.
 sh-4.4#
 ```
 
-But happiness is not complete yet, if we run our contained process and run ```ps``` look what we found.
-
-```
-PID TTY          TIME CMD
-2747 pts/0    00:00:00 sudo
-2748 pts/0    00:00:00 container
-2749 pts/0    00:00:00 sh
-2751 pts/0    00:00:00 ps
-```
-
-This is a leak from our guest and basically a demonstration that our containment is not good enough in the next chapter we'll to fix that.  
 
 
 #### Changing the root folder
 
-Our new objective is to contain the access to the files our process can access, to achieve that, we are going to get the typical base folder install for Alpine Linux a very lightweight distribution.
+Our new objective is to contain the access to the files our process can access, to achieve that, we need to get the typical base folder installation from our favorite Linux distribution, in this article I'll choose [Alpine Linux](https://github.com/yobasystems/alpine) because is very minimal 2MB compressed.
 
-First we need to download the base Linux installation, for this chapter we are going to use the one from this project [Alpine Linux Project](https://github.com/yobasystems/alpine) and we need to download the [tar/gz](alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz) with the base installation.
+Just grab the base install [gz/tar file](alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz) and we are ready to contain our process inside.
 
+Getting the file is easy just follow this instructions.
 
 ```
 mkdir root && cd root
@@ -235,7 +225,7 @@ tar -xvf alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
 rm alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
 ```
 
-Now we are going to change our code.
+Now we are going to made some updates to our code.
 
 ```cpp
 createChild([](void *args) -> int {
@@ -243,12 +233,77 @@ createChild([](void *args) -> int {
       string hostname = "my-container";
 
       clearenv();
-      chroot("./root");
-      //mount("proc", "/proc", "proc", 0, 0);
-      putenv((char *)"PATH=/bin");
+      chroot("./root"); //point to your downloaded base folder.
+      chdir("/"); // point to root folder /.
 
       sethostname(hostname.c_str(), hostname.size());
-      run(0,"/bin/sh");
+      run("/bin/sh");
 
   }, CLONE_NEWUTS | CLONE_NEWPID | SIGCHLD);
 ```
+
+Now run your program and if everything is fine, you will see our child process (```/bin/sh```) is totally constrained inside your new root folder, from its point of view is like living in other dimension.
+
+Let's explain what happened:
+
+ ```cpp
+chroot("./root");
+chdir("/");
+ ```
+
+This basically change the root folder of our child process from our system ```/``` folder to an arbitrary folder in this case ``` root ``` folder we created above. Then we jump to it ```chdir```. Can we choose an empty folder? Yes, but the problem is that our bash won't have any binaries like (ls, cd, ps) it would be impossible to scan our container, but also there is a nice lesson to learn here, we can use this fact to contain processes that can work by their own.
+
+
+#### Mounting Filesystem into our container
+
+But happiness is not complete yet, if we run our contained process and run ```ps``` look what we found.
+
+```
+PID TTY          TIME CMD
+```
+
+This is can be considered a leak from our guest or basically a demonstration that our containment is not good enough. We need to provide access to our container, so it can access process information, this information is provided by Linux by mounting a pseudo-filesystem called ```/proc```, is "fake" because the Kernel use folders/files metaphors to communicate information about running processes to the user. Also we can learn from this decision because it teach us about reusing our system, instead of creating a new interface to get this information, they expose this information by using a medium that the user are familiar with.
+
+If you want to see for your self just do:
+
+```
+ls /proc/
+```
+
+Ok, let's mount that folder and get some info for our container.
+
+
+```cpp
+createChild([](void *args) -> int {
+      cout << "current process id: " << getpid() << endl;
+      string hostname = "my-container";
+      clearenv();
+      chroot("./root"); //point to your downloaded base folder.
+      chdir("/"); // point to root folder /.
+
+      mount("proc", "/proc", "proc", 0, 0);
+
+      sethostname(hostname.c_str(), hostname.size());
+      run("/bin/sh");
+
+  }, CLONE_NEWUTS | CLONE_NEWPID | SIGCHLD);
+```
+
+We run our program and then we run ``` ps ```.
+
+```
+process created with pid: 8238
+current process id: 1
+/ # ps
+PID   USER     TIME   COMMAND
+    1 root       0:00 /bin/sh
+    2 root       0:00 ps
+```
+
+As expected now this look awesome, our process ```/bin/sh``` is running as first and ```ps``` as second, we achieve that by using ```mount``` system call.
+
+```
+  mount("proc", "/proc", "proc", 0, 0);
+```
+
+It just tell our process to expose the proc filesystem and use the folder ```/proc``` as the destination, then some commands like ```ps``` access this folder and can do their magic. 
