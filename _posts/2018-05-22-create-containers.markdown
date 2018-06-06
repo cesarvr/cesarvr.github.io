@@ -6,7 +6,7 @@ layout: post
 
 # How Linux Containers Works
 
-Containers is one of the hottest technologies at the moment, but sometimes they are misunderstood, so inspired by the [talk](https://www.ustream.tv/embed/recorded/102859668) of [Liz Rice](https://twitter.com/lizrice) about the technology behind containers. I decided to write a post about the steps involved in the container creation in the hope that help people create maybe a better definition of what a container is.
+Containers is one of the hottest technologies at the moment, but sometimes they are misunderstood, so inspired by the [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice) about the technology behind containers. I decided to write a post about the steps involved in the container creation in the hope that help people create maybe a better definition of what a container is.
 
 
 ## Linux process
@@ -35,17 +35,17 @@ Now let's create the process.
 
 ```sh
 ./container   
-```
-
-The process will get instantiated, execute the instruction to pass some words to the Linux kernel and this will outputted into the console and exit.
-
-```sh
 # Hello World!
 ```
 
+The process will get instantiated, execute the instruction to pass some words to the Linux standard output and exit.
+
+
 ## Child processes
 
-One of the features of Linux (and the majority of commercial OS) is that process can have children's which is a one way to achieve multitasking, in this case we are going to extend our program to run a simple child process.
+One of the features of Linux (and the other of commercial OS) is that process can create other processes, basically if you have a process with function **a** and **b** you can clone this process and execute **function b**, while the parent can take care of executing **function a**, the parent need to handle this branching but it can take advantage of multiple cores.
+
+Quick example:
 
 ```c++
 template<typename AnonymousFunction>
@@ -65,7 +65,7 @@ int main(int argc, char* argv[]){
 }
 ```
 
-Let's explain some of the changes here the changes here:
+Let's explain some of the C++ black magic:
 
 ```
 [](void *args) -> int {
@@ -75,7 +75,6 @@ Let's explain some of the changes here the changes here:
 Don't be afraid by that incantation, is just an [Anonymous functions](https://en.wikipedia.org/wiki/Anonymous_function), in C++ they are called lambda expressions.
 
 ```cpp
-template<typename AnonymousFunction>
 void createChildProcess(AnonymousFunction &&action, int flags) {
   auto pid = clone(action, allocStackMemory(), flags, 0);
   #...
@@ -83,19 +82,9 @@ void createChildProcess(AnonymousFunction &&action, int flags) {
 }
 ```
 
-Here we just created a function (createChildProcess) that receive a function, creates a *child* by cloning the actual process and continue child execution in parallel.
+Here we just created a function called **createChildProcess** that receive an Anonymous function, it works by cloning the actual process and passing it the "task" in the form of Anonymous function.
 
-```cpp
-void createChildProcess(AnonymousFunction &&action, int flags) {
-  #...
-  waitForChilds();
-}
-```
-
-This just stop the parent process until the child finish.
-
-
-If you re-run this program you'll get.
+After we compile or code and run it we get.
 
 ```sh
 
@@ -107,7 +96,7 @@ If you re-run this program you'll get.
 ## Fake it until you make it
 
 #### Executing our child program
-Let's start our virtualization journey, first of all let run something inside our child process.   
+Let's start our virtualization journey, we need a process powerful enough to allow us to test, how good our jail is, so for this purpose let's choose ```sh```.   
 
 ```
 createChild([](void *args) -> int {
@@ -172,8 +161,9 @@ It works and now you can change the hostname inside your isolate space.
  ```
 And you will see, that this change only affect the lifetime of the bash process which at the same time is the lifetime of our process tree, outside everything stay the same.
 
-[video here]()
 
+
+//TODO better title
 #### Making our process the only one.  
 
 Each time you execute a program in Linux the system grant this process and id and then attach if your process do not have any parent it get attached to the initial process which has PID number one, we can consider this the parent of all the process in the system, so our next virtualization step is to make our process believe he is running alone in the machine, we are going to make our process the number one.
@@ -262,34 +252,34 @@ But happiness is not complete yet, if we run our contained process and run ```ps
 PID TTY          TIME CMD
 ```
 
-This is can be considered a leak from our guest or basically a demonstration that our containment is not good enough. We need to provide access to our container, so it can access process information, this information is provided by Linux by mounting a pseudo-filesystem called ```/proc```, is "fake" because the Kernel use folders/files metaphors to communicate information about running processes to the user. Also we can learn from this decision because it teach us about reusing our system, instead of creating a new interface to get this information, they expose this information by using a medium that the user are familiar with.
+It seems that we don't have any process running, the problem is that when we change the root folder, we stop using the global ```/proc``` directory and our child process is using the empty one available in the distribution, this directory is the place where Linux mounts the **procfs** pseudo-filesystem.
 
-If you want to see for your self just do:
+##### Reusability Lesson
 
+The [procfs](https://en.wikipedia.org/wiki/Procfs) filesystem doesn't represent a part of your disk or any storage at all, Linux follows the Unix principle of "everything is a file", so instead of creating new interfaces to share information they use the folder/files metaphors to communicate information to the user.
+
+##### Mounting Procfs
+
+The system call [mount](http://man7.org/linux/man-pages/man2/mount.2.html) our call will look like this:
+
+```cpp
+mount("proc", "/proc", "proc", 0, 0);
 ```
-ls /proc/
-```
-
-Ok, let's mount that folder and get some info for our container.
-
+This method receive the resource we want to mount, the we pass the folder pointing to the ```/proc``` folder and the filesystem type which is ```proc```.  
 
 ```cpp
 createChild([](void *args) -> int {
-      cout << "current process id: " << getpid() << endl;
-      string hostname = "my-container";
-      clearenv();
-      chroot("./root"); //point to your downloaded base folder.
+      #...
       chdir("/"); // point to root folder /.
+      sethostname(hostname.c_str(), hostname.size());
 
       mount("proc", "/proc", "proc", 0, 0);
 
-      sethostname(hostname.c_str(), hostname.size());
       run("/bin/sh");
-
   }, CLONE_NEWUTS | CLONE_NEWPID | SIGCHLD);
 ```
 
-We run our program and then we run ``` ps ```.
+We compile and run our program and then we run ``` ps ```.
 
 ```
 process created with pid: 8238
@@ -300,10 +290,7 @@ PID   USER     TIME   COMMAND
     2 root       0:00 ps
 ```
 
-As expected now this look awesome, our process ```/bin/sh``` is running as first and ```ps``` as second, we achieve that by using ```mount``` system call.
+If we pay close attention we see that this process tree looks unique to our context, this is because now we are noticing the full effect off having assigned to our child process a new process tree as we did above by using the flag ``` CLONE_NEWPID ```.
 
-```
-  mount("proc", "/proc", "proc", 0, 0);
-```
 
-It just tell our process to expose the proc filesystem and use the folder ```/proc``` as the destination, then some commands like ```ps``` access this folder and can do their magic. 
+##### Control Groups
