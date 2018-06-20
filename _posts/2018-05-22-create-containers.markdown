@@ -232,7 +232,7 @@ That this change stay local to our cloned process **sh**, you can verify this by
 
 #### Cloning PID.
 
-When your machine boot up, the first process to start is the [daemon init](https://en.wikipedia.org/wiki/Init) process with identifier 1, this process then act as the parent for every other process in your machine. Our goal is to isolate our process from the main process tree and make it look its running alone in the machine.
+When your machine boot up, the first process to start is the [daemon init](https://en.wikipedia.org/wiki/Init) process with identifier 1, this process then act as the parent for every other process in your machine. Our goal is to isolate our process from this general process tree and make it look its the only process in the machine.
 
 We need to add the ```CLONE_NEWPID``` flag.
 
@@ -250,14 +250,14 @@ Compile and run.
 ```sh
 sudo ./container                              
 process created with pid: 2045 # this one belong to the main tree (the one started by init).
-current process id: 1 # Now our process is number 1, its running in its "own" tree.
+current process id: 1 # Now our process is number 1, this process is the parent of it's "own" tree.
 sh-4.4#
 ```
 
 [video here]
 
 
-If you run **ps** you still will see processes of the main tree. 
+If you run **ps** you still see processes of the main tree. 
 
 ```sh
   PID TTY          TIME CMD
@@ -268,40 +268,57 @@ If you run **ps** you still will see processes of the main tree.
 ```
 This happen because **ps** get its information from the **proc** directory, we are going to take care of this in the following section.
 
-#### Changing the root folder
+#### Isolating File System
 
-The objective now is to contain the access to the files our process can access, to achieve that we are going to change the root folder of our cloned process by using the good old ```chroot``` but this time instead of the command we are going to use the equivalent system call.  
+The objective now is to isolate the access to the files our process can access, to achieve that we are going to change the root folder of our cloned process by using the good old ```chroot``` but this time instead of the command we are going to use the equivalent system call.  
 
+
+#### Preparing The Root Folder
 We can change the root to an empty folder but if we do that we are going to loose the tools we are using so far to inspect the quality of our container, to avoid this we need to get some Linux base folder that include the necessary tools. I'll choose [Alpine Linux](https://github.com/yobasystems/alpine) because is very minimal is about 2MB compressed and has everything we need to explore.
 
-Just grab the base [install](alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz), uncompress into a folder called ```root``` at the same level of our binary, just make sure to uncompress the content inside this folder.
+Just grab the base [install](alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz). 
 
 ```
 mkdir root && cd root
-curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
-tar -xvf alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
-rm alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
+curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/
 ```
 
-The changes we need to do are fairly simple, we are going to make a call to **chroot** passing the ```root``` folder containing basic folder structure, after this, we change the process directory to the new rooted location ```chdir(/)```.
+Uncompress into a folder called ```root``` at the same level of our binary.
+
+```
+x86_64/alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
+tar -xvf alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
+```
+
+
+#### Changing The Root Folder
+
+The changes we need to do are fairly simple, we are going to make a call to **chroot** passing the ```root``` folder containing basic folder structure.
+
+```
+ chroot("./root"); //point to your downloaded base folder.
+```
+
+We change the process directory to the new rooted location ```chdir(/)```.
+```c++
+ chdir("/"); // point to root folder /.
+```
+
+
+The code for the child process now looks like this: 
 
 ```cpp
-createChild([](void *args) -> int {
-      cout << "current process id: " << getpid() << endl;
-      string hostname = "my-container";
+int child(void *args) {
+  printf("pid: %d\n", getpid());
+  setHostName("my-container");
+  clearenv();
+  chroot("./root");
+  chdir("/");
 
-      clearenv();
-      chroot("./root"); //point to your downloaded base folder.
-      chdir("/"); // point to root folder /.
-
-      sethostname(hostname.c_str(), hostname.size());
-      execvp({"/bin/sh"}, {});
-
-  }, CLONE_NEWUTS | CLONE_NEWPID | SIGCHLD);
+  execvp("/bin/sh", {});
+}
 ```
 
-Now run your program and if everything is fine
-## TODO
 
 
 #### Mounting file system into our container
