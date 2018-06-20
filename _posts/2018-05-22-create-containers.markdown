@@ -6,146 +6,207 @@ layout: post
 
 # How Linux Containers Works
 
-Containers is one of the hottest technologies at the moment, but sometimes they are misunderstood, so inspired by the [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice) about the technology behind containers. I decided to write a post about the steps involved in the container creation in the hope that help people create maybe a better definition of what a container is.
+Containers is one of the hottest technologies at the moment, but sometimes they are misunderstood, so inspired by the [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice) about the technology behind containers. I decided to write a post about the steps involved in the container creation in the hope that help me understand how it works and also helps other peoples to have a better understanding. I would basically follow what [Liz Rice](https://twitter.com/lizrice) did in her video but using C/C++ which interface naturally with Linux, so for me is clear what interactions are necessary with the Linux Kernel to achieve this process isolation, hope you enjoy as much as I enjoy researching about it.
 
 
 ## Linux process
 
-A process in simple terms is just the instantiation of binary code usually a program into the memory.
+Let's start by the first piece of the puzzle by defining what a process is, a process, in simple terms is just the instantiation of binary code usually a program into the memory.
 
-Basically you have some code, in this case I'll use C++.
+Basically you have some human readable code like this one.
 
 ```c++
 #include <iostream>
-using namespace std;
 
-int main(int argc, char* argv[]){
-  cout << "Hello World" << endl;
-  return 0;
+int main(int argc, char** argv) {
+  printf("Hello, world! \n");
+
+  return EXIT_SUCCESS;
 }
 ```
 
-You compile this code into a binary, I'll choose an original name, let's call it container.
+You compile this code into a machine readable binary. I'll call it *container*, we are going to use C++ compiler because it allows some syntactic sugar.
 
 ```sh
 g++ container.cc -o container  
 ```
 
-Now let's create the process.
+Now test our process.
 
 ```sh
 ./container   
 # Hello World!
 ```
 
-The process will get instantiated, execute the instruction to pass some words to the Linux standard output and exit.
+The binary will get loaded into memory and become a process, the process write ``` Hello World ``` into the standard output back and exit.
 
 
-## Child processes
+## Cloning processes
 
-One of the features of Linux (and the other of commercial OS) is that process can create other processes, basically if you have a process with function **a** and **b** you can clone this process and execute **function b**, while the parent can take care of executing **function a**, the parent need to handle this branching but it can take advantage of multiple cores.
+Cloning a process in Linux work like this, let say you execute program with two functions **fn_a** and **fn_b** and we want to execute this two functions in parallel. 
 
-Quick example:
+``` 
+  +---------+
+  | process |
+  |---------|
+  |  fn_a   |
+  |---------|
+  |  fn_b   |
+  +---------+
+
+```
+
+One way to do this is to clone the process and dump the task we want to run in parallel, in this case **fn_b**. 
 
 ```c++
-template<typename AnonymousFunction>
-void createChildProcess(AnonymousFunction &&action, int flags) {
-  auto pid = clone(action, allocStackMemory(), flags, 0);
-  #...
-  waitForChilds();
+  clone(fn_b, stack_memory(), SIGCHLD, 0);
+``` 
+
+The ```clone``` system call achieve that purpose. 
+
+``` 
+
+  +---------+         +---------+     
+  | process |         |  child  |
+  |---------|         |---------|
+  |  fn_a   |         |         |
+  |---------|  clone  |---------|  
+  |  fn_b   |  ---->  |  fn_b   |  fn_b get executed in parallel.
+  +---------+         +---------+
+
+```
+
+Now we have two processes executing two different task, but there is a problem for our program to be useful we need to recover the information once the child process finish, one way to sync the two processes is to stop the parent process using ```wait``` . 
+
+Let's look all this in code. 
+
+
+```c++
+#include <iostream>
+#include <sched.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+// Sanity check function. 
+void TRY(int status, const char *msg) {
+ if(status == -1) {
+    perror(msg);
+    exit(EXIT_FAILURE);
+ }
 }
 
-int main(int argc, char* argv[]){
-  cout << "Hello World (from parent)"
-  createChildProcess( [](void *args) -> int {
-    cout << " Hello World (from child)" << endl;
-  }, SIGCHLD);
+int child(void *args) {
+  printf("Hello !! ( child ) \n");
+}
 
-  return 0;
+int main(int argc, char** argv) {
+  printf("Hello, world! ( parent ) \n");
+
+  TRY( clone(child, stack_memory(), SIGCHLD, 0), "clone" );
+
+  wait(nullptr);
+  return EXIT_SUCCESS;
 }
 ```
 
-Let's explain some of the C++ black magic:
+Just added to our code a new function called *child* and the ```clone``` and ```wait``` system call. We compile or code and run it we should get.
 
-```
-[](void *args) -> int {
-
-}
-```
-Don't be afraid by that incantation, is just an [Anonymous functions](https://en.wikipedia.org/wiki/Anonymous_function), in C++ they are called lambda expressions.
-
-```cpp
-void createChildProcess(AnonymousFunction &&action, int flags) {
-  auto pid = clone(action, allocStackMemory(), flags, 0);
-  #...
-
-}
-```
-
-Here we just created a function called **createChildProcess** that receive an Anonymous function, it works by cloning the actual process and passing it the "task" in the form of Anonymous function.
-
-After we compile or code and run it we get.
 
 ```sh
-
 ./container
 #Hello World (from parent)
 #Hello World (from child)
 ```
 
-## Fake it until you make it
+## Setting Up
 
-#### Executing our child program
-Let's start our virtualization journey, we need a process powerful enough to allow us to test, how good our jail is, so for this purpose let's choose ```sh```.   
+Now we are going to start testing the concepts behind containers, to do this we are going to execute a shell that will replace the child process.  
+
+```c++
+int child(void *args) {
+  printf("pid: %d\n", getpid());
+  execvp("/bin/sh", {});
+}
 
 ```
-createChild([](void *args) -> int {
-    run("/bin/bash");
-}, SIGCHLD);
-```
 
-Now we created bash as our child process, if we execute our program we should got this.
+Here we just clean up our child function, print the process id and run our shell program. 
+
+When we run we should get this: 
 
 ```
 process created with pid: 12406
 sh-4.4$
 ```
 
+Process hierarchy: 
 
-#### Isolating the environment variables
+``` 
 
-first we going to start with some simple isolation like environment variables, if you run ``` env ``` right know you would see that we are inheriting our parent process env vars let solve that problem.
+  +---------+          +---------+     
+  | process |          | child() |
+  |---------|          |---------|
+  | child() | clone -> |   sh    |
+  +---------+          +---------+ 
 
-```cpp
-createChild([](void *args) -> int {
-    clearenv();
-    run("/bin/bash");
-}, SIGCHLD);
 ```
-That was easy, we are clearing the vars before start but hey, its a good start.
+
+#### Isolation
+
+Virtual Machine achieve this isolation by simulating the whole computer (CPU, I/O, BIOS, etc..), Linux Kernel by providing the technology to modify the way process behave. In the next section we are going to modify our program to make use of this features. 
 
 
-#### Isolating the Universal Time System (UTS)
+#### Environment Variables
 
-Next we are going to isolate the Universal Time Sharing (UTS) feature in Linux,  basically we are going to make our process believe he is working in other machine at least from the point of view of its Hostname.
-
-We are going to achieve this by adding a new flag through our beautiful high level interface ```createChild```, this flag is called ```CLONE_NEWUTS```, it tell the Kernel that we also want to assign a cloned UTS for our chilld process.  
+The first thing I would like to change is the environment variables, after we clone the process we inherit all the environment variables, this a ugly leak of information so let's solve that. 
+ 
+To solve this I would use the a simple POSIX ```clearenv```. 
 
 ```cpp
-createChild([](void *args) -> int {
-    clearenv();
-    run("/bin/bash");
-}, CLONE_NEWUTS | SIGCHLD);
+int child(void *args) {
+  printf("pid: %d\n", getpid());
+
+  clearenv();   // remove all env variables for this process.
+
+  execvp("/bin/sh", {});
+}
+```
+
+We run the code again and enter the shell execute ```env```:
+
+```sh
+  # env
+  SHLVL=1
+  PWD=/
+```
+
+Not bad, we have our own set of variables for this process.
+
+
+#### UTS
+
+In this scenario when we clone our child process we are going to provide its own UTS Namespace, when we do this Linux will provide to our child process its own *Hostname* and *Domain* and those will be independent from the system. 
+
+We achieve this by adding the ```CLONE_NEWUTS``` flag to the clone system call.  
+
+```cpp
+int main(int argc, char** argv) {
+  TRY( clone(child, stack_memory(), CLONE_NEWUTS | SIGCHLD, 0), "clone" );
+  #                                 ^^ new flag
+  wait(nullptr);
+  return EXIT_SUCCESS;
+}
 ```
 
 Now lets proof our hypothesis, the first thing we need is to recompile and execute our program.
 
-```
+```sh
 ./container                                                     
 error: clone(): Operation not permitted
 ```
 
-This happens because what we try to do (cloning the UTS namespace) require elevated privilege.
+This happens because what we try to do (cloning the UTS namespace) require [CAP_SYS_ADMIN](https://lwn.net/Articles/486306/) or in other words we need elevated privilege.
 
 ```
 sudo ./container                                      
@@ -154,59 +215,66 @@ process created with pid: 12906
 sh-4.4#
 ```
 
-It works and now you can change the hostname inside your isolate space.
+Now it works and now we can use bash to try to change machine name.
 
  ```
  sh-4.4# hostname my-container
+
  ```
-And you will see, that this change only affect the lifetime of the bash process which at the same time is the lifetime of our process tree, outside everything stay the same.
+That this change stay local to our cloned process **sh**, you can verify this by opening a new terminal and checking the hostname.
 
-
-
-//TODO better title
-#### Making our process the only one.  
-
-Each time you execute a program in Linux the system grant this process and id and then attach if your process do not have any parent it get attached to the initial process which has PID number one, we can consider this the parent of all the process in the system, so our next virtualization step is to make our process believe he is running alone in the machine, we are going to make our process the number one.
-
- This one is easy we just need to add a flag to clone so our process get its own PID tree, separated from the rest.
-
- ```cpp
- createChild([](void *args) -> int {
-    cout << "current process id: " << getpid() << endl;
-
-    clearenv();
-    string hostname = "my-container";
-    sethostname(hostname.c_str(), hostname.size());
-    run("/bin/sh");
-
-  }, CLONE_NEWUTS | CLONE_NEWPID | SIGCHLD);
- ```
-
-The important thing here is to check ```CLONE_NEWPID``` this will give our process a new tree making it feel unique. To test this hypothesis I added this:
-
-```cpp
- createChild([](void *args) -> int {
-  cout << "current process id: " << getpid() << endl;
+```
+[bash]: hostname  # should print your hostname.
 ```
 
-This will print the PID of the process in after it get cloned. And as we expected we should see:
+[video here]
+
+
+#### Cloning PID.
+
+When your machine boot up, the first process to start is the [daemon init](https://en.wikipedia.org/wiki/Init) process with identifier 1, this process then act as the parent for every other process in your machine. Our goal is to isolate our process from the main process tree and make it look its running alone in the machine.
+
+We need to add the ```CLONE_NEWPID``` flag.
+
+ ```cpp
+int main(int argc, char** argv) {
+  TRY( clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0), "clone" );
+  #                                 ^^ new flag
+  wait(nullptr);
+  return EXIT_SUCCESS;
+}
+ ```
+
+Compile and run.
 
 ```sh
 sudo ./container                              
-process created with pid: 2045 # this one belong to container.
-current process id: 1 # this one belong to the Anonymous Function.
+process created with pid: 2045 # this one belong to the main tree (the one started by init).
+current process id: 1 # Now our process is number 1, its running in its "own" tree.
 sh-4.4#
 ```
 
+[video here]
 
+
+If you run **ps** you still will see processes of the main tree. 
+
+```sh
+  PID TTY          TIME CMD
+12042 pts/0    00:00:00 sudo
+12043 pts/0    00:00:00 container
+12044 pts/0    00:00:00 sh
+12045 pts/0    00:00:00 ps
+```
+This happen because **ps** get its information from the **proc** directory, we are going to take care of this in the following section.
 
 #### Changing the root folder
 
-Our new objective is to contain the access to the files our process can access, to achieve that, we need to get the typical base folder installation from our favorite Linux distribution, in this article I'll choose [Alpine Linux](https://github.com/yobasystems/alpine) because is very minimal 2MB compressed.
+The objective now is to contain the access to the files our process can access, to achieve that we are going to change the root folder of our cloned process by using the good old ```chroot``` but this time instead of the command we are going to use the equivalent system call.  
 
-Just grab the base install [gz/tar file](alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz) and we are ready to contain our process inside.
+We can change the root to an empty folder but if we do that we are going to loose the tools we are using so far to inspect the quality of our container, to avoid this we need to get some Linux base folder that include the necessary tools. I'll choose [Alpine Linux](https://github.com/yobasystems/alpine) because is very minimal is about 2MB compressed and has everything we need to explore.
 
-Getting the file is easy just follow this instructions.
+Just grab the base [install](alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz), uncompress into a folder called ```root``` at the same level of our binary, just make sure to uncompress the content inside this folder.
 
 ```
 mkdir root && cd root
@@ -215,7 +283,7 @@ tar -xvf alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
 rm alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
 ```
 
-Now we are going to made some updates to our code.
+The changes we need to do are fairly simple, we are going to make a call to **chroot** passing the ```root``` folder containing basic folder structure, after this, we change the process directory to the new rooted location ```chdir(/)```.
 
 ```cpp
 createChild([](void *args) -> int {
@@ -227,24 +295,16 @@ createChild([](void *args) -> int {
       chdir("/"); // point to root folder /.
 
       sethostname(hostname.c_str(), hostname.size());
-      run("/bin/sh");
+      execvp({"/bin/sh"}, {});
 
   }, CLONE_NEWUTS | CLONE_NEWPID | SIGCHLD);
 ```
 
-Now run your program and if everything is fine, you will see our child process (```/bin/sh```) is totally constrained inside your new root folder, from its point of view is like living in other dimension.
-
-Let's explain what happened:
-
- ```cpp
-chroot("./root");
-chdir("/");
- ```
-
-This basically change the root folder of our child process from our system ```/``` folder to an arbitrary folder in this case ``` root ``` folder we created above. Then we jump to it ```chdir```. Can we choose an empty folder? Yes, but the problem is that our bash won't have any binaries like (ls, cd, ps) it would be impossible to scan our container, but also there is a nice lesson to learn here, we can use this fact to contain processes that can work by their own.
+Now run your program and if everything is fine
+## TODO
 
 
-#### Mounting Filesystem into our container
+#### Mounting file system into our container
 
 But happiness is not complete yet, if we run our contained process and run ```ps``` look what we found.
 
@@ -275,7 +335,7 @@ createChild([](void *args) -> int {
 
       mount("proc", "/proc", "proc", 0, 0);
 
-      run("/bin/sh");
+      execvp({"/bin/sh"}, {});
   }, CLONE_NEWUTS | CLONE_NEWPID | SIGCHLD);
 ```
 
