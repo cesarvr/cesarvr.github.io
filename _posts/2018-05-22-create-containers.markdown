@@ -274,7 +274,7 @@ The objective now is to isolate the access to the files our process can access, 
 
 
 #### Preparing The Root Folder
-We can change the root to an empty folder but if we do that we are going to loose the tools we are using so far to inspect the quality of our container, to avoid this we need to get some Linux base folder that include the necessary tools. I'll choose [Alpine Linux](https://github.com/yobasystems/alpine) because is very minimal is about 2MB compressed and has everything we need to explore.
+We can change the root to an empty folder but if we do that we are going to loose the tools we are using so far to inspect the quality of our container, to avoid this we need to get some Linux base folder that include the necessary tools. I'll choose [Alpine Linux](https://github.com/yobasystems/alpine) because is very minimal is about 2MB compressed and has essential tools.
 
 Just grab the base [install](alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz). 
 
