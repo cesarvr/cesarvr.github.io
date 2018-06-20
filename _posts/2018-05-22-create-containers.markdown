@@ -152,7 +152,7 @@ Process hierarchy:
 
 ```
 
-#### Isolation
+### Isolation
 
 Virtual Machine achieve this isolation by simulating the whole computer (CPU, I/O, BIOS, etc..), Linux Kernel by providing the technology to modify the way process behave. In the next section we are going to modify our program to make use of this features. 
 
@@ -304,20 +304,122 @@ We change the process directory to the new rooted location ```chdir(/)```.
  chdir("/"); // point to root folder /.
 ```
 
+We group this two behaviors into a single function. 
+
+```c++
+void setupFileSystem(){
+  chroot("./root");
+  chdir("/");
+} 
+
+```
+
+Once migrated to the new root folder we need to tell our shell where to find the tools we need (ls, ps, clear, etc..) and information about the screen, also we move all this functionality to its own function. 
+
+```c++ 
+void setupEnvVars() {
+  clearenv();
+  setenv("TERM", "xterm-256color", 0);
+  setenv("PATH", "/bin/:/sbin/:usr/bin:/usr/sbin", 0);
+}
+```
+
+Also we need to pass more information to the system call in charge loading the program, so we group this logic also. 
+
+```c++ 
+int run(const char *name) {
+  char *_args[] = {(char *)name, (char *)0 };
+  execvp(name, _args);
+}
+```
 
 The code for the child process now looks like this: 
 
 ```cpp
+void setupEnvVars() {
+  clearenv();
+  setenv("TERM", "xterm-256color", 0);
+  setenv("PATH", "/bin/:/sbin/:usr/bin:/usr/sbin", 0);
+}
+
+void setupFileSystem(){
+  chroot("./root");
+  chdir("/");
+}
+
 int child(void *args) {
   printf("pid: %d\n", getpid());
   setHostName("my-container");
-  clearenv();
-  chroot("./root");
-  chdir("/");
-
-  execvp("/bin/sh", {});
+  setupFileSystem();
+  setupEnvVars();
+  run("/bin/sh"); 
 }
 ```
+
+#### Refactoring 
+
+Just to keep our code tidy we can group all this functions by their behavior. 
+
+We group various functionality. 
+
+Environment variables configuration. 
+```c++ 
+void setupEnvVars() {
+  clearenv();
+  setenv("TERM", "xterm-256color", 0);
+  setenv("PATH", "/bin/:/sbin/:usr/bin:/usr/sbin", 0);
+}
+```
+
+Filesystem configuration. 
+
+```c++ 
+void setupFileSystem(){
+  chroot("./root");
+  chdir("/");
+}
+```
+
+Also the way we are executing the file doesn't look great so we can encapsulated into a function. 
+
+We change this: 
+
+```c++ 
+  char *_args[] = {"/bin/sh", (char *)0 };
+  execvp("/bin/sh", _args);
+```
+
+for this function:
+
+```c++ 
+template <typename... P>
+int run(P... params) {
+  char *args[] = {(char *)params..., (char *)0};
+
+  return execvp(args[0], args);
+}
+``` 
+
+Now we can call functions with arbitrary parameters. 
+
+``` 
+run("/bin/sh", "-c", "echo hello")
+```
+
+The end result will look something a bit better. 
+
+```c++
+
+int child(void *args) {
+  printf("pid: %d\n", getpid());
+  setHostName("my-container");
+  setupFileSystem();
+  setupEnvVars();
+  run("/bin/sh");
+}
+
+```
+
 
 
 
