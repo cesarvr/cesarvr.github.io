@@ -324,7 +324,7 @@ void setupEnvVars() {
 }
 ```
 
-Also we need to pass more information to the system call in charge loading the program, so we group this logic also. 
+After we change root folder now we need to pass more information to the system call in charge loading the program, so we group this logic also. 
 
 ```c++ 
 int run(const char *name) {
@@ -355,72 +355,6 @@ int child(void *args) {
   run("/bin/sh"); 
 }
 ```
-
-#### Refactoring 
-
-Just to keep our code tidy we can group all this functions by their behavior. 
-
-We group various functionality. 
-
-Environment variables configuration. 
-```c++ 
-void setupEnvVars() {
-  clearenv();
-  setenv("TERM", "xterm-256color", 0);
-  setenv("PATH", "/bin/:/sbin/:usr/bin:/usr/sbin", 0);
-}
-```
-
-Filesystem configuration. 
-
-```c++ 
-void setupFileSystem(){
-  chroot("./root");
-  chdir("/");
-}
-```
-
-Also the way we are executing the file doesn't look great so we can encapsulated into a function. 
-
-We change this: 
-
-```c++ 
-  char *_args[] = {"/bin/sh", (char *)0 };
-  execvp("/bin/sh", _args);
-```
-
-for this function:
-
-```c++ 
-template <typename... P>
-int run(P... params) {
-  char *args[] = {(char *)params..., (char *)0};
-
-  return execvp(args[0], args);
-}
-``` 
-
-Now we can call functions with arbitrary parameters. 
-
-``` 
-run("/bin/sh", "-c", "echo hello")
-```
-
-The end result will look something a bit better. 
-
-```c++
-
-int child(void *args) {
-  printf("pid: %d\n", getpid());
-  setHostName("my-container");
-  setupFileSystem();
-  setupEnvVars();
-  run("/bin/sh");
-}
-
-```
-
-
 
 
 #### Mounting file system into our container
