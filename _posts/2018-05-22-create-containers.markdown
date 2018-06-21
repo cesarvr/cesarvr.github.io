@@ -102,7 +102,7 @@ int child(void *args) {
 }
 
 int main(int argc, char** argv) {
-  printf("Hello, world! ( parent ) \n");
+  printf("Hello, World! ( parent ) \n");
 
   TRY(clone(child, stack_memory(), SIGCHLD, 0), "clone");
 
@@ -116,26 +116,53 @@ We just added a new function called *child* and are using the ```clone``` and ``
 
 ```sh
 ./container
-#Hello World (from parent)
-#Hello World (from child)
-// BENGT TO CESAR: Wrong output, at L100 it says "printf("Hello !! ( child ) \n");", so output should be "Hello !! ( child )"?
+#Hello, World! ( parent )
+#Hello !! ( child )
 ```
 
 ## Setting Up
 
-Now we are going to start testing the concepts behind containers. To do this we are going to execute a shell that will replace the child process.  
+Now that we know how to clone processes in Linux works, we can now learn how the isolation them but before doing we start we want a way to test the boundaries of our isolation techniques we want to use so for that purpose we are going to load a shell inside our child process. 
+
+To load programs we are going to use [execvp](https://linux.die.net/man/3/execvp) system call. 
+
+```
+execvp("<path-to-executable>", {array-of-parameters-including-executable});
+```
+
+To simplify the call of this function we can wrap this into a helper function to have a tidy one liner call. 
+
+```c++ 
+//we can call it like this: run("/bin/sh");  
+int run(const char *name) {
+  char *_args[] = {(char *)name, (char *)0 };
+  execvp(name, _args);
+}
+```
+
+Now we can make a simple call to ```run``` instead, as you may observe this call doesn't support passing arguments so if you prefer a more robust implementation, I'll offer a alternative more "template magical" C++ approach.
+
+```c++ 
+//we can call it like this: run("/bin/sh","-c", "echo hello!");  
+template <typename... P>
+int run(P... params) {
+  //basically generating the arguments array at compile time. 
+  char *args[] = {(char *)params..., (char *)0};
+
+  return execvp(args[0], args);
+}
+```
+
+Also we want to check what is the process identifier (pid) for this we are going to the function ```getpid()```. 
 
 ```c++
 int child(void *args) {
   printf("pid: %d\n", getpid());
-  execvp("/bin/sh", {});
+  run("/bin/sh");
 }
 
 ```
 
-BENGT TO CESAR: Perhaps you shou;d explain a little more what the ```execvp``` function does or just link to some documentation? First time I came across it. 😅
-
-Here we just clean up our child function, print the process id and run our shell program. 
 
 When we run we should get this: 
 
