@@ -393,7 +393,6 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 Uncompress into a folder called ```root``` at the same level of our binary.
 
 ```
-x86_64/alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
 tar -xvf alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
 ```
 
@@ -401,12 +400,11 @@ tar -xvf alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
  "setup folder")
 
 
-
 #### Configuration 
 
 Also we want to setup some environment variables to help shell to find the binaries and to help other processes to know what type of screen we have, we are going to replace ```clearenv``` with a function that take care of those tasks. 
 
-```
+```c++
 void setup_variables() {
   clearenv();
   setenv("TERM", "xterm-256color", 0);
