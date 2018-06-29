@@ -369,7 +369,7 @@ Illustration of what we try to achieve.
 Let's write the necessary code to change the root. 
 
 
-```sh 
+```c++ 
 void setup_root(const char* folder){
   chroot(folder);
   chdir("/");
