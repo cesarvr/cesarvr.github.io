@@ -397,6 +397,11 @@ x86_64/alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
 tar -xvf alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
 ```
 
+![alt text](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/setup_folder.gif?raw=true
+ "setup folder")
+
+
+
 #### Configuration 
 
 Also we want to setup some environment variables to help shell to find the binaries and to help other processes to know what type of screen we have, we are going to replace ```clearenv``` with a function that take care of those tasks. 
@@ -410,6 +415,8 @@ void setup_variables() {
 ```
 
 
+![alt text](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/setup_root.gif?raw=true
+ "chroot")
 
 #### Coding
 
