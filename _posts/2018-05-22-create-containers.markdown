@@ -383,11 +383,11 @@ For this we are going to hide the complexity behind a function called ```setupFi
 
 We can change the root to an empty folder but if we do that we are going to loose the tools we are using so far to inspect the quality of our container (ls, cd, etc..), to avoid this we need to get some Linux base folder that include all this tools. I'll choose [Alpine Linux](https://github.com/yobasystems/alpine) because is very minimal, about 2MB compressed.
 
-Just grab the base [install](alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz). 
+Just grab the base [install](http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs-3.7.0-x86_64.tar.gz). 
 
 ```
 mkdir root && cd root
-curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/
+curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs-3.7.0-x86_64.tar.gz
 ```
 
 Uncompress into a folder called ```root``` at the same level of our binary.
