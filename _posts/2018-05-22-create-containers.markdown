@@ -6,7 +6,7 @@ layout: post
 
 # Linux Containers 
 
-Linux containers are very popular this days, they offer a way to isolate, deploy and manage application, the first time I hear the term was difficult for me to understand what's really behind the scene, how it works? I started to hear a bunch of terms like CGroups and Linux Namespaces, none of this terms ringed a bell for me. It wasn't until I found this [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice) that all the piece fell together, I was so happy to get an idea of what technology was involved that I decide to investigate my self and replicate the examples of the talk using Linux lingua franca, C. The advantages of doing it this way is that I learned a lot about Linux inner workings. As a part of this adventure I decided to document this and write this article for people want to start hacking with Linux containers. 
+Linux containers are very popular this days, they offer a way to isolate, deploy and manage application, the first time I hear the term was difficult for me to understand what's really behind the scene, how it works? I started to hear a bunch of terms like CGroups and Linux Namespaces, none of this terms ringed a bell for me. It wasn't until I found this [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice) that all the piece fell together, I was so happy to get an idea of what technology was involved that I decide to investigate my self and replicate the examples of the talk using Linux lingua franca, C. The advantages of doing it this way is that I learned a lot about Linux inner workings. As a part of this adventure I decided to document this and write this article for people who are interested in magic behind containers. 
 
 
 
@@ -413,12 +413,9 @@ void setup_variables() {
 ```
 
 
-![alt text](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/setup_root.gif?raw=true
- "chroot")
-
 #### Coding
 
-This is the how the code looks, after we implemented the apply the refactoring:
+This is the how the code looks, after we implemented the functions:
 
 ```c++
 void setup_variables() {
@@ -450,6 +447,14 @@ int main(int argc, char** argv) {
   return EXIT_SUCCESS;
 }
 ```
+
+Now let's see the code in action:
+
+![alt text](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/setup_root.gif?raw=true
+ "chroot")
+
+
+Now we cannot longer see the processes with ```ps```, this is because we replaced the general ```/proc``` folder with the one that came with the alpine which by default is a empty directory, in the next section we are going to mount the **proc** file system. 
 
 
 
