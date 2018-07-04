@@ -4,11 +4,31 @@ title: "How Linux Containers Works"
 layout: post
 ---
 
+
+
 # Linux Containers 
 
 Linux containers are very popular this days, they offer a way to isolate, deploy and manage application, the first time I hear the term was difficult for me to understand what's really behind the scene, how it works? I started to hear a bunch of terms like CGroups and Linux Namespaces, none of this terms ringed a bell for me. It wasn't until I found this [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice) that all the piece fell together, I was so happy to get an idea of what technology was involved that I decide to investigate my self and replicate the examples of the talk using Linux lingua franca, C. The advantages of doing it this way is that I learned a lot about Linux inner workings. As a part of this adventure I decided to document this and write this article for people who are interested in magic behind containers. 
 
 
+<!--ts-->
+   * [Getting Started](#getting_started)
+   * [Creating A Process](#process)
+   * [Running Programs](#programs)
+   * [Environment Variables](#env)
+   * [Linux Namespaces](#linuxns)
+     - [UTS](#uts)
+     - [Process Identification NS](#pidns)
+   * [Isolating A File System](#fsns)
+     - [Changing Root](#chroot)
+       - [Preparing The Root Folder](#prepare)
+       - [Configuration](#chroot_config)
+     - [Mounting File System](#mount)
+       - [Cleanup](#cleanup)
+<!--te-->
+
+
+<a name="getting_started"/>
 
 ## Getting Started
 
@@ -37,6 +57,8 @@ This will generate our binary called ```container```, that we should execute by 
 ./container   
 # Hello World!
 ```
+
+<a name="process"/>
 
 ## Creating Processes
 
@@ -80,7 +102,7 @@ Next step is to invoke the system call to create the child process based in our 
 clone(jail, stack_memory(), SIGCHLD, 0)
 ``` 
 
-First parameter is our entry point function, *second* parameter is a function to allocate some stack memory for our process, *third* (SIGCHLD) we are telling the Linux that we want the parent to be notified when this process finish and the the purpose of the *fourth* and last one, necessary if we want to pass arguments to the ```jail``` in this case we pass just ```0```. 
+First parameter is our entry point function, *second* parameter is a function to allocate some stack memory for our process, *third* (SIGCHLD) we are telling the Linux that we want the parent to be notified when this process finish and the purpose of the *fourth* and last one, necessary if we want to pass arguments to the ```jail``` in this case we pass just ```0```. 
 
 
 ``` 
@@ -133,6 +155,9 @@ Compile and execute.
 
 Here our program send the first greeting (parent), then we clone the process and run the ```jail``` function inside and it end up printing a greeting as well. 
 
+
+
+<a name="programs"/>
 
 ## Running Programs   
 
@@ -188,6 +213,9 @@ process created with pid: 12406
 sh-4.4$
 ```
 
+
+<a name="env"/>
+
 ## Environment Variables
 
 After playing around with ```sh``` we are noticing that is far from being isolate. To understand how changing the execution context change how the underlaying process behave, we are going to run a simple example by clearing the environment variables for the ```sh``` process.
@@ -214,7 +242,11 @@ We run the code again and inside the shell we run the command ```env```:
 Not bad, we solved the information leak from the guest and we are able to observe that performing changes in the context of the child process stay local to the child process. 
 
 
+<a name="linuxns"/>
+
 ## Linux Namespaces
+
+<a name="uts"/>
 
 ### Universal Time Sharing
 
@@ -298,8 +330,9 @@ It works!, now let's see what happen when we modify the hostname:
 
 ![alt text](https://raw.githubusercontent.com/cesarvr/cesarvr.github.io/master/static/containers/uts.gif "Cloning UTS Namespace")
 
+<a name="pidns"/>
 
-### Isolating Processes
+### Process Identification NS
 
 Let's play with another Linux Namespace, this time we are going to isolate our shell process from the rest of processes, from it's point of view it will be running solo in the machine, the flag we need for this is the ```CLONE_NEWPID``` flag, also we are going to log the parent process id, by using the function [getpid](http://man7.org/linux/man-pages/man2/getpid.2.html):
 
@@ -341,7 +374,10 @@ As you can observe the child *PID* is one which mean from it's point of view is 
 It seems that we fail, but in reality ```ps``` is gathering this information from the ```/proc``` file system, which has process information, which mean that to achieve complete isolation of processes we need to hide this folder from our process. 
 
 
-## Isolating Filesystem 
+<a name="fsns"/>
+## Isolating A File System 
+
+<a name="chroot"/>
 
 ### Changing The Root
 
@@ -378,6 +414,7 @@ void setup_root(const char* folder){
 
 For this we are going to hide the complexity behind a function called ```setupFileSystem``` then we change the root of the folder using [chroot](http://man7.org/linux/man-pages/man2/chroot.2.html) and last but not least tell the process to jump to the new root folder.
 
+<a name="prepare" />
 
 #### Preparing The Root Folder
 
@@ -399,6 +436,7 @@ tar -xvf alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
 ![alt text](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/setup_folder.gif?raw=true
  "setup folder")
 
+<a name="chroot_config" />
 
 #### Configuration 
 
@@ -456,19 +494,187 @@ Now let's see the code in action:
 
 Now we cannot longer see the processes with ```ps```, this is because we replaced the general ```/proc``` folder with the one that came with the alpine which by default is a empty directory, in the next section we are going to mount the **proc** file system. 
 
+<a name="mount" />
+
+#### Mounting File Systems
+
+To solve our process visibility meaning to been able to watch processes that runs inside our container, we need to learn how to mount files system inside our containers, to do this is not different from doing it using shell we need to make a system call to the instruction [mount](http://man7.org/linux/man-pages/man2/mount.2.html).
 
 
+The mount instruction require the following parameters: 
+
+```c
+mount("proc", "/proc", "proc", 0, 0);
+``` 
+
+The first parameter is the source, the second is the folder destination and the third parameter is the type of file system in this case [procfs](https://en.wikipedia.org/wiki/Procfs). 
 
 
+Implementing the code is as simple as to add that same line before we load the new process image (```sh```), something like this will work: 
+
+```c
+int jail(void *args) {
+  printf("child process: %d", getpid());
+
+  setup_variables();
+  setup_root("./root");
+  
+  mount("proc", "/proc", "proc", 0, 0);
+  
+  run("/bin/sh");
+  return EXIT_SUCCESS;
+}
+
+int main(int argc, char** argv) {
+  printf("parent %d", getpid());
+
+  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  wait(nullptr);
+  return EXIT_SUCCESS;
+}
+
+```
+
+<a name="cleanup" />
+
+### Cleanup 
+
+But there is a problem, every time we run this we are going to clutter the mount name space, we are mounting successfully the file system, but we are failing to release it, to release the resource we need to use [umount](http://man7.org/linux/man-pages/man2/umount.2.html).  
+
+```c
+umount("<mounted-folder>")
+```
+
+And we should write this after we load the executable: 
+
+```c
+  mount("proc", "/proc", "proc", 0, 0);
+  
+  run("/bin/sh");
+
+  umount("/proc"); 
+  return EXIT_SUCCESS;
+```
+
+But this won't work because every time we call ```run``` our process get replaced by a new process image and we still won't be able to call ```umount```, basically the instructions are going to stop in ```run``` and from there ```sh``` is in control, to solve this we need to decouple this call from the rest of the function. As we learn above to run a function in a sepparated process in Linux we use [clone](http://man7.org/linux/man-pages/man2/clone.2.html), knowing this we are going to refactor our code.   
+
+Let's start by grouping our process creation instruction into a reusable function: 
+
+We re-write this: 
+
+```c 
+int main(int argc, char** argv) {
+  printf("parent %d", getpid());
+
+  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  wait(nullptr);
+
+  return EXIT_SUCCESS;
+}
+```
+
+Into this: 
+
+```c 
+template <typename Function>
+void clone_process(Function&& function, int flags){
+ auto pid = clone(function, stack_memory(), flags, 0);
+
+ wait(nullptr);
+}
+```
+
+Here, I'm using a C++ template, I make a new "type" called **Function** which expect a C function to be passed then I just pass that value to [clone](http://man7.org/linux/man-pages/man2/clone.2.html). 
 
 
+To use our function we just re-write our *main* function: 
+
+```c
+int main(int argc, char** argv) {
+
+  printf("parent pid: %d\n", getpid());
+  clone_process(jail, CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD );
+
+  return EXIT_SUCCESS;
+}
+```
+
+Nice, now we have a reusable function, now let's use this function to run our binary in a child-process: 
 
 
+```c++
+int jail(void *args) {
+
+  printf("child pid: %d\n", getpid());
+  setup_variables();
+
+  setup_root("./root");
+  mount("proc", "/proc", "proc", 0, 0);
+
+  auto runThis = [](void *args) ->int { run("/bin/sh"); };
+
+  clone_process(runThis, SIGCHLD);
+
+  umount("/proc");
+  return EXIT_SUCCESS;
+}
+```
 
 
+Let's explain the changes: 
 
+```c
+ auto runThis = [](void *args) ->int { run("/bin/sh"); };
 
+  clone_process(runThis, SIGCHLD);
+```
 
+Doing this is just a C++ feature called ([Lambda](https://en.cppreference.com/w/cpp/language/lambda)) which basically translate to something like this: 
 
+```c
+int runThis(void*args) {
 
+  run("/bin/sh"); 
+}
 
+int jail(void *args) {
+...
+...
+
+clone_process(runThis, SIGCHLD);
+}
+```
+
+Our last version look like this: 
+
+```c++
+int jail(void *args) {
+
+  printf("child pid: %d\n", getpid());
+  setHostName("my-container");
+  setup_variables();
+
+  setup_root("./root");
+
+  mount("proc", "/proc", "proc", 0, 0);
+
+  auto runThis = [](void *args) ->int { run("/bin/sh"); };
+
+  clone_process(runThis, SIGCHLD);
+
+  umount("/proc");
+  return EXIT_SUCCESS;
+}
+
+int main(int argc, char** argv) {
+
+  printf("parent pid: %d\n", getpid());
+  clone_process(jail, CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD );
+
+  return EXIT_SUCCESS;
+}
+```
+
+![mounting procfs](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/mount-ns.gif?raw=true)
+
+Now our program is capable to mount successfully the proc system file, release the file system after we exit and the best thing is now our process only have access to process local to itself, but how this happen ? When we create the child process (jail) we used the flag ```CLONE_NEWPID```, this flag constrait the hability of our process to look for other process in the system, that's why when we ask [getpid](http://man7.org/linux/man-pages/man2/getpid.2.html) it will return **1**, when we mount procfs the same rules will apply for this particular process and basically the only processes we can see are the ones that are direct child of our container application.   
