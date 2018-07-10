@@ -6,10 +6,6 @@ layout: post
 
 
 
-# Linux Containers 
-
-Linux containers are very popular this days, they offer a way to isolate, deploy and manage application, the first time I hear the term was difficult for me to understand what's really behind the scene, how it works? I started to hear a bunch of terms like CGroups and Linux Namespaces, none of this terms ringed a bell for me. It wasn't until I found this [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice) that all the piece fell together, I was so happy to get an idea of what technology was involved that I decide to investigate my self and replicate the examples of the talk using Linux lingua franca, C. The advantages of doing it this way is that I learned a lot about Linux inner workings. As a part of this adventure I decided to document this and write this article for people who are interested in magic behind containers. 
-
 
 <!--ts-->
    * [Getting Started](#getting_started)
@@ -18,7 +14,7 @@ Linux containers are very popular this days, they offer a way to isolate, deploy
    * [Environment Variables](#env)
    * [Linux Namespaces](#linuxns)
      - [UTS](#uts)
-     - [Process Identification NS](#pidns)
+     - [Process Identification Namespace](#pidns)
    * [Isolating A File System](#fsns)
      - [Changing Root](#chroot)
        - [Preparing The Root Folder](#prepare)
@@ -32,16 +28,17 @@ Linux containers are very popular this days, they offer a way to isolate, deploy
 
 ## Getting Started
 
-In this article we are going to create an application to isolate other applications. To follow this article you don't need to being an expert in C or C++ you can understand the concepts as we are going to talk about the specific Kernel feature that enable containerization, if you want to play with the code then you just need Linux and c++11 which is available in any modern Linux distribution, the code is simple C and we are going to use C++ when we try to simplify things, without any further introduction lets start writing our container system, let's start by writing the obligatory *hello world*: 
+Linux containers are very popular this days, they offer a way to isolate, deploy and manage application, the first time I hear the term was difficult for me to understand what's really behind the scene, how it works? I started to hear a bunch of terms like CGroups and Linux Namespaces, none of this terms ringed a bell for me. It wasn't until I found this [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice) that all the pieces fell into place, I was so happy to understand what technology was involved that I decide to investigate my self and try replicate the examples of the talk using Linux lingua franca, C with some help of C++. The advantages of doing it this way is that I learned a lot about Linux inner workings. I decided to document this and write this article for people who are interested in the magic behind containers. 
+
+In this article we are going to create an application to isolate other applications which is a good excuse to practice the concepts that enable containerization in Linux, to hack with the code you just need Linux, GCC and C++ that's it, so without any more delays let's write the famous *Hello, World!*. 
 
 
 ```c++
 #include <iostream>
-
 int main() {
-  printf("Hello, world! \n");
-
-  return EXIT_SUCCESS; // this is a integer constant equals 0, in Unix/Linux is success. 
+  printf("Hello, World! \n");
+  
+  return EXIT_SUCCESS; 
 }
 ```
 
@@ -556,7 +553,7 @@ And we should write this after we load the executable:
   return EXIT_SUCCESS;
 ```
 
-But this won't work because every time we call ```run``` our process get replaced by a new process image and we still won't be able to call ```umount```, basically the instructions are going to stop in ```run``` and from there ```sh``` is in control, to solve this we need to decouple this call from the rest of the function. As we learn above to run a function in a sepparated process in Linux we use [clone](http://man7.org/linux/man-pages/man2/clone.2.html), knowing this we are going to refactor our code.   
+But this won't work because every time we call ```run``` our process get replaced by a new process image and we still won't be able to call ```umount```, basically the instructions are going to stop in ```run``` and from there ```sh``` is in control, to solve this we need to decouple this call from the rest of the function. As we learn above to run a function in a separated process in Linux we use [clone](http://man7.org/linux/man-pages/man2/clone.2.html), knowing this we are going to refactor our code.   
 
 Let's start by grouping our process creation instruction into a reusable function: 
 
@@ -629,7 +626,7 @@ Let's explain the changes:
   clone_process(runThis, SIGCHLD);
 ```
 
-Doing this is just a C++ feature called ([Lambda](https://en.cppreference.com/w/cpp/language/lambda)) which basically translate to something like this: 
+Here we just a C++ feature called ([Lambda](https://en.cppreference.com/w/cpp/language/lambda)) which basically translate to something like this: 
 
 ```c
 int runThis(void*args) {
@@ -672,9 +669,53 @@ int main(int argc, char** argv) {
   clone_process(jail, CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD );
 
   return EXIT_SUCCESS;
-}
+} 
 ```
 
 ![mounting procfs](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/mount-ns.gif?raw=true)
 
-Now our program is capable to mount successfully the proc system file, release the file system after we exit and the best thing is now our process only have access to process local to itself, but how this happen ? When we create the child process (jail) we used the flag ```CLONE_NEWPID```, this flag constrait the hability of our process to look for other process in the system, that's why when we ask [getpid](http://man7.org/linux/man-pages/man2/getpid.2.html) it will return **1**, when we mount procfs the same rules will apply for this particular process and basically the only processes we can see are the ones that are direct child of our container application.   
+Now our program is capable to mount successfully the proc system file, release the file system after we exit and the best thing is now our process only have access to process local to itself. 
+
+#### Explanation
+
+When we create the child process (```jail```) we used the flag ```CLONE_NEWPID```, this flag change our process view of the process tree, that's why when we ask [getpid](http://man7.org/linux/man-pages/man2/getpid.2.html) it will return **1** and when we mount [procfs](https://en.wikipedia.org/wiki/Procfs) it will report only direct child processes from our container application.   
+
+This is what I got when I call ```ps```. 
+
+```sh
+PID   USER     TIME   COMMAND
+    1 root       0:00 ./container
+    2 root       0:00 /bin/sh
+```
+
+<a name="cgroup"/>
+
+## Control Group 
+
+Linux control group ([cgroup](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)) as the documentation say is mechanism to distribute resources between processes, basically we are going to experiment by constraining our jail function using Linux control groups.   
+
+#### Everything Is A File
+
+Have you heard the phrase ["Everything is a file"](https://en.wikipedia.org/wiki/Everything_is_a_file), cgroup is another example of that philosophy, which I think greatly increase the re-usability. Our mission is to constrain the process creation inside our container, we are going to limit the amount of processes to 5, to achieve this we need to notify create some files inside the control group file system. 
+
+The control group file system directory is usually mounted here:
+
+```
+ /sys/fs/cgroup  
+```
+
+I said usually because it can be mounted in other directory, but the major distribution use this location. We want to limit the process creation so the important section here is the ```pids``` folder. 
+
+```
+ /sys/fs/cgroup/pids/  
+```
+
+
+
+
+
+
+
+
+
+
