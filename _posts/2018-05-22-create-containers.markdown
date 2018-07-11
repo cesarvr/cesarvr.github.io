@@ -28,10 +28,13 @@ layout: post
 
 ## Getting Started
 
-Linux containers are very popular this days, they offer a way to isolate, deploy and manage application, the first time I hear the term was difficult for me to understand what's really behind the scene, how it works? I started to hear a bunch of terms like CGroups and Linux Namespaces, none of this terms ringed a bell for me. It wasn't until I found this [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice) that all the pieces fell into place, I was so happy to understand what technology was involved that I decide to investigate my self and try replicate the examples of the talk using Linux lingua franca, C with some help of C++. The advantages of doing it this way is that I learned a lot about Linux inner workings. I decided to document this and write this article for people who are interested in the magic behind containers. 
+So what is this article about? Is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux.  
 
-In this article we are going to create an application to isolate other applications which is a good excuse to practice the concepts that enable containerization in Linux, to hack with the code you just need Linux, GCC and C++ that's it, so without any more delays let's write the famous *Hello, World!*. 
+Why you should read it? Well I really love to see how things works behind the scene and also having a good knowledge of how containers works can help you to do more experimentation or prepare better for contingency.
 
+Inspiration for this post comes from a [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice). I think she really nails the point and was super informative. I just basically replicate what she did in Golang in C and document it in this post. But why C? because I love the simplicity of that language (I'm a little romantic) and also is the lingua franca of Linux which mean it would help me to get a better understanding about how things work at system level. 
+
+Enough of introduction let's write our container, which mean we are creating a program that isolate other programs, we are going to start by writing the obligatory *Hello World*. 
 
 ```c++
 #include <iostream>

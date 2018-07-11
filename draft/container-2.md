@@ -10,7 +10,7 @@ Just grab the base [install](alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz).
 
 ```
 mkdir root && cd root
-curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/
+curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs-3.7.0-x86_64.tar.gz
 ```
 
 Uncompress into a folder called ```root``` at the same level of our binary.
