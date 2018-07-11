@@ -32,7 +32,7 @@ So what is this article about? Is basically about how to create your own contain
 
 Why you should read it? Well I really love to see how things works behind the scene and also having a good knowledge of how containers works can help you to do more experimentation or prepare better for contingency.
 
-Inspiration for this post comes from a [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice). I think she really nails the point and was super informative. I just basically replicate what she did in Golang in C and document it in this post. But why C? because I love the simplicity of that language (I'm a little romantic) and also is the lingua franca of Linux which mean it would help me to get a better understanding about how things work at system level. 
+Inspiration for this post comes from a [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) of [Liz Rice](https://twitter.com/lizrice). I think she really nails the point and was super informative. I just basically replicate what she did in [Golang](https://golang.org/) in [C](https://pragprog.com/magazines/2011-03/punk-rock-languages) and document it in this post. But why C? because I love the simplicity of that language (I'm a little romantic) and also is the lingua franca of Linux which mean it would help me to get a better understanding about how things work at system level. 
 
 Enough of introduction let's write our container, which mean we are creating a program that isolate other programs, we are going to start by writing the obligatory *Hello World*. 
 
