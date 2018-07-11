@@ -28,15 +28,15 @@ layout: post
 
 ## Getting Started
 
-So what is this article about? Is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are base in this excellent [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) done by [Liz Rice](https://twitter.com/lizrice), if you have some free time and you are like [Golang](https://golang.org/) I recommend to take a look.  
+So what is this article about? Is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are base in this excellent [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) done by [Liz Rice](https://twitter.com/lizrice).
 
-[But why C](https://pragprog.com/magazines/2011-03/punk-rock-languages)? because I love the simplicity of that language (I'm a little romantic) and also is the lingua franca of Linux which mean it would help me to get a better understanding about how things work at system level. 
+[But why C](https://pragprog.com/magazines/2011-03/punk-rock-languages)? because I love the simplicity of that language (I'm a little romantic) and also is the lingua franca of Linux which means it would help you to get a better understanding about how things work at system level. 
 
-Why you should read it? Well I really love to see how things works behind the scene, so I just create this documentation for people that are curious like me.
+Why you should read it? Well I really love to see how things works behind the scene, so I just create this article for people that share the same curiosity, also knowing how it works helps a lot when you need push the limit of the technology.
 
-Enough of introduction let's write our container, which mean we are creating a program that isolate other programs, we are going to start by writing the obligatory *Hello World*. 
+Enough of introduction let's write our container or a program that isolate other programs. We are going to start by writing the obligatory *Hello World*. 
 
-```c++
+```c
 #include <iostream>
 int main() {
   printf("Hello, World! \n");
@@ -62,7 +62,7 @@ This will generate our binary called ```container```, that we should execute by 
 
 ## Creating Processes
 
-The first functionality we need to implement in our program is a way to execute other programs, but before executing other programs we need to create a child process. this child process then would become the jail of the program we want to execute.  
+The first functionality we need to implement in our program is a way to execute other programs, but when you execute a program in Linux the program take control of the process, which mean you are no longer in control, to solve this we are going create a new process and execute the program there. 
 
 Right now our process looks like this:  
 
@@ -75,9 +75,9 @@ Right now our process looks like this:
 ```
 
 
-To create a child process we need to clone this process and execute a function inside the new copy. Let's start by writing a function called ```jail```. 
+To create a new process we need to clone the actual process and provide a function to be executed in it. Let's start by writing the function let's called ```jail```. 
 
-```c++ 
+```c
 int jail(void *args) {
   printf("Hello !! ( child ) \n");
   return EXIT_SUCCESS;  
@@ -96,13 +96,30 @@ Now our process will look something like this:
   +--------+ 
 ```
 
-Next step is to invoke the system call to create the child process based in our process, for this we are going to use [clone](http://man7.org/linux/man-pages/man2/clone.2.html). 
+Next step is to invoke the system call to create the child process, for this we are going to use [clone](http://man7.org/linux/man-pages/man2/clone.2.html) system call. 
 
-```c++ 
-clone(jail, stack_memory(), SIGCHLD, 0)
+```c
+#include <iostream>
+#include <sched.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+int jail(void *args) {
+  printf("Hello !! ( child ) \n");
+  return EXIT_SUCCESS;
+}
+
+int main(int argc, char** argv) {
+  printf("Hello, World! ( parent ) \n");
+
+  clone(jail, stack_memory(), SIGCHLD, 0);
+
+  return EXIT_SUCCESS;
+}
 ``` 
 
-First parameter is our entry point function, *second* parameter is a function to allocate some stack memory for our process, *third* (SIGCHLD) we are telling the Linux that we want the parent to be notified when this process finish and the purpose of the *fourth* and last one, necessary if we want to pass arguments to the ```jail``` in this case we pass just ```0```. 
+First parameter is our entry point function, *second* parameter requires a pointer to allocated memory, *third* (SIGCHLD) this flag tell the process to emit a signal when finish and the *fourth* and last one is only necessary if we want to pass arguments to the ```jail``` function, in this case we pass just ```0```. 
 
 
 ``` 
@@ -115,14 +132,13 @@ First parameter is our entry point function, *second* parameter is a function to
   +--------+                
 ```
 
-This looks good but we need a final touch, if you look at the [clone](http://man7.org/linux/man-pages/man2/clone.2.html) call above we passed a flag telling our child process to send a signal when it finish, we capture this signal with the system call [wait](http://man7.org/linux/man-pages/man2/wait.2.html).
+After creating the new process we need to tell the parent process to wait until the child finish execution, otherwise the child can become a [zombie](https://en.wikipedia.org/wiki/Zombie_process). The [wait](http://man7.org/linux/man-pages/man2/wait.2.html) system call does just that.
 
-
-```c++ 
+```c
  wait(nullptr); //wait for every child.
 ``` 
 
-We got all the pieces to create new processes, after the updates the code will look like this:
+We update the code will look like this:
 
 ```c++
 #include <iostream>
@@ -161,7 +177,7 @@ Here our program send the first greeting (parent), then we clone the process and
 
 ## Running Programs   
 
-It's time to load a real program. Let's chose shell, so we can test what's happening inside our container. To load a program we are going to use [execvp](https://linux.die.net/man/3/execvp), this function replace the child process image with the executable of your choice.
+It's time to load a real program. Let's chose [shell](https://en.wikipedia.org/wiki/Unix_shell), so we can test what's happening inside our container. To load a program we are going to use [execvp](https://linux.die.net/man/3/execvp), this function will replace the current process in this case the child with a instance of the program.
 
 ```c++
 execvp("<path-to-executable>", {array-of-parameters-including-executable});
