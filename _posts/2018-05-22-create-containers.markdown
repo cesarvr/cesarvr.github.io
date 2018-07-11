@@ -5,8 +5,6 @@ layout: post
 ---
 
 
-
-
 <!--ts-->
    * [Getting Started](#getting_started)
    * [Creating A Process](#process)
@@ -21,6 +19,8 @@ layout: post
        - [Configuration](#chroot_config)
      - [Mounting File System](#mount)
        - [Cleanup](#cleanup)
+   * [Control Group](#cgroup)
+   * [Wrapping Up](#conclusion)
 <!--te-->
 
 
@@ -692,11 +692,13 @@ PID   USER     TIME   COMMAND
 
 ## Control Group 
 
-Linux control group ([cgroup](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)) as the documentation say is mechanism to distribute resources between processes, basically we are going to experiment by constraining our jail function using Linux control groups.   
+Imagine now that we are given the task to contain a program from creating more processes, taking all the network bandwidth, consuming all the CPU time available or how do we guarantee that our contained applications live in harmony with other processes? To solve this type of problem Linux provide a feature called ([Linux Control Group](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)) or cgroup for short, which is a mechanism to distribute kernel resources between processes. 
 
-#### Everything Is A File
+#### Limiting Process Creation 
 
-Have you heard the phrase ["Everything is a file"](https://en.wikipedia.org/wiki/Everything_is_a_file), cgroup is another example of that philosophy, which I think greatly increase the re-usability. Our mission is to constrain the process creation inside our container, we are going to limit the amount of processes to 5, to achieve this we need to notify create some files inside the control group file system. 
+Let's write a new functionality in our container, this functionality will limit the amount of processes that our contained process (```sh```) can create but before we start I'll explain how we can interact with ([Linux Control Group](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)). 
+
+You might heard the phrase in Linux ["Everything is a file"](https://en.wikipedia.org/wiki/Everything_is_a_file), cgroup like procfs is another example of that philosophy. This mean we can interface with it by using any files I/O API or application. For this example I'll use this simple Linux I/O API [open](http://man7.org/linux/man-pages/man3/fopen.3.html), [write](https://linux.die.net/man/2/write), [read](https://linux.die.net/man/3/read) and [close](http://man7.org/linux/man-pages/man3/fclose.3.html). Now the next step is to understand what files we need to change.     
 
 The control group file system directory is usually mounted here:
 
@@ -704,18 +706,134 @@ The control group file system directory is usually mounted here:
  /sys/fs/cgroup  
 ```
 
-I said usually because it can be mounted in other directory, but the major distribution use this location. We want to limit the process creation so the important section here is the ```pids``` folder. 
+We want to limit the creation of processes, so we need to go to ```pids``` folder. 
 
 ```
  /sys/fs/cgroup/pids/  
 ```
 
+Once we're here, we can create a top folder that will encapsulate all the rules, it can have any acceptable folder name I'll choose the name *container*. 
+
+``` 
+/sys/fs/cgroup/pids/container/ 
+``` 
+
+Let's write the code to create the folder: 
+
+```c
+#include <sys/stat.h>
+#include <sys/types.h>
+#define CGROUP_FOLDER "/sys/fs/cgroup/pids/container/"
+
+void limitProcessCreation() {
+  mkdir( PID_CGROUP_FOLDER, S_IRUSR | S_IWUSR);  // Read & Write
+
+}
+
+```
+
+When we create this folder, **cgroup** automatically generate some files inside, those files describe the rules and states of the processes in that group, at the moment now we don't have any process attached.  
+
+```sh
+cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.events  pids.max  tasks
+```
+
+To attach a process here we need to (write)[https://linux.die.net/man/2/write] the process identifier (PID) of our process to the file ```cgroup.procs```.
+
+```c 
+#include <string.h>
+#include <fcntl.h>
+
+#define CGROUP_FOLDER "/sys/fs/cgroup/pids/container/"
+#define concat(a,b) (a"" b)
+
+// update a given file with a string value. 
+void write_rule(const char* path, const char* value) {
+  int fp = open(path, O_WRONLY | O_APPEND );
+  write(fp, value, strlen(value));
+  close(fp);
+}
 
 
+void limitProcessCreation() {
+  mkdir( PID_CGROUP_FOLDER, S_IRUSR | S_IWUSR);  // Read & Write
+  
+  //getpid() give us a integer and we transform it to a string.
+  const char* pid  = std::to_string(getpid()).c_str();
+
+  write_rule(concat(CGROUP_FOLDER, "cgroup.procs"), pid);
+}
+```
 
 
+We've registered our process id, next we need to (write)[https://linux.die.net/man/2/write] to the file ```pids.max ``` limit of processes our children can create, let's try with 5.
+
+```c 
+void limitProcessCreation() {
+  mkdir( PID_CGROUP_FOLDER, S_IRUSR | S_IWUSR);  // Read & Write
+  
+  //getpid give us a integer and we transform it to a string.
+  const char* pid  = std::to_string(getpid()).c_str();
+
+  write_rule(concat(CGROUP_FOLDER, "cgroup.procs"), pid);
+  write_rule(concat(CGROUP_FOLDER, "pids.max"), "5");
+}
+```
+
+After our process end is a good idea to release the resources, so the kernel can cleanup the container folder we created above, the way to notify this is to update the file ```notify_on_release``` with the value of 1.
+
+```c 
+void limitProcessCreation() {
+  mkdir( PID_CGROUP_FOLDER, S_IRUSR | S_IWUSR);  // Read & Write
+  
+  //getpid give us a integer and we transform it to a string.
+  const char* pid  = std::to_string(getpid()).c_str();
+
+  write_rule(concat(CGROUP_FOLDER, "cgroup.procs"), pid);
+  write_rule(concat(CGROUP_FOLDER, "notify_on_release"), "1");
+  write_rule(concat(CGROUP_FOLDER, "pids.max"), "5");
+}
+```
+
+Now our function is ready to be called from the main program: 
+
+```c
+int jail(void *args) {
+
+  limitProcessCreation();
+  #...
+}
+```
+
+We need to call it before we do the change the root folder, this way we can setup the execution context. After we compile and run we should get something like this:
+
+![cgroup](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/cgroup-pid.gif?raw=true)
 
 
+What I'm trying to do here is to execute an instance of the process sleep, this program require a integer representing the number of second it will execute, I added the ampersand so I can execute multiple instances of the program, when we hit the limit 5, the system automatically refuse to create more processes as expected.
 
+
+<a name="conclusion"/>
+
+## Wrapping Up 
+
+This was a huge post, if you have readed this far I hope you have a better idea of what a container are. They are just isolated Linux processes and by knowing this you can answer a lot of the typical questions like:  
+
+### How about performance ?
+
+Yes they are just processes, if you have some rules in cgroup about CPU or memory they can affect performance.
+  
+### What's the difference between VM and Containers ?
+
+VM basically try to emulate a computer completely, while containers are just a special type of process. 
+
+### Are containers faster than VM ?
+
+It depends but in my opinion even when VM uses the CPU instructions to get a very close to the metal speed, you're still executing a bunch of OS libraries on top which I believe can add some overhead. While in the container you just (or you should) run only your process and it's dependencies. 
+
+
+### Can I use VM and containers ? 
+
+Why not?, I just use that combination to write this article. 
 
 
