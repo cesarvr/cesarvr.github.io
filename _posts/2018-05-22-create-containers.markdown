@@ -306,10 +306,9 @@ This is what we want:
   +-------------------+                  +---------+
 ```
 
+To get a copy of the global UTS for our child process we simply pass the ```CLONE_NEWUTS``` flag to [clone](http://man7.org/linux/man-pages/man2/clone.2.html), the updated code will look like this:
 
-To get this new context for our process is, as simple, as to pass the ```CLONE_NEWUTS``` flag to our function [clone](http://man7.org/linux/man-pages/man2/clone.2.html).
-
-```c++
+```c
 int jail(void *args) {
   clearenv();   // remove all environment variables for this process.
   run("/bin/sh");
