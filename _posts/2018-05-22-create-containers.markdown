@@ -20,7 +20,7 @@ layout: post
        - [Preparing The Root Folder](#prepare)
        - [Configuration](#chroot_config)
      - [Mounting File System](#mount)
-       - [Cleanup](#cleanup)
+       - [Unmount](#cleanup)
    * [Control Group](#cgroup)
    * [Wrapping Up](#conclusion)
 <!--te-->
@@ -564,7 +564,7 @@ int main(int argc, char** argv) {
 
 <a name="cleanup" />
 
-### Cleanup 
+### Unmount 
 
 Every time we [mount](http://man7.org/linux/man-pages/man2/mount.2.html) a file system is always a good practice that we release what we don't use. To release the binding we use [unmount](http://man7.org/linux/man-pages/man2/umount.2.html).  
 
