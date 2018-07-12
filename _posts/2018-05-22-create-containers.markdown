@@ -370,8 +370,6 @@ int main(int argc, char** argv) {
 }
 ```
 
- ```
-
 Compile and run:
 
 ```sh
@@ -381,12 +379,12 @@ child pid: 1
 / #
 ```
 
-As you can observe the child *PID* is one which mean from it's point of view is running alone, now let's proof our process ability to check our ability list other processes in the system, by executing  ```ps```. 
+As you can observe the child *PID* is 1, from child process perspective is the only process in the machine, now let's see if we can still see other processes in the system by executing ```ps```. 
 
 ![alt text](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/pid-ns.gif?raw=true
  "PID NS")
 
-It seems that we fail, but in reality ```ps``` is gathering this information from the ```/proc``` file system, which has process information, which mean that to achieve complete isolation of processes we need to hide this folder from our process. 
+We are still capable to list other processes in the system, but this is because our process and it's child ```ps``` still have access to the  ```/proc``` folder, in the next section we are going to learn how to isolate the folders our process can access.
 
 
 <a name="fsns"/>
@@ -396,26 +394,31 @@ It seems that we fail, but in reality ```ps``` is gathering this information fro
 
 ### Changing The Root
 
-Now we need to get serious in the isolation business, let's isolate the files and folder the process we are executing can access. All processes in Linux share the same file table, but something that Linux has inherit from Unix is the ability to change the root folder of a specific process, we can do this by using [chroot](http://man7.org/linux/man-pages/man2/chroot.2.html).
-
-
-Illustration of what we try to achieve. 
+This one is easy we want just to change the root folder of our process using [chroot](https://linux.die.net/man/1/chroot). We basically can select a folder and isolate our process inside that folder in such a way that (theoretically) it cannot navigate outside. I draw this illustration to show what we try to achieve. 
 
 ```
- Processes 
-   +---+
-   |   | -- +     FileSystem (real root)  
-   +---+    | 
-            +----> / 
-   +---+    |
-   |   | -- +
-   +---+
-
-  Isolated        FileSystem (arbitrary folder)
-   +---+  
-   |   | ------>   /
-   +---+
+   folders our process can access 
+    ----------------------------
+                 a 
+                 |
+              b --- c  
+              |
+             ----
+             |  |
+             d  e  
 ```
+The root here is represented by ```a```, you can navigate all the way from ```a``` to ```e```. If you execute ```chroot("b")``` we'll end up with this tree.    
+
+```
+   folders our process can access 
+    ----------------------------
+                b   
+                |
+               ----
+               |  |
+               d  e  
+```
+Now we only can traverse from ```b``` to ```e``` or ```d``` that's the point behind changing the root, we can save sensitive files in ```a``` because the process cannot scape from ```b```. 
 
 Let's write the necessary code to change the root. 
 
@@ -433,7 +436,7 @@ For this we are going to hide the complexity behind a function called ```setupFi
 
 #### Preparing The Root Folder
 
-We can change the root to an empty folder but if we do that we are going to loose the tools we are using so far to inspect the quality of our container (ls, cd, etc..), to avoid this we need to get some Linux base folder that include all this tools. I'll choose [Alpine Linux](https://github.com/yobasystems/alpine) because is very minimal, about 2MB compressed.
+We can change the root to an empty folder but if we do that we are going to loose the tools we are using so far to inspect the quality of our container (ls, cd, etc..), to avoid this we need to get some Linux base folder that include all this tools. I'll choose [Alpine Linux](https://github.com/yobasystems/alpine) because is very lightweight.
 
 Just grab the base [install](http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs-3.7.0-x86_64.tar.gz). 
 
