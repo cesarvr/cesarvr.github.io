@@ -30,7 +30,7 @@ layout: post
 
 So what is this article about? Is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are base in this excellent [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) done by [Liz Rice](https://twitter.com/lizrice).
 
-[But why C](https://pragprog.com/magazines/2011-03/punk-rock-languages)? because I love the simplicity of that language (I'm a little romantic) and also is the lingua franca of Linux which means it would help you to get a better understanding about how things work at system level. 
+[But why C](https://pragprog.com/magazines/2011-03/punk-rock-languages)? because I love the simplicity of that language (I'm also a romantic) and also is the lingua franca of Linux which means, that it helps to get a better understanding about how things work at system level. 
 
 Why you should read it? Well I really love to see how things works behind the scene, so I just create this article for people that share the same curiosity, also knowing how it works helps a lot when you need push the limit of the technology.
 
@@ -234,7 +234,7 @@ sh-4.4$
 
 ## Environment Variables
 
-After playing around with ```sh``` we are noticing that is far from being isolate. To understand how changing the execution context change how the underlaying process behave, we are going to run a simple example by clearing the environment variables for the ```sh``` process.
+After playing around with ```sh``` we are noticing that is far from being isolate. To understand how changing the execution context change how the underlying process behave, we are going to run a simple example by clearing the environment variables for the ```sh``` process.
 
 This is easy we just need to clear the variables before we passing the control to ```/bin/sh```. We can delete all the environment variables for the child context using the function [clearenv](https://linux.die.net/man/3/clearenv). 
 
@@ -266,7 +266,7 @@ Not bad, we solved the information leak from the guest and we are able to observ
 
 ### Universal Time Sharing
 
-Imagine an scenario where we have to deal with a program that need to change the hostname of the machine to work, if you execute this particular program in your machine it can mess with other programs, like some network file sharing services. Imagine that somebody give us the task to look for the most efficient way to do this, first option coming to mind is using a VM, but we need to provision the VM (Memory, Storage, CPU, etc..), install the OS. It can take easily a couple of hour. Other possible way to solve this problem is to somehow the Kernel allow us to virtualise some features, this is when [Linux Namespaces](https://en.wikipedia.org/wiki/Linux_namespaces) come handy. 
+Imagine an scenario where we have to deal with a program that need to change the host name of the machine to work, if you execute this program in your machine it can mess with other programs like for example your network file sharing services. Imagine that somebody give us the task to look for the most efficient way to do this, first option coming to mind is using a VM, but we need to provision the VM (Memory, Storage, CPU, etc..), install the OS, etc. It can take a couple of hour. It won't be nice if your Operative System can deal with that isolation for you? Here is when [Linux Namespaces](https://en.wikipedia.org/wiki/Linux_namespaces) come into the picture. 
 
 
 Here is a quick illustration. 
@@ -286,7 +286,7 @@ Here is a quick illustration.
   +-------------------+            +---------+
 ```
 
-All the processes in the system share the same UTS Namespace. To solve our problem we need to ask the Linux Kernel to clone the namespace for us.  
+All the processes in the system share the same UTS Namespace. 
 
 
 This is what we want: 
