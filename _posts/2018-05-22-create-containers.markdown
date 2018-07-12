@@ -690,7 +690,7 @@ int main(int argc, char** argv) {
 
 ![mounting procfs](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/mount-ns.gif?raw=true)
 
-Now our program is capable to mount successfully the proc system file, release the file system after we exit and the best thing is now our process can show all the processes inside the container.
+Now our program is capable of successfully mount procfs](https://en.wikipedia.org/wiki/Procfs), release the file system after we exit and the best thing of all it can show the processes inside the container.
 
 ![boom!](https://media.giphy.com/media/xT0GqGUyFPeYYmYD5K/giphy.gif) 
 
