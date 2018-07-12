@@ -6,7 +6,9 @@ layout: post
 
 
 <!--ts-->
-   * [Getting Started](#getting_started)
+   * [What is this article about](#getting_started)
+   * [Why you might care about it](#care)
+   * [Hello World!](#hello)
    * [Creating A Process](#process)
    * [Running Programs](#programs)
    * [Environment Variables](#env)
@@ -26,13 +28,22 @@ layout: post
 
 <a name="getting_started"/>
 
-## Getting Started
+### What is this article about
 
-So what is this article about? Is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are base in this excellent [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) done by [Liz Rice](https://twitter.com/lizrice).
+Is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are base in this excellent [talk](https://www.youtube.com/watch?v=_TsSmSu57Zo) done by [Liz Rice](https://twitter.com/lizrice).
 
 [But why C](https://pragprog.com/magazines/2011-03/punk-rock-languages)? because I love the simplicity of that language (I'm also a romantic) and also is the lingua franca of Linux which means, that it helps to get a better understanding about how things work at system level. 
 
-Why you should read it? Well I really love to see how things works behind the scene, so I just create this article for people that share the same curiosity, also knowing how it works helps a lot when you need push the limit of the technology.
+<a name="care"/>
+
+### Why you might care about it
+
+ Well I really love to see how things works behind the scene, so I just create this article for people that share the same curiosity. Also knowing how it works helps a lot when you need push the limit of a particular technology, imagine if you have the nice challenge to pass a GPU to a container.
+
+
+<a name="hello"/>
+
+### Hello World!
 
 Enough of introduction let's write our container or a program that isolate other programs. We are going to start by writing the obligatory *Hello World*. 
 
@@ -169,8 +180,7 @@ Compile and execute.
 #Hello !! ( child )
 ```
 
-Here our program send the first greeting (parent), then we clone the process and run the ```jail``` function inside and it end up printing a greeting as well. 
-
+Here our program send the first greeting (parent), then we clone the process and run the ```jail``` function inside and it end up printing a greeting as well.
 
 
 <a name="programs"/>
@@ -516,19 +526,17 @@ Now we cannot longer see the processes with ```ps```, this is because we replace
 
 #### Mounting File Systems
 
-To solve our process visibility meaning to been able to watch processes that runs inside our container, we need to learn how to mount files system inside our containers, to do this is not different from doing it using shell we need to make a system call to the instruction [mount](http://man7.org/linux/man-pages/man2/mount.2.html).
+Mounting a file system is like exposing the content of a device like a disk, network or other entities by using the folder and files metaphors. In simple terms that what is. To mount something in Linux we need a resource that understand this metaphor like procfs](https://en.wikipedia.org/wiki/Procfs) and a folder we are going to choose the folder ```/proc``` that comes with alpine distribution. 
 
-
-The mount instruction require the following parameters: 
+To mount a file system in Linux we are use [mount](http://man7.org/linux/man-pages/man2/mount.2.html) system call, this call require the following parameters to work:
 
 ```c
 mount("proc", "/proc", "proc", 0, 0);
 ``` 
 
-The first parameter is the source, the second is the folder destination and the third parameter is the type of file system in this case [procfs](https://en.wikipedia.org/wiki/Procfs). 
+The first parameter is the resource, the second is the folder destination and the third parameter is the type of file system in this case [procfs](https://en.wikipedia.org/wiki/Procfs). 
 
-
-Implementing the code is as simple as to add that same line before we load the new process image (```sh```), something like this will work: 
+Implementing the code is simple we just add the same line as above after we configure the **chroot**: 
 
 ```c
 int jail(void *args) {
@@ -557,13 +565,13 @@ int main(int argc, char** argv) {
 
 ### Cleanup 
 
-But there is a problem, every time we run this we are going to clutter the mount name space, we are mounting successfully the file system, but we are failing to release it, to release the resource we need to use [umount](http://man7.org/linux/man-pages/man2/umount.2.html).  
+Every time we [mount](http://man7.org/linux/man-pages/man2/mount.2.html) a file system is always a good practice that we release what we don't use. To release the binding we use [unmount](http://man7.org/linux/man-pages/man2/umount.2.html).  
 
 ```c
 umount("<mounted-folder>")
 ```
 
-And we should write this after we load the executable: 
+We are going to [unmount](http://man7.org/linux/man-pages/man2/umount.2.html) just before our contained process exit: 
 
 ```c
   mount("proc", "/proc", "proc", 0, 0);
@@ -574,11 +582,11 @@ And we should write this after we load the executable:
   return EXIT_SUCCESS;
 ```
 
-But this won't work because every time we call ```run``` our process get replaced by a new process image and we still won't be able to call ```umount```, basically the instructions are going to stop in ```run``` and from there ```sh``` is in control, to solve this we need to decouple this call from the rest of the function. As we learn above to run a function in a separated process in Linux we use [clone](http://man7.org/linux/man-pages/man2/clone.2.html), knowing this we are going to refactor our code.   
+There is a small challenge here, that wasn't obvious for me the first time. Every time we call ```run``` our process get replaced by a new process image and we won't be able to call ```umount```, basically the instructions are going to stop in ```run``` and from there ```sh``` is in control and we can forget about the last two instructions. 
 
-Let's start by grouping our process creation instruction into a reusable function: 
+The solution to this is to decouple this program loading from the rest of the child function. As we learn above, to run a function in a separated process in Linux we use [clone](http://man7.org/linux/man-pages/man2/clone.2.html). Let's make use of this knowledge and re-factor our code.   
 
-We re-write this: 
+Let's start by grouping our process creation instruction into a reusable function:  
 
 ```c 
 int main(int argc, char** argv) {
@@ -591,7 +599,7 @@ int main(int argc, char** argv) {
 }
 ```
 
-Into this: 
+We rewrite this two instructions into a more nicer interface: 
 
 ```c 
 template <typename Function>
@@ -602,7 +610,7 @@ void clone_process(Function&& function, int flags){
 }
 ```
 
-Here, I'm using a C++ template, I make a new "type" called **Function** which expect a C function to be passed then I just pass that value to [clone](http://man7.org/linux/man-pages/man2/clone.2.html). 
+Here, I'm using a C++ template to create a new "generic type" called **Function** which will morph into a C function, then we pass function to [clone](http://man7.org/linux/man-pages/man2/clone.2.html), also we pass the flags as an integer. 
 
 
 To use our function we just re-write our *main* function: 
@@ -617,7 +625,7 @@ int main(int argc, char** argv) {
 }
 ```
 
-Nice, now we have a reusable function, now let's use this function to run our binary in a child-process: 
+Nice, now let's use this function to run our binary in a child-process: 
 
 
 ```c++
@@ -642,26 +650,12 @@ int jail(void *args) {
 Let's explain the changes: 
 
 ```c
- auto runThis = [](void *args) ->int { run("/bin/sh"); };
-
-  clone_process(runThis, SIGCHLD);
-```
-
-Here we just a C++ feature called ([Lambda](https://en.cppreference.com/w/cpp/language/lambda)) which basically translate to something like this: 
-
-```c
-int runThis(void*args) {
-
-  run("/bin/sh"); 
-}
-
-int jail(void *args) {
-...
-...
+auto runThis = [](void *args) ->int { run("/bin/sh"); };
 
 clone_process(runThis, SIGCHLD);
-}
 ```
+
+Here we just a C++ feature called ([Lambda](https://en.cppreference.com/w/cpp/language/lambda)) which basically is like a in-line function, the we plug it to our generic typed ```clone_process``` and the compiler do the rest.
 
 Our last version look like this: 
 
@@ -695,19 +689,73 @@ int main(int argc, char** argv) {
 
 ![mounting procfs](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/mount-ns.gif?raw=true)
 
-Now our program is capable to mount successfully the proc system file, release the file system after we exit and the best thing is now our process only have access to process local to itself. 
+Now our program is capable to mount successfully the proc system file, release the file system after we exit and the best thing is now our process can show all the processes inside the container.
+
+![boom!](https://media.giphy.com/media/xT0GqGUyFPeYYmYD5K/giphy.gif) 
 
 #### Explanation
 
-When we create the child process (```jail```) we used the flag ```CLONE_NEWPID```, this flag change our process view of the process tree, that's why when we ask [getpid](http://man7.org/linux/man-pages/man2/getpid.2.html) it will return **1** and when we mount [procfs](https://en.wikipedia.org/wiki/Procfs) it will report only direct child processes from our container application.   
+When we create the child process (```jail```) we used the flag ```CLONE_NEWPID```, this flag give to our cloned process something like it's own process tree.
 
-This is what I got when I call ```ps```. 
+This is how our machine looks when running Linux. 
+
+```
+   Init-1
+   ------ 
+     |  child's 
+     |  
+ ----------------------
+ |          |         |
+systemd-2  bash-3   our-container-4  
+                      |
+                    jail - 5
+                      |
+                    shell - 6 
+
+```
+ 
+ When we apply the flag ```CLONE_NEWPID``` this happens, the global system look like this. 
+
+```
+   Init-1
+   ------ 
+     |  child's 
+     |  
+ ----------------------                    
+ |          |         |
+systemd-2  bash-3   our-container-4
+                      |
+                     jail - 5
+                      |
+                    shell - 6 
+```
+
+But our process see itself like this: 
+
+```
+   jail - 1
+   ------ 
+     |  child's 
+     |  
+   shell-2  
+```
+
+Try to call ```ps``` inside this version and you will get this. 
 
 ```sh
 PID   USER     TIME   COMMAND
     1 root       0:00 ./container
     2 root       0:00 /bin/sh
 ```
+
+Moral of the story is when you clone the PID tree your process is not able not longer able to track other processes but you can still track the everything from outside. For example if you run ```ps aux | grep sh ``` you'll be able to see your container. Try this with Docker or LXC and see what happens. 
+
+Here is a small screen recording: 
+
+![track](https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/pid-track.gif?raw=true)
+
+Check how ```sleep``` has different PID inside the container and outside. 
+
 
 <a name="cgroup"/>
 
@@ -838,22 +886,22 @@ What I'm trying to do here is to execute an instance of the process sleep, this 
 
 ## Wrapping Up 
 
-This was a huge post, if you have readed this far I hope you have a better idea of what a container are. They are just isolated Linux processes and by knowing this you can answer a lot of the typical questions like:  
+This was a long post, if you've read this far, I hope you have a better idea of what a container are and how they are created. After what we've learned so far we can answer to some of the typical container questions:  
 
-### How about performance ?
+#### How about performance ?
 
-Yes they are just processes, if you have some rules in cgroup about CPU or memory they can affect performance.
-  
-### What's the difference between VM and Containers ?
+Yes they are just processes, you can control the how much each container consume by tweaking the cgroup rules. The major orchestrator like [Openshift](https://docs.openshift.com/enterprise/3.2/dev_guide/compute_resources.html) and [Kubernetes](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) offer an interface for this. After reading this article we should know how they achieve this trick :).   
 
-VM basically try to emulate a computer completely, while containers are just a special type of process. 
+####  What's the difference between VM and Containers ?
 
-### Are containers faster than VM ?
+VM basically try to emulate a computer completely, including Bios, CPU, Memory,etc. While containers are just a special type of process. 
 
-It depends but in my opinion even when VM uses the CPU instructions to get a very close to the metal speed, you're still executing a bunch of OS libraries on top which I believe can add some overhead. While in the container you just (or you should) run only your process and it's dependencies. 
+#### Are containers faster than VM ?
+
+It depends but in my opinion even when VM uses specials CPU instructions to get a very close to the metal speed, you're still executing a bunch of OS libraries on top which I believe can add some overhead. While in the container you just (or you should) run only your process and it's dependencies. 
 
 
-### Can I use VM and containers ? 
+#### Can I use VM and containers ? 
 
 Why not?, I just use that combination to write this article. 
 
