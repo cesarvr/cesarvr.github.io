@@ -332,7 +332,7 @@ Now lets prove our hypothesis, we recompile and execute our program:
 error: clone(): Operation not permitted
 ```
 
-This happens because what we try to do (cloning the UTS namespace) requires [CAP_SYS_ADMIN](https://lwn.net/Articles/486306/), or in other words; we need elevated privileges.
+This happens because, what we try to do (cloning the UTS namespace) requires [CAP_SYS_ADMIN](https://lwn.net/Articles/486306/), or in other words; we need elevated privileges.
 
 ```
 sudo ./container                                      
@@ -341,15 +341,15 @@ process created with pid: 12906
 sh-4.4#
 ```
 
-It works!, now let's see what happen when we modify the hostname:
+It works!, now let's see what happen when we modify the host name:
 
 ![alt text](https://raw.githubusercontent.com/cesarvr/cesarvr.github.io/master/static/containers/uts.gif "Cloning UTS Namespace")
 
 <a name="pidns"/>
 
-### Process Identification NS
+### Process Identification 
 
-Let's play with another Linux Namespace, this time we are going to isolate our shell process from the rest of processes, from it's point of view it will be running solo in the machine, the flag we need for this is the ```CLONE_NEWPID``` flag, also we are going to log the parent process id, by using the function [getpid](http://man7.org/linux/man-pages/man2/getpid.2.html):
+This time we are going to isolate our shell process from the rest of processes, from it's point of view it will be running solo in the machine, this one like the example above require to pass just a flag ```CLONE_NEWPID``` in this case. To illustrate the effect of this flag we are going to display the process identifier using [getpid](http://man7.org/linux/man-pages/man2/getpid.2.html):
 
 ```c++
 int jail(void *args) {
