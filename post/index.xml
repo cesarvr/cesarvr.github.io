@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Cesar</title>
+    <link>/post/</link>
+    <description>Recent content in Posts on Cesar</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 22 May 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Creating Your Own Containers</title>
+      <link>/post/2018-05-22-create-containers/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2018-05-22-create-containers/</guid>
+      <description>What is this post about Is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are base in this excellent talk done by Liz Rice.
+Why C Because I love the simplicity of that language (maybe I&amp;rsquo;m just a romantic) and also is the lingua franca of Linux, which means that it helps to get a better understanding about how things work at system level.</description>
+    </item>
+    
+    <item>
+      <title>Containers For Beginners</title>
+      <link>/post/2017-12-22-Containers/</link>
+      <pubDate>Fri, 22 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2017-12-22-Containers/</guid>
+      <description>What is a container ? A container is just a way to achieve process isolation. Unlike virtual machines, they don’t achieve isolation by simulating hardware, but by using existing Linux kernel features.
+In a typical Unix/Linux OS all processes share the same user space, but with the introduction of new features in Linux 2.6+, you can create a process that has its own particular set of isolated contexts like file tree, threads, etc.</description>
+    </item>
+    
+    <item>
+      <title>How to generate a PDF Documents using Cordova, for Android and IOS</title>
+      <link>/post/2017-12-01-cordova-pdf-generator/</link>
+      <pubDate>Fri, 01 Dec 2017 19:51:38 +0000</pubDate>
+      
+      <guid>/post/2017-12-01-cordova-pdf-generator/</guid>
+      <description>Why Some of my work at Red Hat is to design and develop end-to-end mobile/desktop application using Apache Cordova and using Node.JS, One of the typical challenges I face, when working with some costumer, is how to generate reports in PDF format, the usual way to solve this was to use a server side API render the document there and send it to the phone, this is not nice, the first reason, you need network connectivity for this to work, the second is the lack of good and free PDF API&amp;rsquo;s in the server side, so I decide to write a plugin to move this job to the mobile device, the advantages of doing this are:</description>
+    </item>
+    
+    <item>
+      <title>Exporting external images to Openshift</title>
+      <link>/post/2017-11-12-imagestream/</link>
+      <pubDate>Sun, 12 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2017-11-12-imagestream/</guid>
+      <description>Getting Started First you need to have an Openshift installation on the cloud or in your machine, the second option is the easiest one thanks to the oc cluster up command, this will create a small local installation of openshift in your machine, if your are not familiar take a quick look at the documentation.
+Creating a project Once oc cluster up finish you should have an Openshift installation up and ready in your local machine, now next step is to login in and create a project.</description>
+    </item>
+    
+    <item>
+      <title>Embedding Javascript v8</title>
+      <link>/post/2015-11-20-javascript-v8/</link>
+      <pubDate>Fri, 20 Nov 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2015-11-20-javascript-v8/</guid>
+      <description>Building V8 Javascript Engine. Introduction I was thinking sometime ago about starting hacking with V8, aside from the fact that I work every day with Javascript, is that the Chromium engineers are doing a very good job making V8 fast and efficient and for some task good Javascript code is faster than C++, here is a great talk about the sophisticated JIT generation in Javascript.
+After many days of procrastination, I put my hands-on and start the task of downloading the project and prayed that everything would just work, like many things in life it didn&amp;rsquo;t work the first time, here I documented all the steps, if somebody wants to start playing with this, hopefully this will make their life easy.</description>
+    </item>
+    
+    <item>
+      <title>Arch Linux install cheat sheet</title>
+      <link>/post/2015-09-01-archlinux-install/</link>
+      <pubDate>Tue, 01 Sep 2015 19:51:38 +0000</pubDate>
+      
+      <guid>/post/2015-09-01-archlinux-install/</guid>
+      <description>Arch Linux installation instruction for the impatient.
+Partition fdisk /dev/d #sda all disk in my case. #15 GB partition. Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 1): #press Enter First sector (2048-209715199, default 2048): #press Enter start in the beginning. Last sector, +sectors or +size...(): #type +19G and press Enter. #SWAP 1GB Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 2): #press Enter First sector (): #press Enter Last sector, +sectors or +size.</description>
+    </item>
+    
+  </channel>
+</rss>

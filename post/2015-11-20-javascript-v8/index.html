@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    
+    <meta name="description" content="Call me Sam, a theme for Hugo.">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:domain" content="">
+    
+    <meta name="twitter:image" content="tn.png">
+    <meta name="twitter:title" property="og:title" itemprop="title name" content="Cesar">
+    <meta name="twitter:description" property="og:description" itemprop="description" content="Call me Sam, a theme for Hugo.">
+    <meta name="og:type" content="website">
+    <meta name="og:url" content="">
+    <meta name="og:image" itemprop="image primaryImageOfPage" content="tn.png">
+    
+    <title>Embedding Javascript v8</title>
+    <link rel="shortcut icon" href="sam.ico" id="favicon">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic">
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+    
+    
+
+</head>
+
+</html>
+<body><div class="wrap"><div class="section" id="title">Embedding Javascript v8</div><div class="section" id="content"> <nav id="TableOfContents">
+<ul>
+<li><a href="#building-v8-javascript-engine">Building V8 Javascript Engine.</a>
+<ul>
+<li>
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#building">Building.</a></li>
+<li><a href="#what-to-do-now">What to do now ?</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav> 
+
+<h1 id="building-v8-javascript-engine">Building V8 Javascript Engine.</h1>
+
+<h3 id="introduction">Introduction</h3>
+
+<p>I was thinking sometime ago about starting hacking with V8, aside from the fact that I work every day with Javascript, is that the Chromium engineers are doing a very good job making V8 fast and efficient and for some task good Javascript code is faster than C++, here is a great talk about the sophisticated JIT generation in Javascript.</p>
+
+<p>After many days of procrastination, I put my hands-on and start the task of downloading the project and prayed that everything would just work, like many things in life it didn&rsquo;t work the first time, here I documented all the steps, if somebody wants to start playing with this, hopefully this will make their life easy.</p>
+
+<p>For my hacking session I just make a VM based in Archlinux, but the same step could apply to other Linux Distributions.</p>
+
+<h3 id="building">Building.</h3>
+
+<p>First we need is to install Git and install the all necessary build tools in others dist is called build-essentials in arch is called base-devel.</p>
+
+<pre><code class="language-sh">$ pacman -Sy base-devel git
+</code></pre>
+
+<p>Now we need to download from Chromium project their specific tool depot_tools, this will allow us to checkout specifics projects from their repo in this case V8, then we add this directory to our PATH.</p>
+
+<pre><code class="language-sh">$ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+$ export PATH=$PWD/depot_tools:$PATH
+</code></pre>
+
+<p>If you had python2 by default jump this step, in my case Arch came with Python3 by default so i need to re-direct the global /usr/bin/python to point the /usr/bin/python2.</p>
+
+<pre><code class="language-sh">$ ln -s /usr/bin/python2 /usr/bin/python
+$ ln -s /usb/bin/python2-config /usr/bin/python-config
+</code></pre>
+
+<p>For 64 bits machine like mine I need to made a symlink to libtinfo.so.5</p>
+
+<pre><code class="language-sh">$ ln -s /usr/lib/libncurses.so.5.7 /lib64/libtinfo.so.5
+</code></pre>
+
+<p>If everything go is fine now you should be able to execute gclient from console.</p>
+
+<pre><code class="language-sh">$ gclient config url-v8-git-project
+</code></pre>
+
+<p>This make a folder in your root dir named v8, this could be done better but I’m using a virtual machine, so no problem.</p>
+
+<p>go inside the created dir /home/user/v8 in my case.</p>
+
+<pre><code class="language-sh">$ make x64
+</code></pre>
+
+<p>or if you are in a 32bit machine.</p>
+
+<pre><code class="language-sh">$ make ia32
+</code></pre>
+
+<p><br></p>
+
+<h3 id="what-to-do-now">What to do now ?</h3>
+
+<p>You can now execute the V8 REPL and load Javascript files, do profiling, and tons of other stuff. To had global access just add the binary to the system vars.</p>
+
+<pre><code class="language-sh">$ export $PATH:/home/cesar/v8/out/x64.release/d8
+</code></pre>
+
+<p>Or, what I found more interesting is use VM inside native programs and learn how to take advantage of a high level language like Javascript and give it some new abilities like Socket, Disk, etc. <a href="https://github.com/cesarvr/v8-hacking&gt;">Here</a> you can find a basic Hello World C++ program that run Javascript inside just need to clone it and start hack.</p>
+
+<p>For those interested in how the VM works some useful links:</p>
+
+<ul>
+<li><a href="https://docs.google.com/document/d/1hOaE7vbwdLLXWj3C8hTnnkpE0qSa2P--dtDvwXXEeD0/pub&gt;">how it work inside</a></li>
+<li><a href="http://wingolog.org/tags/v8&gt;">nice Blog, the author write about v8 intrinsics</a></li>
+<li><a href="http://v8.paulfryzel.com/docs/master/&gt;">Unofficial V8 API</a></li>
+</ul>
+ </div><div class="section footer"></div></div></body>

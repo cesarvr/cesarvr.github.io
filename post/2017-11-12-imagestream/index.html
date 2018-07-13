@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    
+    <meta name="description" content="Call me Sam, a theme for Hugo.">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:domain" content="">
+    
+    <meta name="twitter:image" content="tn.png">
+    <meta name="twitter:title" property="og:title" itemprop="title name" content="Cesar">
+    <meta name="twitter:description" property="og:description" itemprop="description" content="Call me Sam, a theme for Hugo.">
+    <meta name="og:type" content="website">
+    <meta name="og:url" content="">
+    <meta name="og:image" itemprop="image primaryImageOfPage" content="tn.png">
+    
+    <title>Exporting external images to Openshift</title>
+    <link rel="shortcut icon" href="sam.ico" id="favicon">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic">
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+    
+    
+
+</head>
+
+</html>
+<body><div class="wrap"><div class="section" id="title">Exporting external images to Openshift</div><div class="section" id="content"> <nav id="TableOfContents">
+<ul>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#creating-a-project">Creating a project</a></li>
+<li><a href="#exporting-your-image">Exporting your image</a></li>
+<li><a href="#using-the-image">Using the image</a>
+<ul>
+<li>
+<ul>
+<li><a href="#demo">Demo</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav> 
+
+<h1 id="getting-started">Getting Started</h1>
+
+<p>First you need to have an Openshift installation on the cloud or in your machine, the second option is the easiest one thanks to the <code>oc cluster up</code> command, this will create a small local installation of openshift in your machine, if your are not familiar take a quick look at the <a href="https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md#getting-started">documentation</a>.</p>
+
+<h1 id="creating-a-project">Creating a project</h1>
+
+<p>Once <code>oc cluster up</code> finish you should have an Openshift installation up and ready in your local machine, now next step is to login in and create a project.</p>
+
+<pre><code>oc login https://127.0.0.1:8443/  
+oc new-project hello
+</code></pre>
+
+<p>The last command will create a project and will keep it as the one in use, so all commands will affect just hello project.</p>
+
+<h1 id="exporting-your-image">Exporting your image</h1>
+
+<p>To import an image you run <code>oc import-image</code> this command will create a new image stream object pointing the image you want to use.</p>
+
+<pre><code>  oc import-image cvr-node:latest --from=docker.io/cvaldezr/nodejs --confirm
+</code></pre>
+
+<h1 id="using-the-image">Using the image</h1>
+
+<p>After successfully importing the image now is time to use it, so to demonstrate this let create a simple Pod object, with  a Node.js application.</p>
+
+<p>First we need the URL of our ImageStream let get it by doing.</p>
+
+<pre><code>$ oc get is
+
+NAME       DOCKER REPO                      TAGS      UPDATED
+cvr-node   172.30.1.1:5000/hello/cvr-node   latest    39 seconds ago
+</code></pre>
+
+<p>Next let define our Pod, I want to create a simple app so I&rsquo;m going to use the example Node.JS.</p>
+
+<pre><code class="language-yml">apiVersion: v1
+kind: Pod
+metadata:
+  name: node-example
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: 172.30.1.1:5000/hello/cvr-node  # Our imported image
+    command: ['/bin/sh', '-c']
+    args:
+    - cd /app/node-openshift-master/;
+      echo folder:$PWD;
+      npm install;
+      nodemon $(node -e &quot;console.log(require('./package.json').main)&quot;)
+
+
+    volumeMounts:
+    - mountPath: /app
+      name: app-volume
+    - mountPath: /.npm  
+      name: npm-cache
+
+    ports:
+    - containerPort: 8080
+  initContainers:
+  - name: cloning  
+    image: busybox
+    command: ['/bin/sh', '-c']
+    args:
+    - cd /app/;
+      wget -O src.zip https://github.com/cesarvr/node-openshift/archive/master.zip;
+      unzip src.zip -d /app/;  
+      rm src.zip;
+
+    volumeMounts:
+    - mountPath: /app
+      name: app-volume
+  volumes:
+  - name: app-volume
+    emptyDir: {}    
+  - name: npm-cache
+    emptyDir: {}   
+</code></pre>
+
+<p>We create the Pod</p>
+
+<pre><code class="language-sh">oc create -f node.yml  
+</code></pre>
+
+<p>After some initialization, assuming that everything is fine we should our Pod running, next thing is to expose it.</p>
+
+<pre><code class="language-sh">oc expose pod node-example
+oc expose service node-example  
+</code></pre>
+
+<h3 id="demo">Demo</h3>
+
+<script type="text/javascript" src="https://asciinema.org/a/IJURr9cdQZTX1Q5Ue8jr1S3Zc.js" id="asciicast-IJURr9cdQZTX1Q5Ue8jr1S3Zc" async></script>
+ </div><div class="section footer"></div></div></body>
