@@ -766,9 +766,9 @@ Imagine now that we are given the task to contain a program from creating more p
 
 #### Limiting Process Creation 
 
-Let's write a new functionality in our container, this functionality will limit the amount of processes that our contained process (```sh```) can create but before we start I'll explain how we can interact with ([Linux Control Group](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)). 
+Let's use one of the control groups available, the one we are going to use is called the *pids* controller, which can be use to limit the amount of time a process can replicate itself via [fork](http://man7.org/linux/man-pages/man2/fork.2.html) or [clone](http://man7.org/linux/man-pages/man2/clone.2.html). Before we start I'll explain how we can interact with ([Linux Control Group](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)). 
 
-You might heard the phrase in Linux ["Everything is a file"](https://en.wikipedia.org/wiki/Everything_is_a_file), cgroup like procfs is another example of that philosophy. This mean we can interface with it by using any files I/O API or application. For this example I'll use this simple Linux I/O API [open](http://man7.org/linux/man-pages/man3/fopen.3.html), [write](https://linux.die.net/man/2/write), [read](https://linux.die.net/man/3/read) and [close](http://man7.org/linux/man-pages/man3/fclose.3.html). Now the next step is to understand what files we need to change.     
+You might heard the phrase in Linux ["Everything is a file"](https://en.wikipedia.org/wiki/Everything_is_a_file), cgroup like procfs is another example of that philosophy. This mean we can interface with it by using any files I/O API or application. For this example I'll use this simple Linux I/O API [open](http://man7.org/linux/man-pages/man3/fopen.3.html), [write](https://linux.die.net/man/2/write), [read](https://linux.die.net/man/3/read) and [close](http://man7.org/linux/man-pages/man3/fclose.3.html). Now the next step is to understand what folder or files we need to modify.     
 
 The control group file system directory is usually mounted here:
 
