@@ -908,3 +908,8 @@ It depends but in my opinion even when VM uses specials CPU instructions to get 
 Why not?, I just use that combination to write this article. 
 
 
+Well hope it has been a very fun read or at least not boring, for me was super fun, I really enjoyed writing this article. If you want access to the full source code you get it from [here](). With time I'll add more functionalities just to learn more about it and maybe will rewrite it in Rust or Dlang right know I just dubitating between the two maybe I just make two versions and compare.
+
+
+
+
