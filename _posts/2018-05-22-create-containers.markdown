@@ -749,7 +749,7 @@ PID   USER     TIME   COMMAND
     2 root       0:00 /bin/sh
 ```
 
-Moral of the story is when you clone the PID tree your process is not able not longer able to track other processes but you can still track the everything from outside. For example if you run ```ps aux | grep sh ``` you'll be able to see your container. Try this with Docker or LXC and see what happens. 
+Moral of the story is when you clone the PID tree, your process is not able not longer able to track other processes but you can still track the everything from outside the container. For example if you run ```ps aux | grep sh ``` you'll be able to see your container. Try this with Docker or LXC and see what happens. 
 
 Here is a small screen recording: 
 
