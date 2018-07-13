@@ -38,7 +38,7 @@ Is basically about how to create your own container program using C. In this art
 
 ### Why you might care about it
 
- Well I really love to see how things works behind the scene, so I just create this article for people that share the same curiosity. Also knowing how it works helps a lot when you need push the limit of a particular technology, imagine if you have the nice challenge to pass a GPU to a container.
+I've always loved to learn how works behind the scene. I've wrote this article for people that share the same curiosity. Also knowing how it works can help you respond to typical question like Can I run a binary from another CPU architecture in a container? is there any performance penalty? what's the difference between containers and VM? and so on. 
 
 
 <a name="hello"/>
