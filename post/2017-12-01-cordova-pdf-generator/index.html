@@ -31,23 +31,20 @@
         crossorigin="anonymous"></script>
     
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110580110-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-110580110-1');
+    </script>
+    
 
 </head>
 
 </html>
-<body><div class="wrap"><div class="section" id="title">How to generate a PDF Documents using Cordova, for Android and IOS</div><div class="section" id="content"> <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#why">Why</a></li>
-<li><a href="#how-it-works">How it works</a></li>
-<li><a href="#quick-demo">Quick demo</a></li>
-</ul></li>
-</ul></li>
-</ul>
-</nav> 
+<body><div class="wrap"><div class="section" id="title">How to generate a PDF Documents using Cordova, for Android and IOS</div><div class="section" id="content">  
 
 <h3 id="why">Why</h3>
 
@@ -67,93 +64,83 @@
 <h3 id="quick-demo">Quick demo</h3>
 
 <p>Assuming you have installed last version of Cordova, let try to write a simple example for both plaftforms.</p>
-
-<pre><code class="language-sh">cordova create hello-pdf   # this will create a new cordova project 
-
-# initializing both platforms
-cordova platform add ios  # Make sure you installed XCode
-cordova platform add android  # Make sure you have Android Studio
-
-# installing the plugin
-cd ./hello-pdf/
-cordova plugin add cordova-pdf-generator
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cordova create hello-pdf   <span style="color:#75715e"># this will create a new cordova project 
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e"># initializing both platforms
+</span><span style="color:#75715e"></span>cordova platform add ios  <span style="color:#75715e"># Make sure you installed XCode
+</span><span style="color:#75715e"></span>cordova platform add android  <span style="color:#75715e"># Make sure you have Android Studio
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e"># installing the plugin
+</span><span style="color:#75715e"></span>cd ./hello-pdf/
+cordova plugin add cordova-pdf-generator</code></pre></div>
 <p>Now we need to do some coding to create our PDF, to start we need to open with our favorite editor the entry file in <code>./hello-pdf/www/index.js</code> , once we open it we should have something like this.</p>
-
-<pre><code class="language-js">var app = {
-    // Application Constructor
-    initialize: function() {
-        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">app</span> <span style="color:#f92672">=</span> {
+    <span style="color:#75715e">// Application Constructor
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">initialize</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span>() {
+        document.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;deviceready&#39;</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">onDeviceReady</span>.<span style="color:#a6e22e">bind</span>(<span style="color:#66d9ef">this</span>), <span style="color:#66d9ef">false</span>);
     },
 
-    // deviceready Event Handler
-    //
-    // Bind any cordova events here. Common events are:
-    // 'pause', 'resume', etc.
-    onDeviceReady: function() {
-        this.receivedEvent('deviceready');
+    <span style="color:#75715e">// deviceready Event Handler
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Bind any cordova events here. Common events are:
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// &#39;pause&#39;, &#39;resume&#39;, etc.
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">onDeviceReady</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span>() {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">receivedEvent</span>(<span style="color:#e6db74">&#39;deviceready&#39;</span>);
     },
 
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+    <span style="color:#75715e">// Update DOM on a Received Event
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">receivedEvent</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">id</span>) {
+        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">parentElement</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#a6e22e">id</span>);
+        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">listeningElement</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">parentElement</span>.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;.listening&#39;</span>);
+        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">receivedElement</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">parentElement</span>.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;.received&#39;</span>);
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+        <span style="color:#a6e22e">listeningElement</span>.<span style="color:#a6e22e">setAttribute</span>(<span style="color:#e6db74">&#39;style&#39;</span>, <span style="color:#e6db74">&#39;display:none;&#39;</span>);
+        <span style="color:#a6e22e">receivedElement</span>.<span style="color:#a6e22e">setAttribute</span>(<span style="color:#e6db74">&#39;style&#39;</span>, <span style="color:#e6db74">&#39;display:block;&#39;</span>);
 
-        console.log('Received Event: ' + id);
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Received Event: &#39;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">id</span>);
     }
 };
 
-app.initialize();
-</code></pre>
-
+<span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">initialize</span>();
+</code></pre></div>
 <p>We need to go to the function <code>receivedEvent</code> this function will be called after cordova is done initializing the framework, so it&rsquo;s the place where we should put our code.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">app</span> <span style="color:#f92672">=</span> {
+    <span style="color:#75715e">// Update DOM on a Received Event
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">receivedEvent</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">id</span>) {
+        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">parentElement</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#a6e22e">id</span>);
+        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">listeningElement</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">parentElement</span>.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;.listening&#39;</span>);
+        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">receivedElement</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">parentElement</span>.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;.received&#39;</span>);
 
-<pre><code class="language-js">var app = {
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+        <span style="color:#a6e22e">listeningElement</span>.<span style="color:#a6e22e">setAttribute</span>(<span style="color:#e6db74">&#39;style&#39;</span>, <span style="color:#e6db74">&#39;display:none;&#39;</span>);
+        <span style="color:#a6e22e">receivedElement</span>.<span style="color:#a6e22e">setAttribute</span>(<span style="color:#e6db74">&#39;style&#39;</span>, <span style="color:#e6db74">&#39;display:block;&#39;</span>);
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        // Our code start here 
-        var opts = {
-            type: &quot;share&quot;,          //Open a context menu and ask the user what to do next (print, mail, etc..).
-            fileName: 'v8-tutorial.pdf' //it will use this filename as a place-holder
-        }
+        <span style="color:#75715e">// Our code start here 
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">opts</span> <span style="color:#f92672">=</span> {
+            <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;share&#34;</span>,          <span style="color:#75715e">//Open a context menu and ask the user what to do next (print, mail, etc..).
+</span><span style="color:#75715e"></span>            <span style="color:#a6e22e">fileName</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;v8-tutorial.pdf&#39;</span> <span style="color:#75715e">//it will use this filename as a place-holder
+</span><span style="color:#75715e"></span>        }
         
-        pdf.fromURL('http://cesarvr.github.io/2015/11/20/javascript-v8.html', opts)
-        .then((status) =&gt; console.log('success-&gt;', status))
-        .catch((error) =&gt; console.log(error));
+        <span style="color:#a6e22e">pdf</span>.<span style="color:#a6e22e">fromURL</span>(<span style="color:#e6db74">&#39;http://cesarvr.github.io/2015/11/20/javascript-v8.html&#39;</span>, <span style="color:#a6e22e">opts</span>)
+        .<span style="color:#a6e22e">then</span>((<span style="color:#a6e22e">status</span>) =&gt; <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;success-&gt;&#39;</span>, <span style="color:#a6e22e">status</span>))
+        .<span style="color:#66d9ef">catch</span>((<span style="color:#a6e22e">error</span>) =&gt; <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">error</span>));
 
-        // End here
-
-        console.log('Received Event: ' + id);
+        <span style="color:#75715e">// End here
+</span><span style="color:#75715e"></span>
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Received Event: &#39;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">id</span>);
     }
 };
 
-app.initialize();
-</code></pre>
-
+<span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">initialize</span>();
+</code></pre></div>
 <p>We run this by doing:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#put our www/ folder inside our target platform.
+</span><span style="color:#75715e"></span>cordova prepare 
 
-<pre><code class="language-sh">#put our www/ folder inside our target platform.
-cordova prepare 
+<span style="color:#75715e">#Deploy in Android.
+</span><span style="color:#75715e"></span>cordova run android
 
-#Deploy in Android.
-cordova run android
-
-#Deploy in iOS.
-cordova run ios
-</code></pre>
-
+<span style="color:#75715e">#Deploy in iOS.
+</span><span style="color:#75715e"></span>cordova run ios</code></pre></div>
 <p><img src="/static/adb-snapshot.png" alt="snapshot" title="Logo Title Text 1" /></p>
 
 <p>We should see our beautiful PDF being generated for us, as you can see we use the option <code>{type: 'share'}</code>, this mean it will popup a contextual menu with some helpful options, this is a good choice if you want your app to integrate with the OS ecosystem, or to give the option to the user to manipulate the PDF.</p>
@@ -163,4 +150,13 @@ cordova run ios
 <p>If you need more info you can find it in the <a href="https://www.npmjs.com/package/cordova-pdf-generator">documentation</a>, also this <a href="https://github.com/cesarvr/pdf-generator-example">demo</a> capture some the typical use cases.</p>
 
 <p>If you want to contribute here is the <a href="https://github.com/cesarvr/pdf-generator">Github</a> repository.</p>
- </div><div class="section footer"></div></div></body>
+ </div><div class="section bottom-menu"><hr/><p>
+
+
+<a href="/post">writing</a>
+
+
+&#183; <a href="/about">about</a>
+&#183; <a href="https://github.com/cesarvr">code</a>
+
+&#183; <a href="/"></a></p></div><div class="section footer">My cloud native blog ;)</div></div></body>

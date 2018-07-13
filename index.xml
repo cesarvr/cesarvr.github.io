@@ -67,7 +67,17 @@ After many days of procrastination, I put my hands-on and start the task of down
       
       <guid>/post/2015-09-01-archlinux-install/</guid>
       <description>Arch Linux installation instruction for the impatient.
-Partition fdisk /dev/d #sda all disk in my case. #15 GB partition. Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 1): #press Enter First sector (2048-209715199, default 2048): #press Enter start in the beginning. Last sector, +sectors or +size...(): #type +19G and press Enter. #SWAP 1GB Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 2): #press Enter First sector (): #press Enter Last sector, +sectors or +size.</description>
+Partition fdisk /dev/d #sda all disk in my case.  #15 GB partition. Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 1): #press Enter First sector (2048-209715199, default 2048): #press Enter start in the beginning. Last sector, +sectors or +size...(): #type +19G and press Enter.  #SWAP 1GB Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 2): #press Enter First sector (): #press Enter Last sector, +sectors or +size.</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/about/</guid>
+      <description>My name is César, I’m a software engineer currently working at Red Hat, I love computer since I got in my hands my first computer a Compaq 425, my first programming language was Visual Basic 5.0 which I teach myself by reading the MVB help files, that said a lot about the quality of that documentation.
+After that I learn QBasic and C. Seems like yesterday when I was showing my friends my first hello world in C and feeling like a hacker.</description>
     </item>
     
   </channel>

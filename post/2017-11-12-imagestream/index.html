@@ -31,24 +31,20 @@
         crossorigin="anonymous"></script>
     
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110580110-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-110580110-1');
+    </script>
+    
 
 </head>
 
 </html>
-<body><div class="wrap"><div class="section" id="title">Exporting external images to Openshift</div><div class="section" id="content"> <nav id="TableOfContents">
-<ul>
-<li><a href="#getting-started">Getting Started</a></li>
-<li><a href="#creating-a-project">Creating a project</a></li>
-<li><a href="#exporting-your-image">Exporting your image</a></li>
-<li><a href="#using-the-image">Using the image</a>
-<ul>
-<li>
-<ul>
-<li><a href="#demo">Demo</a></li>
-</ul></li>
-</ul></li>
-</ul>
-</nav> 
+<body><div class="wrap"><div class="section" id="title">Exporting external images to Openshift</div><div class="section" id="content">  
 
 <h1 id="getting-started">Getting Started</h1>
 
@@ -84,8 +80,7 @@ cvr-node   172.30.1.1:5000/hello/cvr-node   latest    39 seconds ago
 </code></pre>
 
 <p>Next let define our Pod, I want to create a simple app so I&rsquo;m going to use the example Node.JS.</p>
-
-<pre><code class="language-yml">apiVersion: v1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">apiVersion: v1
 kind: Pod
 metadata:
   name: node-example
@@ -94,13 +89,13 @@ metadata:
 spec:
   containers:
   - name: myapp-container
-    image: 172.30.1.1:5000/hello/cvr-node  # Our imported image
-    command: ['/bin/sh', '-c']
+    image: <span style="color:#ae81ff">172.30</span>.<span style="color:#ae81ff">1.1</span>:<span style="color:#ae81ff">5000</span>/hello/cvr-node  <span style="color:#75715e"># Our imported image</span>
+    command: [<span style="color:#e6db74">&#39;/bin/sh&#39;</span>, <span style="color:#e6db74">&#39;-c&#39;</span>]
     args:
     - cd /app/node-openshift-master/;
       echo folder:$PWD;
       npm install;
-      nodemon $(node -e &quot;console.log(require('./package.json').main)&quot;)
+      nodemon $(node -e <span style="color:#e6db74">&#34;console.log(require(&#39;./package.json&#39;).main)&#34;</span>)
 
 
     volumeMounts:
@@ -110,11 +105,11 @@ spec:
       name: npm-cache
 
     ports:
-    - containerPort: 8080
+    - containerPort: <span style="color:#ae81ff">8080</span>
   initContainers:
   - name: cloning  
     image: busybox
-    command: ['/bin/sh', '-c']
+    command: [<span style="color:#e6db74">&#39;/bin/sh&#39;</span>, <span style="color:#e6db74">&#39;-c&#39;</span>]
     args:
     - cd /app/;
       wget -O src.zip https://github.com/cesarvr/node-openshift/archive/master.zip;
@@ -128,21 +123,22 @@ spec:
   - name: app-volume
     emptyDir: {}    
   - name: npm-cache
-    emptyDir: {}   
-</code></pre>
-
+    emptyDir: {}   </code></pre></div>
 <p>We create the Pod</p>
-
-<pre><code class="language-sh">oc create -f node.yml  
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">oc create -f node.yml  </code></pre></div>
 <p>After some initialization, assuming that everything is fine we should our Pod running, next thing is to expose it.</p>
-
-<pre><code class="language-sh">oc expose pod node-example
-oc expose service node-example  
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">oc expose pod node-example
+oc expose service node-example  </code></pre></div>
 <h3 id="demo">Demo</h3>
 
 <script type="text/javascript" src="https://asciinema.org/a/IJURr9cdQZTX1Q5Ue8jr1S3Zc.js" id="asciicast-IJURr9cdQZTX1Q5Ue8jr1S3Zc" async></script>
- </div><div class="section footer"></div></div></body>
+ </div><div class="section bottom-menu"><hr/><p>
+
+
+<a href="/post">writing</a>
+
+
+&#183; <a href="/about">about</a>
+&#183; <a href="https://github.com/cesarvr">code</a>
+
+&#183; <a href="/"></a></p></div><div class="section footer">My cloud native blog ;)</div></div></body>

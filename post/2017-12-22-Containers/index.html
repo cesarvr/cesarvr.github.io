@@ -31,35 +31,20 @@
         crossorigin="anonymous"></script>
     
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110580110-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-110580110-1');
+    </script>
+    
 
 </head>
 
 </html>
-<body><div class="wrap"><div class="section" id="title">Containers For Beginners</div><div class="section" id="content"> <nav id="TableOfContents">
-<ul>
-<li><a href="#what-is-a-container">What is a container ?</a></li>
-<li><a href="#installing-docker">Installing Docker</a></li>
-<li><a href="#getting-started">Getting Started</a>
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#hello-world">Hello World</a></li>
-<li><a href="#how-it-works">How it works</a></li>
-<li><a href="#listing-cached-images">Listing Cached Images</a></li>
-<li><a href="#running-in-daemon-mode">Running in Daemon mode</a></li>
-<li><a href="#listing-background-running-containers">Listing background running containers</a></li>
-<li><a href="#killing-running-containers">Killing running containers</a></li>
-</ul></li>
-<li><a href="#mounting">Mounting</a></li>
-<li><a href="#networking">Networking</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#some-quick-tips">Some quick tips</a></li>
-<li><a href="#linux-security">Linux security</a></li>
-</ul>
-</nav> 
+<body><div class="wrap"><div class="section" id="title">Containers For Beginners</div><div class="section" id="content">  
 
 <h1 id="what-is-a-container">What is a container ?</h1>
 
@@ -74,20 +59,11 @@
 <p>Installation of Docker is a simple task in OS X/Windows using the installation wizard You can find the installer for your OS on the Docker community page, On Linux, Docker is usually available in the distribution package manager.</p>
 
 <p>Installing Docker in <a href="https://getfedora.org/es/workstation/">Fedora</a>:</p>
-
-<pre><code class="language-sh">sudo dnf install docker
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo dnf install docker</code></pre></div>
 <p>To start the process:</p>
-
-<pre><code class="language-sh">sudo systemctl start docker
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo systemctl start docker</code></pre></div>
 <p>To make the Docker process start and boot time:</p>
-
-<pre><code class="language-sh">sudo systemctl enable docker
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo systemctl enable docker</code></pre></div>
 <p>The steps should be similar in others Linux distributions that use Systemd.</p>
 
 <h1 id="getting-started">Getting Started</h1>
@@ -95,18 +71,12 @@
 <h4 id="hello-world">Hello World</h4>
 
 <p>Once you finished the installation we should try a small <strong>Hello World!</strong> for containers:</p>
-
-<pre><code class="language-sh">#sudo is only for Linux
-sudo docker run --name hello -it busybox echo &quot;Hello World!&quot; # Hello World!
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#sudo is only for Linux
+</span><span style="color:#75715e"></span>sudo docker run --name hello -it busybox echo <span style="color:#e6db74">&#34;Hello World!&#34;</span> # Hello World!</code></pre></div>
 <p>Using <strong>sudo</strong> is only necessary if you are running some Linux distributions, but keep in mind that Docker require admin rights to create the containment, in OSX and Windows at the moment of writing this article they use some Linux based virtual machine behind the scene, so Docker command can be run without privilege user in those systems.</p>
 
 <h4 id="how-it-works">How it works</h4>
-
-<pre><code class="language-sh">sudo docker run &lt;options&gt; &lt;image&gt; &lt;command to run inside the container&gt; 
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo docker run &lt;options&gt; &lt;image&gt; &lt;command to run inside the container&gt; </code></pre></div>
 <p>The <code>run</code> option creates and run a container, one of the properties is that Docker binds the life of the container to the running process (in this case the Linux command echo), which means that when process finish the container will be terminated.</p>
 
 <ul>
@@ -120,58 +90,37 @@ sudo docker run --name hello -it busybox echo &quot;Hello World!&quot; # Hello W
 <p><strong>echo</strong>, As we mentioned earlier, is the command we try to execute that is included inside <a href="https://hub.docker.com/r/library/busybox/tags/">busybox</a> image.</p>
 
 <p>If you want check the commands available in <a href="https://hub.docker.com/r/library/busybox/tags/">busybox</a> just do this:</p>
-
-<pre><code class="language-sh">sudo docker run -it busybox ls /bin/
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo docker run -it busybox ls /bin/</code></pre></div>
 <h4 id="listing-cached-images">Listing Cached Images</h4>
 
 <p>When you execute the Docker command for the first time the image is downloaded and is cached to speed up things. You can check local images by using this command:</p>
-
-<pre><code class="language-sh">sudo docker images
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo docker images</code></pre></div>
 <h4 id="running-in-daemon-mode">Running in Daemon mode</h4>
 
 <p>In some cases we don&rsquo;t want to interact directly with some applications like servers, in this case we want to spawn the process and get back our terminal to continue doing some work, Docker provide us a way to execute the process in daemon mode using the <strong>-d</strong> parameter like this:</p>
-
-<pre><code class="language-sh">sudo docker run -d --name snooze busybox sleep 15
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo docker run -d --name snooze busybox sleep <span style="color:#ae81ff">15</span></code></pre></div>
 <p>This process will run for 15 seconds in the background and then exit.</p>
 
 <h4 id="listing-background-running-containers">Listing background running containers</h4>
 
 <p>Once the container is running in the background, you can check its status with <strong>ps</strong>:</p>
-
-<pre><code class="language-sh">sudo docker ps 
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo docker ps </code></pre></div>
 <h4 id="killing-running-containers">Killing running containers</h4>
 
 <p>To stop a container is simple just:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo docker stop <span style="color:#f92672">[</span>name of your container<span style="color:#f92672">]</span>
 
-<pre><code class="language-sh">sudo docker stop [name of your container]
-
-#example
-sudo docker stop snooze
-</code></pre>
-
+<span style="color:#75715e">#example
+</span><span style="color:#75715e"></span>sudo docker stop snooze</code></pre></div>
 <p>This command will stop the running container, but the docker service will keep the container you created including its associated command cached in disk, in the case you want to replay the exact command again just need to do <strong>docker start</strong> and pass the container name.</p>
-
-<pre><code class="language-sh">sudo docker start snooze
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo docker start snooze</code></pre></div>
 <p>If you want to change the configuration and reuse the container name then you need to stop and delete the container, let say we want to change our <em>snooze</em> container, to sleep for 10 seconds instead of 15:</p>
-
-<pre><code class="language-sh"># stop &amp; clean
-sudo docker stop snooze
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># stop &amp; clean
+</span><span style="color:#75715e"></span>sudo docker stop snooze
 sudo docker rm snooze
 
-# re-create
-sudo docker run -d --name snooze busybox sleep 10
-</code></pre>
-
+<span style="color:#75715e"># re-create
+</span><span style="color:#75715e"></span>sudo docker run -d --name snooze busybox sleep <span style="color:#ae81ff">10</span></code></pre></div>
 <h3 id="mounting">Mounting</h3>
 
 <p>The <strong>v</strong> parameter will allow us to mount/map a folder from the <strong><em>host</em></strong> (our computer) to a folder inside the container.</p>
@@ -179,22 +128,13 @@ sudo docker run -d --name snooze busybox sleep 10
 <p>Example:</p>
 
 <p>Let&rsquo;s create an file</p>
-
-<pre><code class="language-sh">echo 'Hello World' &gt; hello
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">echo <span style="color:#e6db74">&#39;Hello World&#39;</span> &gt; hello</code></pre></div>
 <p>Now we want to open the file using an isolated text editor available in busybox:</p>
-
-<pre><code class="language-sh"># Opening the file with our contained VIM
-sudo docker run -it busybox vi hello
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># Opening the file with our contained VIM
+</span><span style="color:#75715e"></span>sudo docker run -it busybox vi hello</code></pre></div>
 <p>Nothing happens, this is because the vi process we are calling is isolated and is unable to access the file outside the contained area, to solve this, we need to mount the folder so our editor is able to find the file.</p>
-
-<pre><code class="language-sh">#the :z in /app:z -&gt; is for SELinux, non-Linux can ignore this.
-sudo docker run -it -v &quot;$(pwd)&quot;:/app:z busybox vi app/text
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#the :z in /app:z -&gt; is for SELinux, non-Linux can ignore this.
+</span><span style="color:#75715e"></span>sudo docker run -it -v <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>:/app:z busybox vi app/text</code></pre></div>
 <p>This will mount the actual folder <code>$(pwd)</code>, to the folder <code>/app</code> inside the container, if the folder doesn&rsquo;t exist <em>inside</em> it will be created, then, if we use <strong>vi</strong> and pass the location of file of the mounted folder <code>vi app/hello</code>.</p>
 
 <p>Some observations:</p>
@@ -210,42 +150,28 @@ sudo docker run -it -v &quot;$(pwd)&quot;:/app:z busybox vi app/text
 <p>Option <strong>p</strong> allow us to expose an isolated port and pass it through a specific <strong>Host</strong> port.</p>
 
 <p>To illustrate how networking works with containers, first let start by writing a simple Javascript script to startup a server, we are going to do this in our local machine, so let&rsquo;s write some code.</p>
-
-<pre><code class="language-js">require('http')
-  .createServer((req, res) =&gt; { res.end('Hello World!') }).listen(8080)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;http&#39;</span>)
+  .<span style="color:#a6e22e">createServer</span>((<span style="color:#a6e22e">req</span>, <span style="color:#a6e22e">res</span>) =&gt; { <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">end</span>(<span style="color:#e6db74">&#39;Hello World!&#39;</span>) }).<span style="color:#a6e22e">listen</span>(<span style="color:#ae81ff">8080</span>)
+</code></pre></div>
 <p>We will call this file <strong>index.js</strong> it basically create a server that waits for connection in port <strong>8080</strong>, when somebody connects it will send a <strong>Hello World!</strong>.</p>
 
 <p>Next step is to run our script inside a container, we can do this by writing the following command:</p>
-
-<pre><code class="language-sh">sudo docker run -it -v &quot;$(pwd)&quot;:/app:z --name myserver mhart/alpine-node node app/index.js
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo docker run -it -v <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>:/app:z --name myserver mhart/alpine-node node app/index.js</code></pre></div>
 <p>The new stuff here is the base image <strong>mhart/alpine-node</strong> it will pull a Node.JS container, then will just mount using <strong>-v</strong> the folder as we did before and then execute the isolated <em>node app/index.js</em> process.</p>
 
 <p>Let see if our server is working:</p>
-
-<pre><code class="language-sh">sudo docker exec -it myserver wget -qO- localhost:8080
-# Hello World%
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo docker exec -it myserver wget -qO- localhost:8080
+# Hello World%</code></pre></div>
 <p>This command tests that our server is working from within the container and we should get back <strong>Hello World%</strong>, Now let&rsquo;s try to connect from our <strong>Host</strong>, open a new terminal, and write:</p>
-
-<pre><code class="language-sh">curl http://localhost:8080
-#curl: (7) Failed to connect to localhost port 8080: Connection refused
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">curl http://localhost:8080
+#curl: <span style="color:#f92672">(</span><span style="color:#ae81ff">7</span><span style="color:#f92672">)</span> Failed to connect to localhost port <span style="color:#ae81ff">8080</span>: Connection refused</code></pre></div>
 <p>We are unable to connect because the container network is isolated, we need to forward the port:</p>
-
-<pre><code class="language-sh"># stopping our container
-sudo docker stop myserver  
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># stopping our container
+</span><span style="color:#75715e"></span>sudo docker stop myserver  
 sudo docker rm myserver
 
-sudo docker run -it -v &quot;$(pwd)&quot;:/app:z -p 8080:8080 --name myserver \
- mhart/alpine-node node app/index.js
-</code></pre>
-
+sudo docker run -it -v <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>:/app:z -p <span style="color:#ae81ff">8080</span>:8080 --name myserver <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> mhart/alpine-node node app/index.js</code></pre></div>
 <p>Now try to open <a href="http://locahost:8080">http://locahost:8080</a> in your browser and you should see a <strong>hello world!</strong>.</p>
 
 <p>Congrats!, you have wroted a nice contained NodeJS application. One of the greatest advantage is that you can do this without installing NodeJS and you can use this capability to install other kind of software like DB&rsquo;s, other microservices, etc.</p>
@@ -253,57 +179,44 @@ sudo docker run -it -v &quot;$(pwd)&quot;:/app:z -p 8080:8080 --name myserver \
 <h1 id="some-quick-tips">Some quick tips</h1>
 
 <p>In my day to day I always need to integrate with MongoDB and Redis, but installing those are usually a painful process, I have solved this problem by creating some bash scripts in my .zshrc.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#66d9ef">function</span> new_mongo <span style="color:#f92672">{</span>
+  docker run -d --name mongodb -p  <span style="color:#ae81ff">27017</span>:27017 mongo
+<span style="color:#f92672">}</span>
 
-<pre><code class="language-sh">function new_mongo {
-  docker run -d --name mongodb -p  27017:27017 mongo
-}
+<span style="color:#75715e"># the : here means image tag, usually if the image is done correctly 
+</span><span style="color:#75715e"># like in this case tag version match the Redis version
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> new_redis <span style="color:#f92672">{</span>
+  docker run -d  --name redis  -p <span style="color:#ae81ff">6379</span>:6379 redis:3.2
+<span style="color:#f92672">}</span>
 
-# the : here means image tag, usually if the image is done correctly 
-# like in this case tag version match the Redis version
-function new_redis {
-  docker run -d  --name redis  -p 6379:6379 redis:3.2
-}
-
-function stop_mongo {
+<span style="color:#66d9ef">function</span> stop_mongo <span style="color:#f92672">{</span>
   docker stop mongodb
   docker rm mongodb
-}
+<span style="color:#f92672">}</span>
 
-function stop_redis {
+<span style="color:#66d9ef">function</span> stop_redis <span style="color:#f92672">{</span>
   docker stop redis
   docker rm redis
-}
-
-</code></pre>
-
+<span style="color:#f92672">}</span></code></pre></div>
 <p>After adding this line to the bottom of your .bashrc || .zshrc , then just execute <code>source ~/.bashrc || source ~/.zshrc</code>, then you should be able to do this.</p>
-
-<pre><code class="language-sh">new_mongo # it will spin up a new mongodb instance. 
-new_redis # it will spin up a new redis instance. 
-
-# to stop this containers 
-stop_mongo
-stop_redis
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">new_mongo <span style="color:#75715e"># it will spin up a new mongodb instance. 
+</span><span style="color:#75715e"></span>new_redis <span style="color:#75715e"># it will spin up a new redis instance. 
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e"># to stop this containers 
+</span><span style="color:#75715e"></span>stop_mongo
+stop_redis</code></pre></div>
 <p>Now you will be able to deploy a local MongoDB or Redis instance on-demand with zero configuration, and one advantage (at least in my view) is that the data in these instances are ephemeral, meaning that when you terminate the container it will reset the database as well,  releasing the occupied space.</p>
 
 <h1 id="linux-security">Linux security</h1>
 
 <p>If you execute to mount a folder by using <strong>v</strong> parameter in Fedora you may get this error:</p>
-
-<pre><code class="language-sh">sudo docker run -it -v &quot;$(pwd)&quot;:/app busybox ls app/text
-#ls: can't open '.': Permission denied
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo docker run -it -v <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>:/app busybox ls app/text
+#ls: can<span style="color:#e6db74">&#39;t open &#39;</span>.<span style="color:#960050;background-color:#1e0010">&#39;</span>: Permission denied</code></pre></div>
 <p>This is because <a href="https://en.wikipedia.org/wiki/Security-Enhanced_Linux">SELinux</a> default policy will protect any read/write in the Host, in case an attacker can get out of the container, SELinux will hold your back by enforcing security rules at Kernel level.</p>
 
 <p>To mount the folder in a SELinux aware machine you need to pass the <strong>z</strong> parameter, this will change the SELinux context and will allow the container to perform the mounting.</p>
-
-<pre><code class="language-sh"># &quot;$(pwd)&quot; will get the actual directory, is equivalent to do pwd
-docker run -it -v &quot;$(pwd)&quot;:/app:z busybox /bin/sh
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># &#34;$(pwd)&#34; will get the actual directory, is equivalent to do pwd
+</span><span style="color:#75715e"></span>docker run -it -v <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>:/app:z busybox /bin/sh</code></pre></div>
 <p>Other way (but not recommended) to do this is to temporarily disable this protection with:</p>
 
 <pre><code>su -c &quot;setenforce 0&quot;
@@ -313,4 +226,13 @@ docker run -it -v &quot;$(pwd)&quot;:/app:z busybox /bin/sh
 
 <pre><code>su -c &quot;setenforce 1&quot;
 </code></pre>
- </div><div class="section footer"></div></div></body>
+ </div><div class="section bottom-menu"><hr/><p>
+
+
+<a href="/post">writing</a>
+
+
+&#183; <a href="/about">about</a>
+&#183; <a href="https://github.com/cesarvr">code</a>
+
+&#183; <a href="/"></a></p></div><div class="section footer">My cloud native blog ;)</div></div></body>

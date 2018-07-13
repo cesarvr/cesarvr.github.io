@@ -31,23 +31,20 @@
         crossorigin="anonymous"></script>
     
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110580110-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-110580110-1');
+    </script>
+    
 
 </head>
 
 </html>
-<body><div class="wrap"><div class="section" id="title">Embedding Javascript v8</div><div class="section" id="content"> <nav id="TableOfContents">
-<ul>
-<li><a href="#building-v8-javascript-engine">Building V8 Javascript Engine.</a>
-<ul>
-<li>
-<ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#building">Building.</a></li>
-<li><a href="#what-to-do-now">What to do now ?</a></li>
-</ul></li>
-</ul></li>
-</ul>
-</nav> 
+<body><div class="wrap"><div class="section" id="title">Embedding Javascript v8</div><div class="section" id="content">  
 
 <h1 id="building-v8-javascript-engine">Building V8 Javascript Engine.</h1>
 
@@ -62,53 +59,29 @@
 <h3 id="building">Building.</h3>
 
 <p>First we need is to install Git and install the all necessary build tools in others dist is called build-essentials in arch is called base-devel.</p>
-
-<pre><code class="language-sh">$ pacman -Sy base-devel git
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ pacman -Sy base-devel git</code></pre></div>
 <p>Now we need to download from Chromium project their specific tool depot_tools, this will allow us to checkout specifics projects from their repo in this case V8, then we add this directory to our PATH.</p>
-
-<pre><code class="language-sh">$ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-$ export PATH=$PWD/depot_tools:$PATH
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+$ export PATH<span style="color:#f92672">=</span>$PWD/depot_tools:$PATH</code></pre></div>
 <p>If you had python2 by default jump this step, in my case Arch came with Python3 by default so i need to re-direct the global /usr/bin/python to point the /usr/bin/python2.</p>
-
-<pre><code class="language-sh">$ ln -s /usr/bin/python2 /usr/bin/python
-$ ln -s /usb/bin/python2-config /usr/bin/python-config
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ln -s /usr/bin/python2 /usr/bin/python
+$ ln -s /usb/bin/python2-config /usr/bin/python-config</code></pre></div>
 <p>For 64 bits machine like mine I need to made a symlink to libtinfo.so.5</p>
-
-<pre><code class="language-sh">$ ln -s /usr/lib/libncurses.so.5.7 /lib64/libtinfo.so.5
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ln -s /usr/lib/libncurses.so.5.7 /lib64/libtinfo.so.5</code></pre></div>
 <p>If everything go is fine now you should be able to execute gclient from console.</p>
-
-<pre><code class="language-sh">$ gclient config url-v8-git-project
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ gclient config url-v8-git-project</code></pre></div>
 <p>This make a folder in your root dir named v8, this could be done better but I’m using a virtual machine, so no problem.</p>
 
 <p>go inside the created dir /home/user/v8 in my case.</p>
-
-<pre><code class="language-sh">$ make x64
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ make x64</code></pre></div>
 <p>or if you are in a 32bit machine.</p>
-
-<pre><code class="language-sh">$ make ia32
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ make ia32</code></pre></div>
 <p><br></p>
 
 <h3 id="what-to-do-now">What to do now ?</h3>
 
 <p>You can now execute the V8 REPL and load Javascript files, do profiling, and tons of other stuff. To had global access just add the binary to the system vars.</p>
-
-<pre><code class="language-sh">$ export $PATH:/home/cesar/v8/out/x64.release/d8
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ export $PATH:/home/cesar/v8/out/x64.release/d8</code></pre></div>
 <p>Or, what I found more interesting is use VM inside native programs and learn how to take advantage of a high level language like Javascript and give it some new abilities like Socket, Disk, etc. <a href="https://github.com/cesarvr/v8-hacking&gt;">Here</a> you can find a basic Hello World C++ program that run Javascript inside just need to clone it and start hack.</p>
 
 <p>For those interested in how the VM works some useful links:</p>
@@ -118,4 +91,13 @@ $ ln -s /usb/bin/python2-config /usr/bin/python-config
 <li><a href="http://wingolog.org/tags/v8&gt;">nice Blog, the author write about v8 intrinsics</a></li>
 <li><a href="http://v8.paulfryzel.com/docs/master/&gt;">Unofficial V8 API</a></li>
 </ul>
- </div><div class="section footer"></div></div></body>
+ </div><div class="section bottom-menu"><hr/><p>
+
+
+<a href="/post">writing</a>
+
+
+&#183; <a href="/about">about</a>
+&#183; <a href="https://github.com/cesarvr">code</a>
+
+&#183; <a href="/"></a></p></div><div class="section footer">My cloud native blog ;)</div></div></body>

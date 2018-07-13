@@ -31,96 +31,88 @@
         crossorigin="anonymous"></script>
     
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110580110-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-110580110-1');
+    </script>
+    
 
 </head>
 
 </html>
-<body><div class="wrap"><div class="section" id="title">Arch Linux install cheat sheet</div><div class="section" id="content"> <nav id="TableOfContents">
-<ul>
-<li><a href="#partition">Partition</a></li>
-<li><a href="#formating-and-swap">Formating and Swap.</a></li>
-<li><a href="#mount-and-install">Mount and Install.</a></li>
-<li><a href="#quick-config">Quick config</a></li>
-</ul>
-</nav> 
+<body><div class="wrap"><div class="section" id="title">Arch Linux install cheat sheet</div><div class="section" id="content">  
 
 <p>Arch Linux installation instruction for the impatient.</p>
 
 <h1 id="partition">Partition</h1>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">fdisk /dev/d <span style="color:#75715e">#sda all disk in my case.
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#15 GB partition.
+</span><span style="color:#75715e"></span>Command <span style="color:#f92672">(</span>m <span style="color:#66d9ef">for</span> help<span style="color:#f92672">)</span>:    <span style="color:#75715e">#type n and press Enter
+</span><span style="color:#75715e"></span>Partition type: Select <span style="color:#f92672">(</span>default p<span style="color:#f92672">)</span>: <span style="color:#75715e">#press Enter
+</span><span style="color:#75715e"></span>Partition number <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span>-4, default <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span>: <span style="color:#75715e">#press Enter
+</span><span style="color:#75715e"></span>First sector <span style="color:#f92672">(</span><span style="color:#ae81ff">2048</span>-209715199, default <span style="color:#ae81ff">2048</span><span style="color:#f92672">)</span>: <span style="color:#75715e">#press Enter start in the beginning.
+</span><span style="color:#75715e"></span>Last sector, +sectors or +size...<span style="color:#f92672">()</span>:  <span style="color:#75715e">#type +19G and press Enter.
+</span><span style="color:#75715e"></span>
 
-<pre><code class="language-sh">
-fdisk /dev/d #sda all disk in my case.
-
-#15 GB partition.
-Command (m for help):    #type n and press Enter
-Partition type: Select (default p): #press Enter
-Partition number (1-4, default 1): #press Enter
-First sector (2048-209715199, default 2048): #press Enter start in the beginning.
-Last sector, +sectors or +size...():  #type +19G and press Enter.
-
-
-#SWAP 1GB
-Command (m for help): #type n and press Enter
-Partition type: Select (default p): #press Enter
-Partition number (1-4, default 2): #press Enter
-First sector (): #press Enter
-Last sector, +sectors or +size...():  # +1G press Enter.
-
-#type o *to see if the changes are right.
-#type w *to write the changes
-</code></pre>
-
+<span style="color:#75715e">#SWAP 1GB
+</span><span style="color:#75715e"></span>Command <span style="color:#f92672">(</span>m <span style="color:#66d9ef">for</span> help<span style="color:#f92672">)</span>: <span style="color:#75715e">#type n and press Enter
+</span><span style="color:#75715e"></span>Partition type: Select <span style="color:#f92672">(</span>default p<span style="color:#f92672">)</span>: <span style="color:#75715e">#press Enter
+</span><span style="color:#75715e"></span>Partition number <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span>-4, default <span style="color:#ae81ff">2</span><span style="color:#f92672">)</span>: <span style="color:#75715e">#press Enter
+</span><span style="color:#75715e"></span>First sector <span style="color:#f92672">()</span>: <span style="color:#75715e">#press Enter
+</span><span style="color:#75715e"></span>Last sector, +sectors or +size...<span style="color:#f92672">()</span>:  <span style="color:#75715e"># +1G press Enter.
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#type o *to see if the changes are right.
+</span><span style="color:#75715e"></span>#type w *to write the changes</code></pre></div>
 <h1 id="formating-and-swap">Formating and Swap.</h1>
-
-<pre><code class="language-sh">mkfs.ext4 /dev/sda1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">mkfs.ext4 /dev/sda1
 mkfs.ext4 /dev/sda2
 
 mkswap /dev/sdaX —&gt; mines is sda2 1GB
-swapon /dev/sdaX —&gt; mines is sda2 1GB
-</code></pre>
-
+swapon /dev/sdaX —&gt; mines is sda2 1GB</code></pre></div>
 <h1 id="mount-and-install">Mount and Install.</h1>
-
-<pre><code class="language-sh">cd /mnt
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cd /mnt
 mkdir disk
 mount /dev/sda1 disk
-pacstrap disk/ base &lt;— take a coffe
-
-</code></pre>
-
-<pre><code class="language-sh">
-#genfstab generates fstab file based on the devices mounted under the mount point.
-#assuming you are inside /mnt
-genfstab -p disk/ &gt; disk/etc/fstab
-
-</code></pre>
-
+pacstrap disk/ base &lt;— take a coffe</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#genfstab generates fstab file based on the devices mounted under the mount point.
+</span><span style="color:#75715e">#assuming you are inside /mnt
+</span><span style="color:#75715e"></span>genfstab -p disk/ &gt; disk/etc/fstab</code></pre></div>
 <h1 id="quick-config">Quick config</h1>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#chroot
+</span><span style="color:#75715e"></span>arch-chroot mnt/ <span style="color:#75715e">#folder
+</span><span style="color:#75715e"></span>
 
-<pre><code class="language-sh">#chroot
-arch-chroot mnt/ #folder
+<span style="color:#75715e"># echo computer_name &gt; /etc/hostname
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#locale configuration
+</span><span style="color:#75715e"></span>locale-gen
+
+<span style="color:#75715e">#choose your locale configuration.
+</span><span style="color:#75715e"></span>echo LANG<span style="color:#f92672">=</span>your_locale &gt; /etc/locale.conf
+
+<span style="color:#75715e">#example echo LANG=en_IE.ISO-8859-15@EURO &gt; /etc/locale.conf
+</span><span style="color:#75715e">#you can uncomment your locale inside the file /etc/locale.conf
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#keymap configuration.
+</span><span style="color:#75715e"></span>echo KEYMAP<span style="color:#f92672">=</span>es &gt; /etc/vconsole.conf
+
+<span style="color:#75715e">#root password
+</span><span style="color:#75715e"></span>passwd
+
+<span style="color:#75715e">#Installing the bootloader.
+</span><span style="color:#75715e"></span>pacman -Sy grub  &lt;— install
+grub-install --target<span style="color:#f92672">=</span>i386-pc --recheck --debug /dev/sdx <span style="color:#75715e">#sda, never sda1..x
+</span><span style="color:#75715e"></span>grub-mkconfig -o /boot/grub/grub.cfg</code></pre></div> </div><div class="section bottom-menu"><hr/><p>
 
 
-# echo computer_name &gt; /etc/hostname
+<a href="/post">writing</a>
 
-#locale configuration
-locale-gen
 
-#choose your locale configuration.
-echo LANG=your_locale &gt; /etc/locale.conf
+&#183; <a href="/about">about</a>
+&#183; <a href="https://github.com/cesarvr">code</a>
 
-#example echo LANG=en_IE.ISO-8859-15@EURO &gt; /etc/locale.conf
-#you can uncomment your locale inside the file /etc/locale.conf
-
-#keymap configuration.
-echo KEYMAP=es &gt; /etc/vconsole.conf
-
-#root password
-passwd
-
-#Installing the bootloader.
-pacman -Sy grub  &lt;— install
-grub-install --target=i386-pc --recheck --debug /dev/sdx #sda, never sda1..x
-grub-mkconfig -o /boot/grub/grub.cfg
-</code></pre>
- </div><div class="section footer"></div></div></body>
+&#183; <a href="/"></a></p></div><div class="section footer">My cloud native blog ;)</div></div></body>
