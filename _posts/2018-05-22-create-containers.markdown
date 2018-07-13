@@ -766,9 +766,10 @@ Imagine now that we are given the task to contain a program from creating more p
 
 #### Limiting Process Creation 
 
-Let's use one of the control groups available, the one we are going to use is called the *pids* controller, which can be use to limit the amount of time a process can replicate itself via [fork](http://man7.org/linux/man-pages/man2/fork.2.html) or [clone](http://man7.org/linux/man-pages/man2/clone.2.html). Before we start I'll explain how we can interact with ([Linux Control Group](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)). 
 
-You might heard the phrase in Linux ["Everything is a file"](https://en.wikipedia.org/wiki/Everything_is_a_file), cgroup like procfs is another example of that philosophy. This mean we can interface with it by using any files I/O API or application. For this example I'll use this simple Linux I/O API [open](http://man7.org/linux/man-pages/man3/fopen.3.html), [write](https://linux.die.net/man/2/write), [read](https://linux.die.net/man/3/read) and [close](http://man7.org/linux/man-pages/man3/fclose.3.html). Now the next step is to understand what folder or files we need to modify.     
+We are going to use cgroups to limit the amount of processes we can create inside or container, the control group called *pids* controller can be use to limit the amount of time a process can replicate itself example using [fork](http://man7.org/linux/man-pages/man2/fork.2.html) or [clone](http://man7.org/linux/man-pages/man2/clone.2.html). 
+
+Before we start I'll explain how we can interact with ([Linux Control Group](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)), you might heard the phrase that in Linux ["Everything is a file"](https://en.wikipedia.org/wiki/Everything_is_a_file), cgroup like procfs is another example of that philosophy. This mean cgroup is a kernel feature that can be mounted like any other file system and interface with it using any I/O API or the applications you use to handle files. For this example I'll use the Linux I/O interface by excellence which is [open](http://man7.org/linux/man-pages/man3/fopen.3.html), [write](https://linux.die.net/man/2/write), [read](https://linux.die.net/man/3/read) and [close](http://man7.org/linux/man-pages/man3/fclose.3.html). Now the next step is to understand what folder or files we need to modify.     
 
 The control group file system directory is usually mounted here:
 
