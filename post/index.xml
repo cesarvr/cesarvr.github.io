@@ -23,10 +23,10 @@ Why C Because I love the simplicity of that language (maybe I&amp;rsquo;m just a
     
     <item>
       <title>Containers For Beginners</title>
-      <link>/post/2017-12-22-Containers/</link>
+      <link>/post/2017-12-22-containers/</link>
       <pubDate>Fri, 22 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>/post/2017-12-22-Containers/</guid>
+      <guid>/post/2017-12-22-containers/</guid>
       <description>What is a container ? A container is just a way to achieve process isolation. Unlike virtual machines, they don’t achieve isolation by simulating hardware, but by using existing Linux kernel features.
 In a typical Unix/Linux OS all processes share the same user space, but with the introduction of new features in Linux 2.6+, you can create a process that has its own particular set of isolated contexts like file tree, threads, etc.</description>
     </item>
