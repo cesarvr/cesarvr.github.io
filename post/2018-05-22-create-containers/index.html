@@ -97,19 +97,19 @@
 
 <h1 id="what-is-this-post-about">What is this post about</h1>
 
-<p>Is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are base in this excellent <a href="https://www.youtube.com/watch?v=_TsSmSu57Zo">talk</a> done by <a href="https://twitter.com/lizrice">Liz Rice</a>.</p>
+<p>This post is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are based on this excellent <a href="https://www.youtube.com/watch?v=_TsSmSu57Zo">talk</a> by <a href="https://twitter.com/lizrice">Liz Rice</a>.</p>
 
 <h2 id="why-c">Why C</h2>
 
-<p>Because I love the simplicity of that language (maybe I&rsquo;m just a <a href="https://pragprog.com/magazines/2011-03/punk-rock-languages">romantic</a>) and also is the lingua franca of Linux, which means that it helps to get a better understanding about how things work at system level.</p>
+<p>Because I love the simplicity of the language (maybe I&rsquo;m just a <a href="https://pragprog.com/magazines/2011-03/punk-rock-languages">romantic</a>) and also it is the lingua franca of Linux, which means that it helps to get a better understanding about how things work at a system level.</p>
 
 <h2 id="why-you-might-care-about-it">Why you might care about it</h2>
 
-<p>I&rsquo;ve always loved to learn how stuff works behind the scene. I&rsquo;ve wrote this article for people that share the same curiosity. Also knowing how it works can help you respond to typical question like Can I run a binary from another CPU architecture in a container? is there any performance penalty? what&rsquo;s the difference between containers and VM? and so on.</p>
+<p>I&rsquo;ve always loved to learn how stuff works behind the scenes. I&rsquo;ve wrote this article for people that share the same curiosity. Also knowing how it works can help you respond to typical questions, such as &ldquo;Can I run a binary from another CPU architecture in a container?&rdquo;, &ldquo;Is there any performance penalty?&rdquo;, &ldquo;What&rsquo;s the difference between containers and VM?&rdquo; and so on.</p>
 
 <h2 id="hello-world">Hello World!</h2>
 
-<p>Enough of introduction let&rsquo;s write our container, in other words, a program that isolate other programs. We are going to start by writing the obligatory <em>Hello World</em>.</p>
+<p>Enough with the introduction let&rsquo;s write our container, in other words, a program that isolates other programs. We are going to start by writing the obligatory <em>Hello World</em>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
   printf(<span style="color:#e6db74">&#34;Hello, World! </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
@@ -117,12 +117,12 @@
 }</code></pre></div>
 <p>To compile the code, we just call:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">g++ container.cc -o container  </code></pre></div>
-<p>This will generate our binary called <em>container</em>, that we should execute by doing:</p>
+<p>This will generate our binary called <em>container</em>, that we can now execute by doing:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">./container   
 # Hello World!</code></pre></div>
 <h2 id="how-to-create-a-process">How to create a process</h2>
 
-<p>The first functionality we need to implement in our program is a way to execute other programs, but when you execute a program in Linux the program take control of the process, which mean you are no longer in control, to solve this we are going create a new process and execute the program there.</p>
+<p>The first functionality we need to implement in our program is a way to execute other programs, but when you execute a program in Linux the program takes control of the process, which means you are no longer in control, to solve this we are going to create a new process and execute the program there.</p>
 
 <p>Right now our process looks like this:</p>
 
@@ -133,7 +133,7 @@
   +--------+ 
 </code></pre>
 
-<p>To create a new process we need to clone the actual process and provide a function to be executed in it. Let&rsquo;s start by writing the function let&rsquo;s called <code>jail</code>.</p>
+<p>To create a new process we need to clone the actual process and provide a function to be executed in it. Let&rsquo;s start by writing the function, we&rsquo;ll call it <code>jail</code>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">jail</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>args) {
   printf(<span style="color:#e6db74">&#34;Hello !! ( child ) </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
   <span style="color:#66d9ef">return</span> EXIT_SUCCESS;  
@@ -149,7 +149,7 @@
   +--------+ 
 </code></pre>
 
-<p>Next step is to invoke the system call to create the child process, for this we are going to use <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a> system call.</p>
+<p>Our next step is to invoke the system call to create the child process, for this we are going to use the <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a> system call.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sched.h&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sys/types.h&gt;</span><span style="color:#75715e">
@@ -168,7 +168,7 @@
 
   <span style="color:#66d9ef">return</span> EXIT_SUCCESS;
 }</code></pre></div>
-<p>First parameter is our entry point function, <em>second</em> parameter requires a pointer to allocated memory, <em>third</em> (SIGCHLD) this flag tell the process to emit a signal when finish and the <em>fourth</em> and last one is only necessary if we want to pass arguments to the <code>jail</code> function, in this case we pass just <code>0</code>.</p>
+<p>The first parameter is our entry point function, <em>second</em> parameter requires a pointer to allocated memory, <em>third</em> (SIGCHLD) this flag tells the process to emit a signal when finished and the <em>fourth</em> and last one is only necessary if we want to pass arguments to the <code>jail</code> function, in this case we pass just <code>0</code>.</p>
 
 <pre><code>  +--------+             +--------+
   | parent |             |  copy  |
@@ -179,9 +179,9 @@
   +--------+                
 </code></pre>
 
-<p>After creating the new process we need to tell the parent process to wait until the child finish execution, otherwise the child can become a <a href="https://en.wikipedia.org/wiki/Zombie_process">zombie</a>. The <a href="http://man7.org/linux/man-pages/man2/wait.2.html">wait</a> system call does just that.</p>
+<p>After creating the new process we need to tell the parent process to wait until the child finishes execution, otherwise the child can become a <a href="https://en.wikipedia.org/wiki/Zombie_process">zombie</a>. The <a href="http://man7.org/linux/man-pages/man2/wait.2.html">wait</a> system call does just that.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"> wait(nullptr); <span style="color:#f92672">//</span>wait <span style="color:#66d9ef">for</span> every child.</code></pre></div>
-<p>We update the code will look like this:</p>
+<p>The updated code will look like this:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sched.h&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sys/types.h&gt;</span><span style="color:#75715e">
@@ -205,11 +205,11 @@
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">./container
 <span style="color:#75715e">#Hello, World! ( parent )
 </span><span style="color:#75715e"></span>#Hello !! <span style="color:#f92672">(</span> child <span style="color:#f92672">)</span></code></pre></div>
-<p>Here our program send the first greeting (parent), then we clone the process and run the <code>jail</code> function inside and it end up printing a greeting as well.</p>
+<p>Here our program sends the first greeting (parent), then we clone the process and run the <code>jail</code> function inside and it ends up printing a greeting as well.</p>
 
 <h2 id="running-programs">Running programs</h2>
 
-<p>It&rsquo;s time to load a real program. Let&rsquo;s chose <a href="https://en.wikipedia.org/wiki/Unix_shell">shell</a>, so we can test what&rsquo;s happening inside our container. To load a program we are going to use <a href="https://linux.die.net/man/3/execvp">execvp</a>, this function will replace the current process in this case the child with a instance of the program.</p>
+<p>It&rsquo;s time to load a real program. Let&rsquo;s chose <a href="https://en.wikipedia.org/wiki/Unix_shell">shell</a>, so we can test what&rsquo;s happening inside our container. To load a program we are going to use <a href="https://linux.die.net/man/3/execvp">execvp</a>, this function will replace the current process in this case, the child with a instance of the program.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">execvp(<span style="color:#e6db74">&#34;&lt;path-to-executable&gt;&#34;</span>, {array<span style="color:#f92672">-</span>of<span style="color:#f92672">-</span>parameters<span style="color:#f92672">-</span>including<span style="color:#f92672">-</span>executable});
 </code></pre></div>
 <p>The syntax to run the program will look something like this:</p>
@@ -223,7 +223,7 @@ execvp(<span style="color:#e6db74">&#34;/bin/sh&#34;</span>, _args);
   execvp(name, _args);
 }
 </code></pre></div>
-<p>This version is enough for our purposes, but it doesn&rsquo;t support multiple parameters, so just for fun I write this alternative version that accepts multiple parameters using some C++ templates black magic.</p>
+<p>This version is enough for our purposes, but it doesn&rsquo;t support multiple parameters, so just for fun I wrote this alternative version that accepts multiple parameters using some C++ templates black magic.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">//we can call it like this: run(&#34;/bin/sh&#34;,&#34;-c&#34;, &#34;echo hello!&#34;);  
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span>... P<span style="color:#f92672">&gt;</span>
 <span style="color:#66d9ef">int</span> run(P... params) {
@@ -247,9 +247,9 @@ sh-4.4$
 
 <h2 id="environment-variables">Environment variables</h2>
 
-<p>After playing around with <code>sh</code> we are noticing that is far from being isolate. To understand how changing the execution context change how the underlying process behave, we are going to run a simple example by clearing the environment variables for the <code>sh</code> process.</p>
+<p>After playing around with <code>sh</code> we are noticing that is far from being isolate. To understand how changing the execution context changes how the underlying process behave, we are going to run a simple example by clearing the environment variables for the <code>sh</code> process.</p>
 
-<p>This is easy we just need to clear the variables before we passing the control to <code>/bin/sh</code>. We can delete all the environment variables for the child context using the function <a href="https://linux.die.net/man/3/clearenv">clearenv</a>.</p>
+<p>This is easy we just need to clear the variables before passing the control to <code>/bin/sh</code>. We can delete all the environment variables for the child context using the function <a href="https://linux.die.net/man/3/clearenv">clearenv</a>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">jail</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>args) {
   clearenv();   <span style="color:#75715e">// remove all environment variables for this process.
 </span><span style="color:#75715e"></span>
@@ -261,13 +261,13 @@ sh-4.4$
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">  <span style="color:#75715e"># env
 </span><span style="color:#75715e"></span>  SHLVL<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
   PWD<span style="color:#f92672">=</span>/</code></pre></div>
-<p>Not bad, we solved the information leak from the guest and we are able to observe that performing changes in the context of the child process stay local to the child process.</p>
+<p>Not bad, we solved the information leak from the guest and we are able to observe that performing changes in the context of the child process stays local to the child process.</p>
 
 <h2 id="linux-namespaces">Linux namespaces</h2>
 
 <h3 id="universal-time-sharing">Universal Time Sharing</h3>
 
-<p>Imagine an scenario where we have to deal with a program that need to change the host name of the machine to work, if you execute this program in your machine it can mess with other programs like for example your network file sharing services. Imagine that somebody give us the task to look for the most efficient way to do this, first option coming to mind is using a VM, but we need to provision the VM (Memory, Storage, CPU, etc..), install the OS, etc. It can take a couple of hour. It won&rsquo;t be nice if your Operative System can deal with that isolation for you? Here is when <a href="https://en.wikipedia.org/wiki/Linux_namespaces">Linux Namespaces</a> come into the picture.</p>
+<p>Imagine a scenario where we have to deal with a program that needs to change the host name of the machine to work, if you execute this program in your machine it can mess with other programs like for example your network file sharing services. Imagine that somebody gives us the task to look for the most efficient way to do this, the first option that comes to mind is using a VM, but we need to provision the VM (Memory, Storage, CPU, etc..), install the OS, etc. It can take a couple of hours. It won&rsquo;t be nice if your Operative System can deal with that isolation for you? This is where <a href="https://en.wikipedia.org/wiki/Linux_namespaces">Linux Namespaces</a> come into the picture.</p>
 
 <p>Here is a quick illustration.</p>
 
@@ -321,7 +321,7 @@ sh-4.4$
 <p>Now lets prove our hypothesis, we recompile and execute our program:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">./container                                                     
 error: clone<span style="color:#f92672">()</span>: Operation not permitted</code></pre></div>
-<p>This happens because, what we try to do (cloning the UTS namespace) requires <a href="https://lwn.net/Articles/486306/">CAP_SYS_ADMIN</a>, or in other words; we need elevated privileges.</p>
+<p>This happens because what we&rsquo;re trying to do (cloning the UTS namespace) requires <a href="https://lwn.net/Articles/486306/">CAP_SYS_ADMIN</a>, or in other words; we need elevated privileges.</p>
 
 <pre><code>sudo ./container                                      
 [sudo] password for cesar:
@@ -329,13 +329,13 @@ process created with pid: 12906
 sh-4.4#
 </code></pre>
 
-<p>It works!, now let&rsquo;s see what happen when we modify the host name:</p>
+<p>It works! Now let&rsquo;s see what happen when we modify the host name:</p>
 
 <p><img src="https://raw.githubusercontent.com/cesarvr/cesarvr.github.io/master/static/containers/uts.gif" alt="alt text" title="Cloning UTS Namespace" /></p>
 
 <h3 id="new-process-tree">New Process Tree</h3>
 
-<p>This time we are going to isolate our shell process from the rest of processes, from it&rsquo;s point of view it will be running solo in the machine, this one like the example above require to pass just a flag <code>CLONE_NEWPID</code> in this case. To illustrate the effect of this flag we are going to display the process identifier using <a href="http://man7.org/linux/man-pages/man2/getpid.2.html">getpid</a>:</p>
+<p>This time we are going to isolate our shell process from the rest of the processes, from it&rsquo;s point of view it will be running solo in the machine, this one like the example above requires to pass just a flag <code>CLONE_NEWPID</code> in this case. To illustrate the effect of this flag we are going to display the process identifier using <a href="http://man7.org/linux/man-pages/man2/getpid.2.html">getpid</a>:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">jail</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>args) {
   clearenv();
   printf(<span style="color:#e6db74">&#34;child process: %d&#34;</span>, getpid());
@@ -358,17 +358,17 @@ sh-4.4#
 parent pid: <span style="color:#ae81ff">3306</span>
 child pid: <span style="color:#ae81ff">1</span>
 / #</code></pre></div>
-<p>As you can observe the child <em>PID</em> is 1, from child process perspective is the only process in the machine, now let&rsquo;s see if we can still see other processes in the system by executing <code>ps</code>.</p>
+<p>As you can observe the child <em>PID</em> is 1, from the child process&rsquo;s perspective, it is the only process in the machine. Now let&rsquo;s see if we can still see other processes in the system by executing <code>ps</code>.</p>
 
 <p><img src="https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/pid-ns.gif?raw=true" alt="alt text" title="PID NS" /></p>
 
-<p>We are still capable to list other processes in the system, but this is because our process and it&rsquo;s child <code>ps</code> still have access to the  <code>/proc</code> folder, in the next section we are going to learn how to isolate the folders our process can access.</p>
+<p>We are still able to list other processes in the system, but this is because our process and it&rsquo;s child <code>ps</code> still have access to the  <code>/proc</code> folder, in the next section we are going to learn how to isolate the folders our process can access.</p>
 
 <h2 id="isolating-a-file-system">Isolating A File System</h2>
 
 <h3 id="changing-the-root">Changing The Root</h3>
 
-<p>This one is easy we want just to change the root folder of our process using <a href="https://linux.die.net/man/1/chroot">chroot</a>. We basically can select a folder and isolate our process inside that folder in such a way that (theoretically) it cannot navigate outside. I draw this illustration to show what we try to achieve.</p>
+<p>This one is easy we just want to change the root folder of our process using <a href="https://linux.die.net/man/1/chroot">chroot</a>. We basically can select a folder and isolate our process inside that folder in such a way that (theoretically) it cannot navigate outside. I drew this illustration to show what we will try to achieve.</p>
 
 <pre><code>   folders our process can access 
     ----------------------------
@@ -392,7 +392,7 @@ child pid: <span style="color:#ae81ff">1</span>
                d  e  
 </code></pre>
 
-<p>Now we only can traverse from <code>b</code> to <code>e</code> or <code>d</code> that&rsquo;s the point behind changing the root, we can save sensitive files in <code>a</code> because the process cannot scape from <code>b</code>.</p>
+<p>Now we only can traverse from <code>b</code> to <code>e</code> or <code>d</code>, that&rsquo;s the point behind changing the root, we can save sensitive files in <code>a</code> because the process cannot escape from <code>b</code>.</p>
 
 <p>Let&rsquo;s write the necessary code to change the root.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setup_root</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> folder){
@@ -404,7 +404,7 @@ child pid: <span style="color:#ae81ff">1</span>
 
 <h4 id="preparing-the-root-folder">Preparing The Root Folder</h4>
 
-<p>We can change the root to an empty folder but if we do that we are going to loose the tools we are using so far to inspect the quality of our container (ls, cd, etc..), to avoid this we need to get some Linux base folder that include all this tools. I&rsquo;ll choose <a href="https://github.com/yobasystems/alpine">Alpine Linux</a> because is very lightweight.</p>
+<p>We can change the root to an empty folder but if we do that we are going to lose the tools we are using so far to inspect the quality of our container (ls, cd, etc..), to avoid this we need to get some Linux base folder that include all these tools. I&rsquo;ll choose <a href="https://github.com/yobasystems/alpine">Alpine Linux</a> because is very lightweight.</p>
 
 <p>Just grab the base <a href="http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs-3.7.0-x86_64.tar.gz">install</a>.</p>
 
@@ -412,7 +412,7 @@ child pid: <span style="color:#ae81ff">1</span>
 curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs-3.7.0-x86_64.tar.gz
 </code></pre>
 
-<p>Uncompress into a folder called <code>root</code> at the same level of our binary.</p>
+<p>Uncompress into a folder called <code>root</code> at the same level as our binary.</p>
 
 <pre><code>tar -xvf alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
 </code></pre>
@@ -421,7 +421,7 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 
 <h4 id="configuration">Configuration</h4>
 
-<p>Also we want to setup some environment variables to help shell to find the binaries and to help other processes to know what type of screen we have, we are going to replace <code>clearenv</code> with a function that take care of those tasks.</p>
+<p>Also we want to setup some environment variables to help shell to find the binaries and to help other processes to know what type of screen we have, we are going to replace <code>clearenv</code> with a function that takes care of those tasks.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setup_variables</span>() {
   clearenv();
   setenv(<span style="color:#e6db74">&#34;TERM&#34;</span>, <span style="color:#e6db74">&#34;xterm-256color&#34;</span>, <span style="color:#ae81ff">0</span>);
@@ -430,7 +430,7 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 </code></pre></div>
 <h4 id="coding">Coding</h4>
 
-<p>This is the how the code looks, after we implemented the functions:</p>
+<p>This is the how the code looks after we implemented the functions:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setup_variables</span>() {
   clearenv();
   setenv(<span style="color:#e6db74">&#34;TERM&#34;</span>, <span style="color:#e6db74">&#34;xterm-256color&#34;</span>, <span style="color:#ae81ff">0</span>);
@@ -464,15 +464,15 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 
 <p><img src="https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/setup_root.gif?raw=true" alt="alt text" title="chroot" /></p>
 
-<p>Now we cannot longer see the processes with <code>ps</code>, this is because we replaced the general <code>/proc</code> folder with the one that came with the alpine which by default is a empty directory, in the next section we are going to mount the <strong>proc</strong> file system.</p>
+<p>Now we no longer see the processes with <code>ps</code>, this is because we replaced the general <code>/proc</code> folder with the one that came with alpine which by default is an empty directory, in the next section we are going to mount the <strong>proc</strong> file system.</p>
 
 <h4 id="mounting-file-systems">Mounting File Systems</h4>
 
-<p>Mounting a file system is like exposing the content of a device like a disk, network or other entities by using the folder and files metaphors. In simple terms that what is. To mount something in Linux we need a resource that understand this metaphor like <a href="https://en.wikipedia.org/wiki/Procfs">procfs</a> and a folder we are going to choose the folder <code>/proc</code> that comes with alpine distribution.</p>
+<p>Mounting a file system is like exposing the content of a device like a disk, network or other entities by using the folder and files metaphors. In simple terms that&rsquo;s what is. To mount something in Linux we need a resource that understands this metaphor like <a href="https://en.wikipedia.org/wiki/Procfs">procfs</a> and a folder, we are going to choose the folder <code>/proc</code> that comes with the alpine distribution.</p>
 
-<p>To mount a file system in Linux we are use <a href="http://man7.org/linux/man-pages/man2/mount.2.html">mount</a> system call, this call require the following parameters to work:</p>
+<p>To mount a file system in Linux we can use the <a href="http://man7.org/linux/man-pages/man2/mount.2.html">mount</a> system call. This call requires the following parameters to work:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">mount(<span style="color:#e6db74">&#34;proc&#34;</span>, <span style="color:#e6db74">&#34;/proc&#34;</span>, <span style="color:#e6db74">&#34;proc&#34;</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);</code></pre></div>
-<p>The first parameter is the resource, the second is the folder destination and the third parameter is the type of file system in this case <a href="https://en.wikipedia.org/wiki/Procfs">procfs</a>.</p>
+<p>The first parameter is the resource, the second is the folder destination and the third parameter is the type of file system, in this case <a href="https://en.wikipedia.org/wiki/Procfs">procfs</a>.</p>
 
 <p>Implementing the code is simple we just add the same line as above after we configure the <strong>chroot</strong>:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">jail</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>args) {
@@ -496,20 +496,20 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 }</code></pre></div>
 <h3 id="unmount">Unmount</h3>
 
-<p>Every time we <a href="http://man7.org/linux/man-pages/man2/mount.2.html">mount</a> a file system is always a good practice that we release what we don&rsquo;t use. To release the binding we use <a href="http://man7.org/linux/man-pages/man2/umount.2.html">unmount</a>.</p>
+<p>Every time we <a href="http://man7.org/linux/man-pages/man2/mount.2.html">mount</a> a file system it is always good practice to release what we don&rsquo;t use. To release the binding we use <a href="http://man7.org/linux/man-pages/man2/umount.2.html">unmount</a>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">umount(<span style="color:#e6db74">&#34;&lt;mounted-folder&gt;&#34;</span>)</code></pre></div>
-<p>We are going to <a href="http://man7.org/linux/man-pages/man2/umount.2.html">unmount</a> just before our contained process exit:</p>
+<p>We are going to <a href="http://man7.org/linux/man-pages/man2/umount.2.html">unmount</a> just before our contained process exits:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">  mount(<span style="color:#e6db74">&#34;proc&#34;</span>, <span style="color:#e6db74">&#34;/proc&#34;</span>, <span style="color:#e6db74">&#34;proc&#34;</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
   
   run(<span style="color:#e6db74">&#34;/bin/sh&#34;</span>);
 
   umount(<span style="color:#e6db74">&#34;/proc&#34;</span>); 
   <span style="color:#66d9ef">return</span> EXIT_SUCCESS;</code></pre></div>
-<p>There is a small challenge here, that wasn&rsquo;t obvious for me the first time. Every time we call <code>run</code> our process get replaced by a new process image and we won&rsquo;t be able to call <code>umount</code>, basically the instructions are going to stop in <code>run</code> and from there <code>sh</code> is in control and we can forget about the last two instructions.</p>
+<p>There is a small challenge here, that wasn&rsquo;t obvious for me the first time. Every time we call <code>run</code> our process gets replaced by a new process image and we won&rsquo;t be able to call <code>umount</code>, basically the instructions are going to stop in <code>run</code> and from there <code>sh</code> is in control and we can forget about the last two instructions.</p>
 
-<p>The solution to this is to decouple this program loading from the rest of the child function. As we learn above, to run a function in a separated process in Linux we use <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a>. Let&rsquo;s make use of this knowledge and re-factor our code.</p>
+<p>The solution to this is to decouple this program loading from the rest of the child function. As we learned above, to run a function in a separated process in Linux we use <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a>. Let&rsquo;s make use of this knowledge and re-factor our code.</p>
 
-<p>Let&rsquo;s start by grouping our process creation instruction into a reusable function:</p>
+<p>Let&rsquo;s start by grouping our process creation instructions into a reusable function:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span><span style="color:#f92672">**</span> argv) {
   printf(<span style="color:#e6db74">&#34;parent %d&#34;</span>, getpid());
 
@@ -518,14 +518,14 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 
   <span style="color:#66d9ef">return</span> EXIT_SUCCESS;
 }</code></pre></div>
-<p>We rewrite this two instructions into a more nicer interface:</p>
+<p>We can rewrite these two instructions into a nicer interface:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">template <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> Function<span style="color:#f92672">&gt;</span>
 <span style="color:#66d9ef">void</span> clone_process(Function<span style="color:#f92672">&amp;&amp;</span> function, <span style="color:#66d9ef">int</span> flags){
  <span style="color:#66d9ef">auto</span> pid <span style="color:#f92672">=</span> clone(function, stack_memory(), flags, <span style="color:#ae81ff">0</span>);
 
  wait(nullptr);
 }</code></pre></div>
-<p>Here, I&rsquo;m using a C++ template to create a new &ldquo;generic type&rdquo; called <strong>Function</strong> which will morph into a C function, then we pass function to <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a>, also we pass the flags as an integer.</p>
+<p>Here, I&rsquo;m using a C++ template to create a new &ldquo;generic type&rdquo; called <strong>Function</strong> which will morph into a C function, then we pass the function to <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a>, also we pass the flags as an integer.</p>
 
 <p>To use our function we just re-write our <em>main</em> function:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span><span style="color:#f92672">**</span> argv) {
@@ -556,9 +556,9 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">auto</span> runThis <span style="color:#f92672">=</span> [](<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>args) <span style="color:#f92672">-&gt;</span><span style="color:#66d9ef">int</span> { run(<span style="color:#e6db74">&#34;/bin/sh&#34;</span>); };
 
 clone_process(runThis, SIGCHLD);</code></pre></div>
-<p>Here we just a C++ feature called (<a href="https://en.cppreference.com/w/cpp/language/lambda">Lambda</a>) which basically is like a in-line function, the we plug it to our generic typed <code>clone_process</code> and the compiler do the rest.</p>
+<p>Here we use a C++ feature called (<a href="https://en.cppreference.com/w/cpp/language/lambda">Lambda</a>) which basically is like an in-line function, the we plug it to our generic typed <code>clone_process</code> and the compiler do the rest.</p>
 
-<p>Our last version look like this:</p>
+<p>Our final version looks like this:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">jail</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>args) {
 
   printf(<span style="color:#e6db74">&#34;child pid: %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, getpid());
@@ -593,9 +593,9 @@ clone_process(runThis, SIGCHLD);</code></pre></div>
 
 <h4 id="explanation">Explanation</h4>
 
-<p>When we create the child process (<code>jail</code>) we used the flag <code>CLONE_NEWPID</code>, this flag give to our cloned process something like it&rsquo;s own process tree.</p>
+<p>When we create the child process (<code>jail</code>) we use the flag <code>CLONE_NEWPID</code>, this flag gives our cloned process something like it&rsquo;s own process tree.</p>
 
-<p>This is how our the system looks under normal conditions.</p>
+<p>This is how our system looks under normal conditions.</p>
 
 <pre><code>   Init-1
    ------ 
@@ -611,7 +611,7 @@ systemd-2  bash-3   our-container-4
 
 </code></pre>
 
-<p>When we apply the flag <code>CLONE_NEWPID</code> and this happens:</p>
+<p>When we apply the flag <code>CLONE_NEWPID</code> this happens:</p>
 
 <pre><code>   Init-1
    ------ 
@@ -626,7 +626,7 @@ systemd-2  bash-3   our-container-4
                     shell - 6 
 </code></pre>
 
-<p>Nothing change at global scale, but our process from our process perspective we see the world like this:</p>
+<p>Nothing changes at a global scale, but from our process&rsquo;s perspective we see the world like this:</p>
 
 <pre><code>   jail - 1
    ------ 
@@ -635,34 +635,34 @@ systemd-2  bash-3   our-container-4
    shell-2  
 </code></pre>
 
-<p>Try to call <code>ps</code> inside this version and you will get this.</p>
+<p>Try to call <code>ps</code> inside this version and you will get the following:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">PID   USER     TIME   COMMAND
     <span style="color:#ae81ff">1</span> root       <span style="color:#ae81ff">0</span>:00 ./container
     <span style="color:#ae81ff">2</span> root       <span style="color:#ae81ff">0</span>:00 /bin/sh</code></pre></div>
-<p>Moral of the story is when you clone the PID tree, your process is not able not longer able to track other processes but you can still track the everything from outside the container. For example if you run <code>ps aux | grep sh</code> you&rsquo;ll be able to see your container. Try this with Docker or LXC and see what happens.</p>
+<p>Moral of the story is when you clone the PID tree, your process is no longer able to track other processes but you can still track everything from outside the container. For example if you run <code>ps aux | grep sh</code> you&rsquo;ll be able to see your container. Try this with Docker or LXC and see what happens.</p>
 
 <p>Here is a small screen recording:</p>
 
 <p><img src="https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/pid-track.gif?raw=true" alt="track" /></p>
 
-<p>Check how <code>sleep</code> has different PID inside the container and outside.</p>
+<p>Check how <code>sleep</code> has a different PID inside the container and outside.</p>
 
 <h2 id="control-group">Control Group</h2>
 
-<p>Imagine now that we are given the task to contain a program from creating more processes, taking all the network bandwidth, consuming all the CPU time available or how do we guarantee that our contained applications live in harmony with other processes? To solve this type of problem Linux provide a feature called (<a href="https://www.kernel.org/doc/Documentation/cgroup-v2.txt">Linux Control Group</a>) or cgroup for short, which is a mechanism to distribute kernel resources between processes.</p>
+<p>Imagine now that we are given the task to contain a program from creating more processes, taking all the network bandwidth, consuming all the CPU time available. How do we guarantee that our contained applications live in harmony with other processes? To solve this type of problem Linux provides a feature called (<a href="https://www.kernel.org/doc/Documentation/cgroup-v2.txt">Linux Control Group</a>) or cgroup for short, which is a mechanism to distribute kernel resources between processes.</p>
 
 <h3 id="limiting-process-creation">Limiting Process Creation</h3>
 
-<p>We are going to use cgroups to limit the amount of processes we can create inside or container, the control group called <em>pids</em> controller can be use to limit the amount of time a process can replicate itself example using <a href="http://man7.org/linux/man-pages/man2/fork.2.html">fork</a> or <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a>.</p>
+<p>We are going to use cgroups to limit the amount of processes we can create inside our container, the control group called <em>pids</em> controller can be used to limit the amount of times a process can replicate itself, for example using <a href="http://man7.org/linux/man-pages/man2/fork.2.html">fork</a> or <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a>.</p>
 
-<p>Before we start I&rsquo;ll explain how we can interact with (<a href="https://www.kernel.org/doc/Documentation/cgroup-v2.txt">Linux Control Group</a>), you might heard the phrase that in Linux <a href="https://en.wikipedia.org/wiki/Everything_is_a_file">&ldquo;Everything is a file&rdquo;</a>, cgroup like procfs is another example of that philosophy. This mean cgroup is a kernel feature that can be mounted like any other file system and interface with it using any I/O API or the applications you use to handle files. For this example I&rsquo;ll use the Linux I/O interface by excellence which is <a href="http://man7.org/linux/man-pages/man3/fopen.3.html">open</a>, <a href="https://linux.die.net/man/2/write">write</a>, <a href="https://linux.die.net/man/3/read">read</a> and <a href="http://man7.org/linux/man-pages/man3/fclose.3.html">close</a>. Now the next step is to understand what folder or files we need to modify.</p>
+<p>Before we start I&rsquo;ll explain how we can interact with (<a href="https://www.kernel.org/doc/Documentation/cgroup-v2.txt">Linux Control Group</a>), you might have heard the phrase that in Linux <a href="https://en.wikipedia.org/wiki/Everything_is_a_file">&ldquo;Everything is a file&rdquo;</a>, cgroup like procfs is another example of that philosophy. This means cgroup is a kernel feature that can be mounted like any other file system and interface with it using any I/O API or the applications you use to handle files. For this example I&rsquo;ll use the Linux I/O interface by excellence which is <a href="http://man7.org/linux/man-pages/man3/fopen.3.html">open</a>, <a href="https://linux.die.net/man/2/write">write</a>, <a href="https://linux.die.net/man/3/read">read</a> and <a href="http://man7.org/linux/man-pages/man3/fclose.3.html">close</a>. Now the next step is to understand what folder or files we need to modify.</p>
 
 <p>The control group file system directory is usually mounted here:</p>
 
 <pre><code> /sys/fs/cgroup  
 </code></pre>
 
-<p>We want to limit the creation of processes, so we need to go to <code>pids</code> folder.</p>
+<p>We want to limit the creation of processes, so we need to go to the <code>pids</code> folder.</p>
 
 <pre><code> /sys/fs/cgroup/pids/  
 </code></pre>
@@ -682,10 +682,10 @@ systemd-2  bash-3   our-container-4
 </span><span style="color:#75715e"></span>  mkdir( PID_CGROUP_FOLDER, S_IRUSR <span style="color:#f92672">|</span> S_IWUSR);  
 
 }</code></pre></div>
-<p>When we create this folder, <strong>cgroup</strong> automatically generate some files inside, those files describe the rules and states of the processes in that group, at the moment now we don&rsquo;t have any process attached.</p>
+<p>When we create this folder, <strong>cgroup</strong> automatically generates some files inside, those files describe the rules and states of the processes in that group, at the moment we don&rsquo;t have any process attached.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">/sys/fs/cgroup/pids/container/$ ls  
 cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.events  pids.max  tasks</code></pre></div>
-<p>To attach a process here we need to (write)[<a href="https://linux.die.net/man/2/write">https://linux.die.net/man/2/write</a>] the process identifier (PID) of our process to the file <code>cgroup.procs</code>.</p>
+<p>To attach a process here we need to <a href="https://linux.die.net/man/2/write">write</a> the process identifier (PID) of our process to the file <code>cgroup.procs</code>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string.h&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;fcntl.h&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e"></span>
@@ -709,7 +709,7 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
 
   write_rule(concat(CGROUP_FOLDER, <span style="color:#e6db74">&#34;cgroup.procs&#34;</span>), pid);
 }</code></pre></div>
-<p>We&rsquo;ve registered our process id, next we need to (write)[<a href="https://linux.die.net/man/2/write">https://linux.die.net/man/2/write</a>] to the file <code>pids.max</code> limit of processes our children can create, let&rsquo;s try with 5.</p>
+<p>We&rsquo;ve registered our process id, next we need to <a href="https://linux.die.net/man/2/write">write</a> to the file <code>pids.max</code> to limit the number of processes our children can create, let&rsquo;s try with 5.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">limitProcessCreation</span>() {
   <span style="color:#75715e">// create a folder 
 </span><span style="color:#75715e"></span>  mkdir( PID_CGROUP_FOLDER, S_IRUSR <span style="color:#f92672">|</span> S_IWUSR);    
@@ -720,7 +720,7 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
   write_rule(concat(CGROUP_FOLDER, <span style="color:#e6db74">&#34;cgroup.procs&#34;</span>), pid);
   write_rule(concat(CGROUP_FOLDER, <span style="color:#e6db74">&#34;pids.max&#34;</span>), <span style="color:#e6db74">&#34;5&#34;</span>);
 }</code></pre></div>
-<p>After our process end is a good idea to release the resources, so the kernel can cleanup the container folder we created above, the way to notify this is to update the file <code>notify_on_release</code> with the value of 1.</p>
+<p>After our process has ended, it is a good idea to release the resources so the kernel can cleanup the container folder we created above, the way to notify this is to update the file <code>notify_on_release</code> with the value of 1.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">limitProcessCreation</span>() {
   <span style="color:#75715e">// create a folder 
 </span><span style="color:#75715e"></span>  mkdir( PID_CGROUP_FOLDER, S_IRUSR <span style="color:#f92672">|</span> S_IWUSR);  
@@ -737,15 +737,15 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
   limitProcessCreation();
   <span style="color:#75715e">#...
 </span><span style="color:#75715e"></span>}</code></pre></div>
-<p>We need to call it before we do the change the root folder, this way we can setup the execution context. After we compile and run we should get something like this:</p>
+<p>We need to call it before we change the root folder, this way we can setup the execution context. After we compile and run we should get something like this:</p>
 
 <p><img src="https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/cgroup-pid.gif?raw=true" alt="cgroup" /></p>
 
-<p>What I&rsquo;m trying to do here is to execute an instance of the process sleep, this program require a integer representing the number of second it will execute, I added the ampersand so I can execute multiple instances of the program, when we hit the limit 5, the system automatically refuse to create more processes as expected.</p>
+<p>What I&rsquo;m trying to do here is to execute an instance of the process sleep, this program requires an integer representing the number of seconds it will execute, I added the ampersand so that I can execute multiple instances of the program, when we hit the limit of 5, the system automatically refuses to create more processes as expected.</p>
 
 <h2 id="wrapping-up">Wrapping Up</h2>
 
-<p>This was a long post, if you&rsquo;ve read this far, I hope you have a better idea of what a container are and how they are created. After what we&rsquo;ve learned so far we can answer to some of the typical container questions:</p>
+<p>This was a long post, if you&rsquo;ve read this far, I hope you have a better idea of what a container is and how they are created. After what we&rsquo;ve learned so far we can answer some of the typical container questions:</p>
 
 <h3 id="how-about-performance">How about performance ?</h3>
 
@@ -761,9 +761,9 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
 
 <h3 id="can-i-use-vm-and-containers">Can I use VM and containers ?</h3>
 
-<p>Why not?, I just use that combination to write this article. Well in reality I don&rsquo;t see any problem to use both, just a increase in complexity. In a perfect world I&rsquo;ll use just containers.</p>
+<p>Why not? I used that combination to write this article. Well, in reality I don&rsquo;t see any problem in using both, just an increase in complexity. In a perfect world I would use just containers.</p>
 
-<p>Well hope it has been a very fun read or at least not boring, for me was super fun, I really enjoyed writing this article. If you want access to the full source code you get it from [here](). With time I&rsquo;ll add more functionalities just to learn more about it and maybe will rewrite it in Rust or DLang, if I do I&rsquo;ll wrote an article about it.</p>
+<p>Well, I hope it has been a very fun read or at least not boring, for me it was super fun, I really enjoyed writing this article. If you want access to the full source code you can get it from [here](). With time I&rsquo;ll add more functionalities just to learn more about it and maybe will rewrite it in Rust or DLang, if I do I&rsquo;ll write an article about it.</p>
 
 <p>Almost forgot here is the link with the working code: <a href="https://github.com/cesarvr/container">github</a>.</p>
  </div><div class="section bottom-menu"><hr/><p>

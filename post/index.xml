@@ -17,8 +17,8 @@
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
       <guid>/post/2018-05-22-create-containers/</guid>
-      <description>What is this post about Is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are base in this excellent talk done by Liz Rice.
-Why C Because I love the simplicity of that language (maybe I&amp;rsquo;m just a romantic) and also is the lingua franca of Linux, which means that it helps to get a better understanding about how things work at system level.</description>
+      <description>What is this post about This post is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are based on this excellent talk by Liz Rice.
+Why C Because I love the simplicity of the language (maybe I&amp;rsquo;m just a romantic) and also it is the lingua franca of Linux, which means that it helps to get a better understanding about how things work at a system level.</description>
     </item>
     
     <item>
