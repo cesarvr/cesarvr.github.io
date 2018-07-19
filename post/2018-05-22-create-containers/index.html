@@ -639,7 +639,7 @@ systemd-2  bash-3   our-container-4
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">PID   USER     TIME   COMMAND
     <span style="color:#ae81ff">1</span> root       <span style="color:#ae81ff">0</span>:00 ./container
     <span style="color:#ae81ff">2</span> root       <span style="color:#ae81ff">0</span>:00 /bin/sh</code></pre></div>
-<p>Moral of the story is when you clone the PID tree, your process is no longer able to track other processes but you can still track everything from outside the container. For example if you run <code>ps aux | grep sh</code> you&rsquo;ll be able to see your container. Try this with Docker or LXC and see what happens.</p>
+<p>Moral of the story is when you clone the PID tree, your process is no longer able to track other processes but you can still track it&rsquo;s child processes. For example if you run <code>ps aux | grep sh</code> you&rsquo;ll be able to see your container. Try this with Docker or LXC and see what happens.</p>
 
 <p>Here is a small screen recording:</p>
 
