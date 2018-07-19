@@ -639,9 +639,9 @@ systemd-2  bash-3   our-container-4
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">PID   USER     TIME   COMMAND
     <span style="color:#ae81ff">1</span> root       <span style="color:#ae81ff">0</span>:00 ./container
     <span style="color:#ae81ff">2</span> root       <span style="color:#ae81ff">0</span>:00 /bin/sh</code></pre></div>
-<p>Moral of the story is when you clone the PID tree, your process is no longer able to track other processes but you can still track it&rsquo;s child processes. For example if you run <code>ps aux | grep sh</code> you&rsquo;ll be able to see your container. Try this with Docker or LXC and see what happens.</p>
+<p>Moral of the story is when you clone the PID tree, your process is no longer able to track other processes but it still can track it&rsquo;s child processes. You might wonder by looking the graph above that nothing has change in the global process tree after applying the flag and wonder if you can search the PID of isolated processes in the system, the answer is yes, for example if you run <code>ps aux | grep sh</code> you&rsquo;ll be able to see your container. Here some <em>homework</em> try to run a contained process using this application or Docker and try to kill it from the outside.</p>
 
-<p>Here is a small screen recording:</p>
+<p>Here is a small demo about locating the contained process:</p>
 
 <p><img src="https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/pid-track.gif?raw=true" alt="track" /></p>
 
@@ -763,9 +763,7 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
 
 <p>Why not? I used that combination to write this article. Well, in reality I don&rsquo;t see any problem in using both, just an increase in complexity. In a perfect world I would use just containers.</p>
 
-<p>Well, I hope it has been a very fun read or at least not boring, for me it was super fun, I really enjoyed writing this article. If you want access to the full source code you can get it from [here](). With time I&rsquo;ll add more functionalities just to learn more about it and maybe will rewrite it in Rust or DLang, if I do I&rsquo;ll write an article about it.</p>
-
-<p>Almost forgot here is the link with the working code: <a href="https://github.com/cesarvr/container">github</a>.</p>
+<p>Well, I hope it has been a very fun read or at least not boring. If you want access to the full source code you can get it from <a href="https://github.com/cesarvr/container">here</a>. With time I&rsquo;ll add more functionalities and maybe will rewrite some of it in Rust or DLango. If you want to learn more about cgroups you can access the <a href="https://www.kernel.org/doc/Documentation/cgroup-v1/">documentation</a> and if you have any improvements or add a new functionality let me know, you can contact me via <a href="https://twitter.com/cvaldezr">Twitter</a> or send a PR via <a href="https://github.com/">Github</a>. Happy hacking!.</p>
  </div><div class="section bottom-menu"><hr/><p>
 
 
