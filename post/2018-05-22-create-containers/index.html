@@ -77,7 +77,7 @@
 </ul></li>
 <li><a href="#unmount">Unmount</a>
 <ul>
-<li><a href="#explanation">Explanation</a></li>
+<li><a href="#how-it-works">How it works</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#control-group">Control Group</a>
@@ -591,7 +591,7 @@ clone_process(runThis, SIGCHLD);</code></pre></div>
 
 <p><img src="https://media.giphy.com/media/xT0GqGUyFPeYYmYD5K/giphy.gif" alt="boom!" /></p>
 
-<h4 id="explanation">Explanation</h4>
+<h4 id="how-it-works">How it works</h4>
 
 <p>When we create the child process (<code>jail</code>) we use the flag <code>CLONE_NEWPID</code>, this flag gives our cloned process something like it&rsquo;s own process tree.</p>
 
