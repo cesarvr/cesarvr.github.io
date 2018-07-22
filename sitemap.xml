@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>/post/ocp-chainbuild/</loc>
+    <lastmod>2018-07-21T11:18:43+02:00</lastmod>
+  </url>
   
   <url>
     <loc>/post/2018-05-22-create-containers/</loc>
@@ -43,13 +48,13 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
+    <lastmod>2018-07-21T11:18:43+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
+    <lastmod>2018-07-21T11:18:43+02:00</lastmod>
     <priority>0</priority>
   </url>
   
