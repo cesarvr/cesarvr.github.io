@@ -24,7 +24,7 @@
 
 <meta name="mobile-web-app-capable" content="yes">
 
-<meta name="description" content="Creating efficient and small image (low surface for attacks) by using chained builds in Openshift." />
+<meta name="description" content="How to optimise images and improve deployment performance by using chained builds in Openshift." />
 
 
 
@@ -56,9 +56,11 @@
 
 
 <meta property="og:title" content="Chaining Builds In Openshift" />
-<meta property="og:description" content="Creating efficient and small image (low surface for attacks) by using chained builds in Openshift." />
+<meta property="og:description" content="How to optimise images and improve deployment performance by using chained builds in Openshift." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/ocp-chainbuild/" />
+
+  <meta property="og:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/chaining-build/openshift-logo.png?raw=true" />
 
 
 
@@ -77,19 +79,23 @@
 
 
 <meta itemprop="name" content="Chaining Builds In Openshift">
-<meta itemprop="description" content="Creating efficient and small image (low surface for attacks) by using chained builds in Openshift.">
+<meta itemprop="description" content="How to optimise images and improve deployment performance by using chained builds in Openshift.">
 
 
 <meta itemprop="datePublished" content="2018-07-21T11:18:43&#43;02:00" />
 <meta itemprop="dateModified" content="2018-07-21T11:18:43&#43;02:00" />
-<meta itemprop="wordCount" content="624">
+<meta itemprop="wordCount" content="1056">
+
+  <meta itemprop="image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/chaining-build/openshift-logo.png?raw=true">
 
 
 
 <meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/chaining-build/openshift-logo.png?raw=true"/>
+
 <meta name="twitter:title" content="Chaining Builds In Openshift"/>
-<meta name="twitter:description" content="Creating efficient and small image (low surface for attacks) by using chained builds in Openshift."/>
+<meta name="twitter:description" content="How to optimise images and improve deployment performance by using chained builds in Openshift."/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -250,6 +256,8 @@ if (!doNotTrack) {
 <li><a href="#builder-image">Builder image</a></li>
 <li><a href="#runtime-image">Runtime image</a></li>
 </ul></li>
+<li><a href="#deploying-our-image">Deploying our image</a></li>
+<li><a href="#some-ideas">Some ideas</a></li>
 </ul>
 </nav>
   </div>
@@ -282,7 +290,7 @@ if (!doNotTrack) {
 
 <h2 id="the-size-problem">The size problem</h2>
 
-<p>Let&rsquo;s review the final to see the image we are producing:</p>
+<p>But this nice abstraction come with a cost, to explain what I mean, let&rsquo;s review the final image:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
@@ -312,17 +320,17 @@ du -sh
 </code></pre></td></tr></table>
 </div>
 </div>
-<p>This happens because the tools we used at build (gcc, g++, npm, yum cache, etc.) are still present in the image inflating its final size. This is not big deal for development stages but it may have a cost for other stages that we need to take into consideration.</p>
+<p>This happens because the tools we used at build (gcc, g++, npm, yum cache, etc.) are still present in the image inflating its final size. If you are just getting started as a developer in OpenShift it may not be a big of a deal; also for quick proof of concepts is totally fine but it may have a cost for later stages like production that you may take into consideration.</p>
 
 <h2 id="slim-is-better">Slim is better</h2>
 
 <p>Some disadvantages of having a huge image are:</p>
 
 <ul>
-<li>Higher cost in CPU &amp; Ram to deploy into a pod.</li>
-<li>Slower deployments.</li>
+<li>Higher cost in CPU &amp; Ram to deploy your images.</li>
+<li>If you have fixed resources bigger images slow deployments.</li>
 <li>They add more stress on the cluster network.</li>
-<li>Maintenance overhead. (You may end up updating library your are not using)<br /></li>
+<li>Maintenance overhead. (You may end up maintaining dependencies your are not using)<br /></li>
 </ul>
 
 <h1 id="chaining-containers">Chaining containers</h1>
@@ -386,11 +394,11 @@ NAME          DOCKER REPO                         TAGS      UPDATED
 builder       <span class="m">172</span>.30.1.1:5000/hello/builder       latest    <span class="m">6</span> hours ago</code></pre></td></tr></table>
 </div>
 </div>
-<p>Great!, we have our image with the tools we need. Next step is to trigger a build so it prepare the application.</p>
+<p>Great!, we have our image with the tools we need. Next step is to trigger a build to prepare our application.</p>
 
-<p><img src="https://github.com/cesarvr/hugo-blog/blob/master/static/static/chaining-build/build-tools.gif?raw=true" alt="builder" /></p>
+<p><img src="https://github.com/cesarvr/hugo-blog/blob/master/static/static/chaining-build/build-tools.gif.gif?raw=true" alt="builder" /></p>
 
-<p>If everything is fine at this stage our code is cloned and dependencies pulled from npm. Artifacts are stored inside an image called <em>builder</em> folder  <code>/opt/app-root/src/</code>.</p>
+<p>If everything is fine we should have all our Node.js artifacts inside a new image for us to consume, the nodejs base image we are using store the artifacts and our code in <code>/opt/app-root/src/</code>.</p>
 
 <h2 id="runtime-image">Runtime image</h2>
 
@@ -443,7 +451,142 @@ builder       <span class="m">172</span>.30.1.1:5000/hello/builder       latest 
 </span><span class="se"></span>--dockerfile<span class="o">=</span><span class="s1">&#39;-&#39;</span></code></pre></td></tr></table>
 </div>
 </div>
-<p>We copy the contents of <a href="#builder-image">builder</a>/opt/app-root/src/ into the a temporary folder, then our Dockerfile use this folder as it&rsquo;s context folder. When we apply <code>COPY * /run/</code> we basically are copying the content of this temporary folder into our new runtime container.</p>
+<p>The content of <a href="#builder-image">builder</a><em>/opt/app-root/src/</em> is copy by the <code>oc new-build</code> into a temporary folder, then our Dockerfile use this folder as it&rsquo;s context folder. When we apply <code>COPY * /run/</code> we basically are copying the content of this folder into our new runtime container.</p>
+
+<p><img src="https://github.com/cesarvr/hugo-blog/blob/master/static/static/chaining-build/runtime.gif?raw=true" alt="runtime" /></p>
+
+<p>In the next animation you&rsquo;ll see how <em>builder</em> build configuration is now connected with <em>runtime</em> build. Every time <em>builder</em> push a new build of our software to the registry, it will be automatically packaged by <em>runtime</em>.</p>
+
+<p>To trigger the <em>builder</em> build we just need to run:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">oc start-build bc/builder</pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://github.com/cesarvr/hugo-blog/blob/master/static/static/chaining-build/chain.gif?raw=true" alt="chain" /></p>
+
+<h1 id="deploying-our-image">Deploying our image</h1>
+
+<p>Is time to test if our hard work pays off. Deploying our image is very easy we just need to locate the URL of our <em>runtime</em> image in the registry:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">oc get is
+NAME          DOCKER REPO                         TAGS      UPDATED
+runtime       172.30.1.1:5000/hello/runtime       latest    15 hours ago</pre></td></tr></table>
+</div>
+</div>
+<p>Having the address of our image, now we just simply call:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">oc create dc hello-ms --image<span class="o">=</span><span class="m">172</span>.30.1.1:5000/hello/runtime</code></pre></td></tr></table>
+</div>
+</div>
+<p>Now that we create our deployment object, we now need to send some traffic to our application. Before start sending traffic we need to identify by looking up is label.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">oc get dc hello-ms -o json <span class="p">|</span> grep labels -A <span class="m">3</span>
+<span class="c1"># returns 
+</span><span class="c1"></span><span class="s2">&#34;labels&#34;</span>: <span class="o">{</span>
+            <span class="s2">&#34;deployment-config.name&#34;</span>: <span class="s2">&#34;hello-ms&#34;</span>
+          <span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>Now let create a service and send some traffic directed to this label:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">oc create service loadbalancer  hello-ms --tcp<span class="o">=</span><span class="m">80</span>:8080
+<span class="c1"># service &#34;hello-ms&#34; created
+</span><span class="c1"></span>
+<span class="c1"># edit the service object
+</span><span class="c1"></span>oc edit svc hello-ms -o yaml </code></pre></td></tr></table>
+</div>
+</div>
+<p>This will open the service object in yaml format in edit mode, we need to locate the <em>selector</em> and replace with the label of our deployment object.</p>
+
+<p>From this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yml" data-lang="yml">selector<span class="p">:</span><span class="w">
+</span><span class="w">  </span>app<span class="p">:</span><span class="w"> </span>hello-ms</code></pre></td></tr></table>
+</div>
+</div>
+<p>To this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yml" data-lang="yml">selector<span class="p">:</span><span class="w">
+</span><span class="w"> </span>deployment-config.name<span class="p">:</span><span class="w"> </span>hello-ms</code></pre></td></tr></table>
+</div>
+</div>
+<p>We can do this the other way around, at the end is just a matter of taste. Next we need to expose our service:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">oc expose svc hello-ms
+# route &#34;hello-ms&#34; exposed
+
+oc get route
+# NAME       HOST/PORT                         PATH      SERVICES   PORT      TERMINATION   WILDCARD
+# hello-ms   hello-ms-hello.127.0.0.1.nip.io             hello-ms   80-8080                 None</pre></td></tr></table>
+</div>
+</div>
+<p>Now know the URL we can confidently make a <code>curl</code> to that address:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">curl hello-ms-hello.127.0.0.1.nip.io
+Hello World%</pre></td></tr></table>
+</div>
+</div>
+<p>Take a look at the complete process here:</p>
+
+<p><img src="https://github.com/cesarvr/hugo-blog/blob/master/static/static/chaining-build/deploy.gif?raw=true" alt="deploy" /></p>
+
+<h1 id="some-ideas">Some ideas</h1>
+
+<p>Other ideas that come to my mind about how to take advantage of this decoupling is that you can maybe tag some specific nodes to with labels that match your <em>builder</em> image this way you focus all the resources to bring value back to your customer, and you have some specific resources to handle the software related duties.</p>
 
     </div>
 
