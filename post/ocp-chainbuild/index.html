@@ -84,7 +84,7 @@
 
 <meta itemprop="datePublished" content="2018-07-21T11:18:43&#43;02:00" />
 <meta itemprop="dateModified" content="2018-07-21T11:18:43&#43;02:00" />
-<meta itemprop="wordCount" content="1056">
+<meta itemprop="wordCount" content="1114">
 
   <meta itemprop="image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/chaining-build/openshift-logo.png?raw=true">
 
@@ -257,7 +257,6 @@ if (!doNotTrack) {
 <li><a href="#runtime-image">Runtime image</a></li>
 </ul></li>
 <li><a href="#deploying-our-image">Deploying our image</a></li>
-<li><a href="#some-ideas">Some ideas</a></li>
 </ul>
 </nav>
   </div>
@@ -269,7 +268,7 @@ if (!doNotTrack) {
 
 <h2 id="new-application">New application</h2>
 
-<p>Creating a Node.js application in OpenShift is simple:</p>
+<p>Creating a Node.js application in Openshift is simple:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
@@ -290,7 +289,7 @@ if (!doNotTrack) {
 
 <h2 id="the-size-problem">The size problem</h2>
 
-<p>But this nice abstraction come with a cost, to explain what I mean, let&rsquo;s review the final image:</p>
+<p>But this nice abstraction come with a cost, to explain what I mean, let&rsquo;s review size of our final image using <a href="http://www.linfo.org/du.html">du</a>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
@@ -299,7 +298,7 @@ if (!doNotTrack) {
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># We log into our container and run 
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># We log into our container and run
 </span><span class="c1"></span><span class="nb">cd</span> /
 du -sh
 474M	.</code></pre></td></tr></table>
@@ -320,7 +319,7 @@ du -sh
 </code></pre></td></tr></table>
 </div>
 </div>
-<p>This happens because the tools we used at build (gcc, g++, npm, yum cache, etc.) are still present in the image inflating its final size. If you are just getting started as a developer in OpenShift it may not be a big of a deal; also for quick proof of concepts is totally fine but it may have a cost for later stages like production that you may take into consideration.</p>
+<p>This happens because the tools we used at build (gcc, g++, npm, yum cache, etc.) are still present in the image inflating its final size. If you are just getting started as a developer in Openshift it may not be a big of a deal; also for quick proof of concepts is totally fine but it may have a cost for later stages like production that you may take into consideration.</p>
 
 <h2 id="slim-is-better">Slim is better</h2>
 
@@ -360,7 +359,7 @@ du -sh
 <li><p><code>context-dir</code> This parameters tells where is the code.</p></li>
 </ul>
 
-<p>This command will create two OpenShift objects:</p>
+<p>This command will create two Openshift objects:</p>
 
 <ul>
 <li><strong>BuilderConfig</strong> This object handle the image creation using <a href="https://github.com/openshift/source-to-image">s2i</a>.</li>
@@ -436,6 +435,8 @@ builder       <span class="m">172</span>.30.1.1:5000/hello/builder       latest 
 </span><span class="err"></span><span class="k">CMD</span><span class="s"> [&#34;node&#34;, &#34;/run/app.js&#34;]</span></code></pre></td></tr></table>
 </div>
 </div>
+<p>This file define a container using <a href="https://hub.docker.com/r/mhart/alpine-node/">mhart/alpine-node</a> which is only 42 MB, next line copy the content from the <em>builder</em> image. Then the third and fourth line expose a port and run execute the interpreter for a particular file. This image of course need more details to be production ready and is used just for clarity.</p>
+
 <p>We execute the command:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -473,14 +474,14 @@ builder       <span class="m">172</span>.30.1.1:5000/hello/builder       latest 
 <p>Is time to test if our hard work pays off. Deploying our image is very easy we just need to locate the URL of our <em>runtime</em> image in the registry:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">oc get is
-NAME          DOCKER REPO                         TAGS      UPDATED
-runtime       172.30.1.1:5000/hello/runtime       latest    15 hours ago</pre></td></tr></table>
+<pre class="chroma"><code class="language-sh" data-lang="sh">oc get is 
+<span class="c1">#NAME          DOCKER REPO                         TAGS      UPDATED
+</span><span class="c1"></span>#runtime       <span class="m">172</span>.30.1.1:5000/hello/runtime       latest    <span class="m">15</span> hours ago</code></pre></td></tr></table>
 </div>
 </div>
 <p>Having the address of our image, now we just simply call:</p>
@@ -503,7 +504,7 @@ runtime       172.30.1.1:5000/hello/runtime       latest    15 hours ago</pre></
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-sh" data-lang="sh">oc get dc hello-ms -o json <span class="p">|</span> grep labels -A <span class="m">3</span>
-<span class="c1"># returns 
+<span class="c1"># returns
 </span><span class="c1"></span><span class="s2">&#34;labels&#34;</span>: <span class="o">{</span>
             <span class="s2">&#34;deployment-config.name&#34;</span>: <span class="s2">&#34;hello-ms&#34;</span>
           <span class="o">}</span></code></pre></td></tr></table>
@@ -523,7 +524,7 @@ runtime       172.30.1.1:5000/hello/runtime       latest    15 hours ago</pre></
 <span class="c1"># service &#34;hello-ms&#34; created
 </span><span class="c1"></span>
 <span class="c1"># edit the service object
-</span><span class="c1"></span>oc edit svc hello-ms -o yaml </code></pre></td></tr></table>
+</span><span class="c1"></span>oc edit svc hello-ms -o yaml</code></pre></td></tr></table>
 </div>
 </div>
 <p>This will open the service object in yaml format in edit mode, we need to locate the <em>selector</em> and replace with the label of our deployment object.</p>
@@ -583,8 +584,6 @@ Hello World%</pre></td></tr></table>
 <p>Take a look at the complete process here:</p>
 
 <p><img src="https://github.com/cesarvr/hugo-blog/blob/master/static/static/chaining-build/deploy.gif?raw=true" alt="deploy" /></p>
-
-<h1 id="some-ideas">Some ideas</h1>
 
 <p>Other ideas that come to my mind about how to take advantage of this decoupling is that you can maybe tag some specific nodes to with labels that match your <em>builder</em> image this way you focus all the resources to bring value back to your customer, and you have some specific resources to handle the software related duties.</p>
 

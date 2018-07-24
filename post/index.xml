@@ -18,7 +18,7 @@
       <pubDate>Sat, 21 Jul 2018 11:18:43 +0200</pubDate>
       
       <guid>/post/ocp-chainbuild/</guid>
-      <description>New application Creating a Node.js application in OpenShift is simple:
+      <description>New application Creating a Node.js application in Openshift is simple:
 1 2 3 4 5  oc login -u user oc new-project hello # Assuming you are logged and you have a project you can start here.  oc new-app --name node-app nodejs~https://github.com/cesarvr/hello-world-nodejs #new app using nodejs:latest (Node.js 8)   This command will create the backbone (BuildConfig, DeploymentConfig and Service) to orchestrate the different stages from source code to a running application.</description>
     </item>
     
