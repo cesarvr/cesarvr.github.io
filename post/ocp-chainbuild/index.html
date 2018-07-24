@@ -84,7 +84,7 @@
 
 <meta itemprop="datePublished" content="2018-07-21T11:18:43&#43;02:00" />
 <meta itemprop="dateModified" content="2018-07-21T11:18:43&#43;02:00" />
-<meta itemprop="wordCount" content="1113">
+<meta itemprop="wordCount" content="1111">
 
   <meta itemprop="image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/chaining-build/openshift-logo.png?raw=true">
 
@@ -435,7 +435,7 @@ builder       <span class="m">172</span>.30.1.1:5000/hello/builder       latest 
 </span><span class="err"></span><span class="k">CMD</span><span class="s"> [&#34;node&#34;, &#34;/run/app.js&#34;]</span></code></pre></td></tr></table>
 </div>
 </div>
-<p>This file define a container using <a href="https://hub.docker.com/r/mhart/alpine-node/">mhart/alpine-node</a> which is only 42 MB, next line copy the content from the <em>builder</em> image. The third and fourth line expose a port and run execute the interpreter for a particular file. This image of course need more details to be production ready and is used just for clarity.</p>
+<p>This file define a container using <a href="https://hub.docker.com/r/mhart/alpine-node/">mhart/alpine-node</a> which is only 42 MB, next line copy the content from the <em>builder</em> image. The third and fourth line expose a port and run execute our script. This container image of course need more work to be production ready but is just fine for our purposes.</p>
 
 <p>We execute the command:</p>
 <div class="highlight"><div class="chroma">
