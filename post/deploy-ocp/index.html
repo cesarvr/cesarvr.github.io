@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en-us" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>6 Ways to Build/Deploy Applications in Openshift - Cesar</title>
+  <link rel="alternate" hreflang="en-us" href="/" />
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="description" content="In this article we are going to review the multiple ways to build an applications in Openshift. All this examples where done using [Openshift.io](https://manage.openshift.com/) which is a playground to practice." />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.44" />
+
+
+<link rel="canonical" href="/post/deploy-ocp/" />
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+<link href="/dist/jane.min.css?v=2.7.0" rel="stylesheet">
+
+
+
+
+<meta property="og:title" content="6 Ways to Build/Deploy Applications in Openshift" />
+<meta property="og:description" content="In this article we are going to review the multiple ways to build an applications in Openshift. All this examples where done using [Openshift.io](https://manage.openshift.com/) which is a playground to practice." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/post/deploy-ocp/" />
+
+  <meta property="og:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true" />
+
+
+
+<meta property="article:published_time" content="2018-07-28T19:24:19&#43;01:00"/>
+
+<meta property="article:modified_time" content="2018-07-28T19:24:19&#43;01:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta itemprop="name" content="6 Ways to Build/Deploy Applications in Openshift">
+<meta itemprop="description" content="In this article we are going to review the multiple ways to build an applications in Openshift. All this examples where done using [Openshift.io](https://manage.openshift.com/) which is a playground to practice.">
+
+
+<meta itemprop="datePublished" content="2018-07-28T19:24:19&#43;01:00" />
+<meta itemprop="dateModified" content="2018-07-28T19:24:19&#43;01:00" />
+<meta itemprop="wordCount" content="1859">
+
+  <meta itemprop="image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true">
+
+
+
+<meta itemprop="keywords" content="openshift,buildconfig,imagestream," />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true"/>
+
+<meta name="twitter:title" content="6 Ways to Build/Deploy Applications in Openshift"/>
+<meta name="twitter:description" content="In this article we are going to review the multiple ways to build an applications in Openshift. All this examples where done using [Openshift.io](https://manage.openshift.com/) which is a playground to practice."/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-110580110-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Cesar</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="/about/">About</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://github.com/cesarvr" rel="noopener" target="_blank">
+              Code
+              <i class="iconfont icon-new-window"></i>
+            </a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="/post/">Writing</a>
+          
+        
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      Cesar
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+      <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="/about/">About</a>
+          
+
+        
+
+      </li>
+    
+      <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://github.com/cesarvr" rel="noopener" target="_blank">
+              Code
+            <i class="iconfont icon-new-window"></i>
+            </a>
+          
+
+        
+
+      </li>
+    
+      <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="/post/">Writing</a>
+          
+
+        
+
+      </li>
+    
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">6 Ways to Build/Deploy Applications in Openshift</h1>
+      
+      <div class="post-meta">
+        <span class="post-time"> 2018-07-28 </span>
+        
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Table of Contents</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#beginners">Beginners</a>
+<ul>
+<li><a href="#1-console">1 Console</a></li>
+<li><a href="#2-using-the-terminal">2 Using the Terminal</a></li>
+<li><a href="#cleaning-up">Cleaning up</a></li>
+</ul></li>
+<li><a href="#intermediate-advance">Intermediate - Advance</a>
+<ul>
+<li><a href="#build-configuration">Build configuration</a></li>
+<li><a href="#3-source-code">3 Source Code</a></li>
+<li><a href="#4-binary">4 Binary</a></li>
+<li><a href="#5-dockerfile">5 Dockerfile</a></li>
+<li><a href="#6-importing-images">6 Importing Images</a></li>
+</ul></li>
+<li><a href="#deploy">Deploy</a>
+<ul>
+<li><a href="#image-streams">Image Streams</a></li>
+</ul></li>
+<li><a href="#wrapping-up">Wrapping Up</a></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      <p></p>
+
+<p>In this article we are going to review the multiple ways to build an applications in Openshift. All this examples where done using <a href="https://manage.openshift.com/">Openshift.io</a> which is a free instance available. Alternatively to practice you can use <a href="https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md">oc-client</a> or <a href="https://github.com/minishift/minishift">minishift</a>.</p>
+
+<h1 id="beginners">Beginners</h1>
+
+<p>Let&rsquo;s start with the easy way first, this methods basically don&rsquo;t require to know much about Openshift or how objects like service, pod, router, etc. If you want to get started this is are the best options.</p>
+
+<h2 id="1-console">1 Console</h2>
+
+<p>The easiest way to deploy your application is to go to the dashboard choose a template from the catalog (Node.js), supply a <a href="https://github.com/cesarvr/hello-world-nodejs">git repository</a> and you are done:</p>
+
+<p><img src="https://github.com/cesarvr/Openshift/raw/master/assets/new-app-nodejs.gif?raw=true" alt="deploying nodejs applications" /></p>
+
+<h2 id="2-using-the-terminal">2 Using the Terminal</h2>
+
+<p>The method we use above has a command like equivalent called <code>new-app</code>. In this example we are going to create an Node.js application using the nodejs image from the catalog and this <a href="https://github.com/cesarvr/hello-world-nodejs">git repository</a>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"> oc new-app --name node-app nodejs~https://github.com/cesarvr/hello-world-nodejs</code></pre></td></tr></table>
+</div>
+</div>
+<p>This command will create the same components as the Openshift console with the omission of the router object, this need be created manually by calling <code>oc expose</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">oc expose svc &lt;name-of-the-service&gt;</pre></td></tr></table>
+</div>
+</div>
+<p><img src="https://github.com/cesarvr/hugo-blog/blob/master/static/static/ocp-deploy/oc-deploy.gif?raw=true" alt="new-app" /></p>
+
+<h2 id="cleaning-up">Cleaning up</h2>
+
+<p>Every time you write this two command Openshift will generate all the necessary objects to deploy your container and start directing to them, but there is a small inconvenience if you want to remove all the created objects let said you made a mistake you need to delete those one by one. But we are lucky that all the created objects share the same label, here is the command to clean those objects.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"> oc delete all -l <span class="nv">app</span><span class="o">=</span>node-app # this delete all the objects with label node-app</code></pre></td></tr></table>
+</div>
+</div>
+<p>This command is a bit long and maybe difficult to remember. What I do is to create a shell function inside my <code>.bashrc</code> or <code>.zshrc</code> like this one:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"> <span class="k">function</span> rm-app <span class="o">{</span>
+   oc delete all -l <span class="nv">app</span><span class="o">=</span><span class="nv">$1</span>
+ <span class="o">}</span>
+
+ <span class="c1"># The I called we can do this:
+</span><span class="c1"></span> <span class="nb">source</span> ~/.bashrc <span class="c1"># or ~/.zshrc if your are using zsh
+</span><span class="c1"></span> rm-app node-app
+
+ <span class="c1"># deploymentconfig &#34;node-app&#34; deleted
+</span><span class="c1"></span> <span class="c1"># buildconfig &#34;node-app&#34; deleted
+</span><span class="c1"></span> <span class="c1"># imagestream &#34;node-app&#34; deleted
+</span><span class="c1"></span> <span class="c1"># route &#34;node-app&#34; deleted
+</span><span class="c1"></span> <span class="c1"># service &#34;node-app&#34; deleted
+</span><span class="c1"></span> #</code></pre></td></tr></table>
+</div>
+</div>
+<blockquote>
+<p><em>When to use this?</em> This the best way to start. Then I would recommend to get little by little more ambitious with learning how this objects works because it will payoff when you start to get interested in more sophisticated configurations.</p>
+</blockquote>
+
+<h1 id="intermediate-advance">Intermediate - Advance</h1>
+
+<p>Before reading this section make sure you dominate some of the basic concepts, if you want you can go through this <a href="https://github.com/cesarvr/Openshift">getting started</a> guide, which will help you understand the basic component of a typical application in Kubernetes/Openshift.</p>
+
+<h2 id="build-configuration">Build configuration</h2>
+
+<p>To understand how we can build application first we need to understand what is builder configuration object. This object works as an abstraction to handle your application construction process, is divide in two parts a builder image and source strategy:</p>
+
+<ul>
+<li><strong>Builder Image</strong> A builder image is a <em>special</em> type of image/container which include the tools and rules to build your code also it provide an execution context as the final product execute inside this image. After the builder finish it job we should get a image in return.<br />
+
+<ul>
+<li>Each programming language or framework require a specific builder image, our Node.js server for example uses the <em>nodejs</em> builder image, this builder image execute <code>npm install</code> and prepare the code for execution.<br /></li>
+<li>To check the available builder images in your Openshift installation you can run:</li>
+</ul></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># delete this &lt; | awk &#39;{ print $1 }&#39; &gt; for more information. 
+</span><span class="c1"></span>oc get is -n openshift <span class="p">|</span> awk <span class="s1">&#39;{ print $1 }&#39;</span>
+
+NAME
+apicast-gateway
+dotnet
+dotnet-runtime
+httpd
+java
+jboss-webserver30-tomcat7-openshift
+jboss-webserver30-tomcat8-openshift
+jboss-webserver31-tomcat7-openshift
+jboss-webserver31-tomcat8-openshift
+jenkins
+mariadb
+mongodb
+mysql
+nodejs
+perl
+php
+postgresql
+python
+redhat-openjdk18-openshift
+redhat-sso72-openshift
+redis
+rhdm70-decisioncentral-openshift
+rhdm70-kieserver-openshift
+ruby
+wildfly</code></pre></td></tr></table>
+</div>
+</div>
+<ul>
+<li><strong>Source Strategy</strong>  Here we define the content of our builder image, they are three types:
+
+<ul>
+<li><strong>Source code</strong> We provide a git repository to the builder image.</li>
+<li><strong>Binary</strong>  jar/war file, scripts or executable (the builder image provide the execution context).</li>
+<li><strong>Dockerfile</strong> We build the image ourselves.<br /></li>
+</ul></li>
+</ul>
+
+<h2 id="3-source-code">3 Source Code</h2>
+
+<p>Let&rsquo;s create a build that use a git URL as source strategy, the command is very similar to use <code>oc new-app</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">oc new-build nodejs~https://github.com/cesarvr/hello-world-nodejs --name node-build</pre></td></tr></table>
+</div>
+</div>
+<p>First parameter is the builder image <code>nodejs</code> then separated by <code>~</code> we pass the <a href="https://github.com/cesarvr/hello-world-nodejs">git repository</a> and finally we choose a name for our build configuration <code>node-build</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"># The builder configuration.
+oc get bc
+
+# output
+NAME         TYPE      FROM         LATEST
+node-build   Source    Git          1</pre></td></tr></table>
+</div>
+</div>
+<p>To run this build you we just need to execute this command:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">oc start-build node-build --follow</pre></td></tr></table>
+</div>
+</div>
+<p>As soon as our build finish, it store an image with the constructed software into the registry <code>docker-registry.default.svc:5000/hello01/node-build</code>. Where <code>docker-registry.default.svc:5000/</code> is the server, <code>hello01</code> is the namespace/project and <code>node-build</code> is the image to be deploy.</p>
+
+<blockquote>
+<p><em>When to use Git builds?</em> If your your project build setup is compatible with any of the available builder image, then this is the most cost effective way to go.</p>
+</blockquote>
+
+<h2 id="4-binary">4 Binary</h2>
+
+<p>This type of build configuration works by passing a binary. In other words we can handle the construction of our software externally and then pass it to the builder configuration so it can provide an execution context.</p>
+
+<p>First let create the build configuration:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"> oc new-build nodejs --name node-binary --binary=true</pre></td></tr></table>
+</div>
+</div>
+<p>Very similar to the one above but notice the lack of git repository and the addition of <code>binary=true</code>, this tell our image to wait until we provide a software capable of run in the provided context.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"># The builder configuration.
+oc get bc
+
+# output
+NAME         TYPE      FROM         LATEST
+node-binary   Source    Binary       0</pre></td></tr></table>
+</div>
+</div>
+<p>Now we need to construct our application:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">git clone https://github.com/cesarvr/hello-world-nodejs
+cd cesarvr/hello-world-nodejs
+npm install  # install the depedencies. </pre></td></tr></table>
+</div>
+</div>
+<p>Now we are inside our working folder we need to push the content to the build:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">oc start-build node-binary --from-dir=.
+Uploading directory &#34;.&#34; as binary input for the build ...</pre></td></tr></table>
+</div>
+</div>
+<p>This command will push your scripts into the build configuration object and trigger the build, think of it like a replacement of the <code>git clone</code> command in the usual build process. Everything from here is similar to the <a href="#source-code">source-code</a> strategy.</p>
+
+<p>If you are a Java developer, you need to choose the appropriate builder image (wildfly, jboss or redhat-openjdk18), use <code>--from-file</code> instead of <code>--from-dir</code> and pass your <em>jar/pom.xml</em>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"> # Pushing jar binary
+ oc start-build java-binary-build --from-file=root.jar
+
+ # or Pushing pom.xml
+ oc start-build java-binary-build --from-file=pom.xml</pre></td></tr></table>
+</div>
+</div>
+<p>Everything should work the same as our example above, only difference is that might take more time to finish.</p>
+
+<blockquote>
+<p><em>When to use this?</em> If you have a build system in place which is not compatible with any builder images (e.g., you are using gradle or C++ binary), then is better to generate your binary using Jenkins and pass the final product jar/war/ELF to the build object. There is the option of generating your own builder image.</p>
+</blockquote>
+
+<h2 id="5-dockerfile">5 Dockerfile</h2>
+
+<p>Using this way mean you take care of the image creation by defining a Dockerfile and delegate it&rsquo;s construction to the build configuration object.</p>
+
+<p>Let&rsquo;s define our Dockerfile, I&rsquo;ll call it <a href="https://gist.github.com/cesarvr/fac37fa7825f5ad7a576801fed07d0c8">build.Dockerfile</a>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-Dockerfile" data-lang="Dockerfile"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-Dockerfile" data-lang="Dockerfile"><span class="k">FROM</span><span class="s"> mhart/alpine-node:base-8</span><span class="err">
+</span><span class="err"></span>COPY * /run/<span class="err">
+</span><span class="err"></span><span class="k">EXPOSE</span><span class="s"> 8080</span><span class="err">
+</span><span class="err"></span><span class="k">CMD</span><span class="s"> [&#34;node&#34;, &#34;/run/app.js&#34;]</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>Next we need to call to our <code>oc new-build</code> command like this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"> cat build.Dockerfile <span class="p">|</span> oc new-build --name node-docker --dockerfile<span class="o">=</span><span class="s1">&#39;-&#39;</span>
+
+ <span class="c1">#if your are lazy.
+</span><span class="c1"></span> curl https://gist.githubusercontent.com/cesarvr/fac37fa7825f5ad7a576801fed07d0c8/raw/8f79f2aa9a6aae7936186e0e641c3cece9d76bd9/Dockerfile <span class="p">|</span> oc new-build --name node-docker --dockerfile<span class="o">=</span><span class="s1">&#39;-&#39;</span></code></pre></td></tr></table>
+</div>
+</div>
+<blockquote>
+<p>Sadly Docker strategy is disable in Openshift.io, but you can still practice by using <a href="https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md">oc cluster up</a> or <a href="https://github.com/minishift/minishift">minishift</a>.</p>
+</blockquote>
+
+<p>To trigger the build:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">oc start-build node-docker</code></pre></td></tr></table>
+</div>
+</div>
+<blockquote>
+<p><em>When to use this?</em>  You should use this method when working with legacy software (e.g., if you are using EJB 1.0, JDK 1.4, etc.) or when you current execution runtime is not supported.</p>
+</blockquote>
+
+<h2 id="6-importing-images">6 Importing Images</h2>
+
+<p>This is a bonus that has nothing to do with the build configuration but is an alternative to get your applications running in Openshift. You can also import images.</p>
+
+<p>Importing an image inside your cluster is easy:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">oc import-image microservice:latest --from=your-docker-registry.io/project-name/cutting-edge:latest --confirm</pre></td></tr></table>
+</div>
+</div>
+<p>Check your new image with <code>oc get is</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">   Name                   Docker Repo                                  TAG           …
+ microservice   your-docker-registry.io/hello01/cutting-edge:latest   latest    12 seconds ago</pre></td></tr></table>
+</div>
+</div>
+<blockquote>
+<p><em>When to use this?</em>  If your legacy build system is pusing images to a internal registry like nexus, then you can use this method to deploy your applications.</p>
+</blockquote>
+
+<h1 id="deploy">Deploy</h1>
+
+<h2 id="image-streams">Image Streams</h2>
+
+<p>We got our image created what next? To handle how the images navigate around the cluster Openshift provide an object called the <a href="https://docs.openshift.com/enterprise/3.0/architecture/core_concepts/builds_and_image_streams.html#image-streams">image streams</a>. This object use something similar to the subscriber/observer pattern. It observes the state for a particular image state in the registry and when the state of the image change (A new image is pushed), it notifies the resources subscribed to it, so they act upon this image. Each time your create a build configuration object and image stream is created as well.</p>
+
+<p>To deploy the latest images we just need to create a deployment configuration that subscribe to the image stream. I&rsquo;ll arbitrarily choose the <code>node-binary</code> build, but this steps can be reused for all the images streams we have created so far.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">oc get is
+
+NAME          DOCKER REPO                                            TAGS      UPDATED
+node-binary   docker-registry.default.svc:5000/hello01/node-binary   latest    <span class="m">27</span> minutes ago</code></pre></td></tr></table>
+</div>
+</div>
+<p>Having the address of our image, now we just simply call:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">oc create dc hello-ms --image<span class="o">=</span><span class="m">172</span>.30.1.1:5000/hello/runtime</code></pre></td></tr></table>
+</div>
+</div>
+<p>Now that we create our deployment object called <code>hello-ms</code> and subscribed to the <code>node-binary</code> image stream, we now need to send some traffic to our application. Let&rsquo;s find the labels of our new deployment object.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">oc get dc hello-ms -o json <span class="p">|</span> grep labels -A <span class="m">3</span>
+<span class="c1"># returns
+</span><span class="c1"></span><span class="s2">&#34;labels&#34;</span>: <span class="o">{</span>
+            <span class="s2">&#34;deployment-config.name&#34;</span>: <span class="s2">&#34;hello-ms&#34;</span>
+          <span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>Now let create a service and send some traffic directed to objects with <code>deployment-config.name: hello-ms</code>  label:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">oc create service loadbalancer  hello-ms --tcp<span class="o">=</span><span class="m">80</span>:8080
+<span class="c1"># service &#34;hello-ms&#34; created
+</span><span class="c1"></span>
+<span class="c1"># edit the service object
+</span><span class="c1"></span>  oc edit svc hello-ms -o yaml</code></pre></td></tr></table>
+</div>
+</div>
+<p>This will open the service object in yaml format in edit mode, we need to locate the <em>selector</em> and replace with the label of our deployment object.</p>
+
+<p>From this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yml" data-lang="yml">selector<span class="p">:</span><span class="w">
+</span><span class="w">  </span>app<span class="p">:</span><span class="w"> </span>hello-ms</code></pre></td></tr></table>
+</div>
+</div>
+<p>To this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yml" data-lang="yml">selector<span class="p">:</span><span class="w">
+</span><span class="w"> </span>deployment-config.name<span class="p">:</span><span class="w"> </span>hello-ms</code></pre></td></tr></table>
+</div>
+</div>
+<p>We can do this the other way around, at the end is just a matter of taste. Next we need to expose our service:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">oc expose svc hello-ms
+# route &#34;hello-ms&#34; exposed
+
+oc get route
+NAME       HOST/PORT                                                   PATH      SERVICES     PORT          
+hello-ms   hello-ms-hello01.7e14.starter-us-west-2.openshiftapps.com              hello-ms   80-8080                </pre></td></tr></table>
+</div>
+</div>
+<p>Now know the URL we can confidently make a <code>curl</code> to that address:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">curl hello-ms-hello.127.0.0.1.nip.io
+Hello World%</pre></td></tr></table>
+</div>
+</div>
+<p>If my pod are not in sleeping mode (remember is a demo instance). You can access it using this <a href="http://hello-ms-hello01.7e14.starter-us-west-2.openshiftapps.com/">URL</a>.</p>
+
+<h1 id="wrapping-up">Wrapping Up</h1>
+
+<p>Hope you have learn the multiple ways to build an application in Openshift. If you feel brave after this and want to learn more sophisticated ways to build software I&rsquo;ll recommend to read about <a href="http://cesarvr.github.io/post/ocp-chainbuild/">chaining builds</a>.</p>
+    </div>
+
+    
+    
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/openshift/">openshift</a>
+          <a href="/tags/buildconfig/">buildconfig</a>
+          <a href="/tags/imagestream/">imagestream</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/post/ocp-chainbuild/">
+            <span class="next-text nav-default">Chaining Builds In Openshift</span>
+            <span class="prev-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+
+  <div class="disqus-comment">
+  <div class="disqus-button" id="load_disqus" onclick="load_disqus()">
+    Show Disqus Comments
+  </div>
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    function load_disqus() {
+      
+      
+      if (window.location.hostname === 'localhost') return;
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      var disqus_shortname = 'cesar';
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      $('#load_disqus').remove();
+    };
+  </script>
+  <noscript>Please enable JavaScript to view the
+    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+  </noscript>
+  
+  </div>
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/cvaldezr" rel="me noopener" class="iconfont icon-twitter"
+        title="twitter" target="_blank">
+      </a>
+      <a href="https://linkedin.com/in/cesarvr" rel="me noopener" class="iconfont icon-linkedin"
+        title="linkedin" target="_blank">
+      </a>
+  <a href="/index.xml" rel="noopener alternate" type="application/rss&#43;xml" class="iconfont icon-rss"
+    title="rss" target="_blank">
+  </a>
+  </div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+       -
+    2018
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span><span class="author">Cesar Valdez</span></span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+<script type="text/javascript" src="/dist/jane.min.js?v=2.7.0"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

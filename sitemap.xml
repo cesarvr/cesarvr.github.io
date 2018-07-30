@@ -3,6 +3,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>/post/deploy-ocp/</loc>
+    <lastmod>2018-07-28T19:24:19+01:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/ocp-chainbuild/</loc>
     <lastmod>2018-07-21T11:18:43+02:00</lastmod>
   </url>
@@ -42,24 +47,49 @@
   </url>
   
   <url>
+    <loc>/tags/build/</loc>
+    <lastmod>2018-07-21T11:18:43+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/buildconfig/</loc>
+    <lastmod>2018-07-28T19:24:19+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/</loc>
-    <lastmod>2018-07-21T11:18:43+02:00</lastmod>
+    <lastmod>2018-07-28T19:24:19+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/imagestream/</loc>
+    <lastmod>2018-07-28T19:24:19+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/openshift/</loc>
+    <lastmod>2018-07-28T19:24:19+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2018-07-21T11:18:43+02:00</lastmod>
+    <lastmod>2018-07-28T19:24:19+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/</loc>
+    <lastmod>2018-07-21T11:18:43+02:00</lastmod>
     <priority>0</priority>
   </url>
   
