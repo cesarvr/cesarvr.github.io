@@ -84,7 +84,7 @@
 
 <meta itemprop="datePublished" content="2018-07-28T19:24:19&#43;01:00" />
 <meta itemprop="dateModified" content="2018-07-28T19:24:19&#43;01:00" />
-<meta itemprop="wordCount" content="1858">
+<meta itemprop="wordCount" content="1910">
 
   <meta itemprop="image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true">
 
@@ -363,7 +363,7 @@ if (!doNotTrack) {
 
 <h2 id="build-configuration">Build configuration</h2>
 
-<p>To understand how we can build application first we need to understand what is builder configuration object. This object works as an abstraction to handle your application construction process, is divide in two parts a builder image and source strategy:</p>
+<p>To understand how we can build our application, first we need to understand what is builder configuration object. This object works as an abstraction to handle your application construction process, is divide in two parts a builder image and source strategy:</p>
 
 <ul>
 <li><strong>Builder Image</strong> A builder image is a <em>special</em> type of image/container which include the tools and rules to build your code also it provide an execution context as the final product execute inside this image. After the builder finish it job we should get a image in return.<br />
@@ -443,13 +443,13 @@ wildfly</code></pre></td></tr></table>
 <ul>
 <li><strong>Source code</strong> We provide a git repository to the builder image.</li>
 <li><strong>Binary</strong>  jar/war file, scripts or executable (the builder image provide the execution context).</li>
-<li><strong>Dockerfile</strong> We build the image ourselves.<br /></li>
+<li><strong>Dockerfile</strong> We defined and build the image ourselves.<br /></li>
 </ul></li>
 </ul>
 
 <h2 id="3-source-code">3 Source Code</h2>
 
-<p>Let&rsquo;s create a build that use a git URL as source strategy, the command is very similar to use <code>oc new-app</code>.</p>
+<p>Let&rsquo;s create a build configuration object, that use a git URL as source strategy, the command is very similar to use <code>oc new-app</code> we used above:.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
@@ -477,7 +477,7 @@ NAME         TYPE      FROM         LATEST
 node-build   Source    Git          1</pre></td></tr></table>
 </div>
 </div>
-<p>To run this build you we just need to execute this command:</p>
+<p>To run this build  we just need to execute this command:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
@@ -489,7 +489,7 @@ node-build   Source    Git          1</pre></td></tr></table>
 <p>As soon as our build finish, it store an image with the constructed software into the registry <code>docker-registry.default.svc:5000/hello01/node-build</code>. Where <code>docker-registry.default.svc:5000/</code> is the server, <code>hello01</code> is the namespace/project and <code>node-build</code> is the image to be deploy.</p>
 
 <blockquote>
-<p><em>When to use Git builds?</em> If your your project build setup is compatible with any of the available builder image, then this is the most cost effective way to go.</p>
+<p><em>When to use this?</em> If your your project build setup is compatible with any of the builder images of the catalog or the cost of adapting seems reasonable, then you should definitely use this option.</p>
 </blockquote>
 
 <h2 id="4-binary">4 Binary</h2>
@@ -774,7 +774,7 @@ Hello World%</pre></td></tr></table>
 
 <h1 id="wrapping-up">Wrapping Up</h1>
 
-<p>Hope you have learn the multiple ways to build an application in Openshift. If you feel brave after this and want to learn more sophisticated ways to build software I&rsquo;ll recommend to read about <a href="http://cesarvr.github.io/post/ocp-chainbuild/">chaining builds</a>.</p>
+<p>Now that you multiple ways to construct your application in the cloud using Openshift, you might want to know how to optimize those build to get the most efficient container as possible, for that you can take a look on how to <a href="http://cesarvr.github.io/post/ocp-chainbuild/">chain builds</a>, by chaining builds you can just strip the part you don&rsquo;t need of a container(compilers, build frameworks, etc) and have a very lightweight container that is faster to deploy in your nodes.</p>
     </div>
 
     
