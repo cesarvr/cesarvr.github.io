@@ -84,7 +84,7 @@
 
 <meta itemprop="datePublished" content="2018-07-28T19:24:19&#43;01:00" />
 <meta itemprop="dateModified" content="2018-07-28T19:24:19&#43;01:00" />
-<meta itemprop="wordCount" content="1343">
+<meta itemprop="wordCount" content="1557">
 
   <meta itemprop="image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true">
 
@@ -247,8 +247,13 @@ if (!doNotTrack) {
 <ul>
 <li>
 <ul>
+<li><a href="#before-we-start">Before We Start</a></li>
+<li><a href="#practice">Practice</a></li>
 <li><a href="#build-configuration">Build configuration</a></li>
-<li><a href="#1-source-code">1 Source Code</a></li>
+<li><a href="#1-source-code">1 Source Code</a>
+<ul>
+<li><a href="#how-it-works">How it works</a></li>
+</ul></li>
 <li><a href="#2-binary">2 Binary</a></li>
 <li><a href="#3-dockerfile">3 Dockerfile</a></li>
 <li><a href="#4-importing-images">4 Importing Images</a></li>
@@ -263,101 +268,67 @@ if (!doNotTrack) {
     <div class="post-content">
       <p></p>
 
-<p>I&rsquo;m very lucky that every time I work in an client engagement I always learn something new, last time I learned that is possible to create a empty build and just push your local code there and let the builder object construct your software, which I think is a very nice feature for quick demos but also very helpful when you have to deal with legacy pipelines that generate a finished product and you just want to run it inside a container. For this type of case and to solve other problems I have compiled 4 ways to build your applications in Openshift. When I mean build I mean your code application has it&rsquo;s dependencies in place, ready to execute and you get a immutable image ready to be deployed by a Deployment/DeploymentConfig.</p>
+<p>One of the good things about Openshift is how easy is to getting started, you go to the web console and as soon as you arrive to the landing page you are received with a catalog of choices that includes programming languages, frameworks, databases, combinations of db+language, etc. With two or three clicks your are ready to deploy your application. But after few days of usage you start wondering how to migrate my legacy applications ? How to migrate that no longer supported JDK 1.5 application ?  or How easy is to adapt my current build systems ? To solve this problems comes the BuildConfig to the rescue.</p>
 
-<p>Before reading this make sure you understand some of the basic concepts, if you want you can go through this <a href="https://github.com/cesarvr/Openshift">getting started</a> guide, which will help you understand the basic component of a typical application in Kubernetes/Openshift.</p>
+<h2 id="before-we-start">Before We Start</h2>
 
-<p>I wrote all this example using <a href="https://manage.openshift.com/">Openshift.io</a> which is a free cloud instance, you can use it to practice there if you want. Also you have other alternatives like <a href="https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md">oc-client</a> or if you prefer a VM you can use <a href="https://github.com/minishift/minishift">Minishift</a>.</p>
+<p>If you are not familiar with some of the concepts below you can read this <a href="https://github.com/cesarvr/Openshift">getting started guide</a>, that would help you get up and running.</p>
+
+<h2 id="practice">Practice</h2>
+
+<p>To follow this guide you just need a Openshift installation or you can access <a href="https://manage.openshift.com/">Openshift.io</a> (I run my examples there so it should be fine) for free. Also you have other alternatives like <a href="https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md">oc-client</a> or if you prefer a Virtual Machine you can use <a href="https://github.com/minishift/minishift">Minishift</a>.</p>
 
 <h2 id="build-configuration">Build configuration</h2>
 
-<p>Before we start we need to understand first what is builder configuration object. The <em>BuildConfig</em> object works as an abstraction to handle your application construction process, is divide in two parts a builder image and source strategy:</p>
+<p>The <em>BuildConfig</em> is as an abstraction to handle your application construction process, is divided in two parts a builder image and source strategy:</p>
 
 <ul>
-<li><strong>Builder Image</strong> A builder image is a <em>special</em> type of image/container which include the tools and scripts to build your code and it provide also with an execution context. After the builder finish its job we should get a image in return.<br />
+<li><strong>Builder Image</strong> A builder image is a <em>special</em> type of image/container which include the build tools (gradle, maven, npm, pip, etc.), <a href="https://github.com/openshift/source-to-image">scripts</a> to automatise build process and execution tools (node, python, jvm, etc.). Once your code is ready an immutable image with the working software is pushed to the registry.<br />
 
 <ul>
-<li>Each programming language or framework require a specific builder image, our Node.js server for example uses the <em>nodejs</em> builder image, this builder image execute <code>npm install</code> and prepare the code for execution.<br /></li>
+<li>Each programming language or framework require a specific builder image, if we use Node.js for example we should use the <em>nodejs</em> builder image, this builder image include everything necessary to build a Node.js application.<br /></li>
 <li>To check the available builder images in your Openshift installation you can run:</li>
 </ul></li>
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># delete this &lt; | awk &#39;{ print $1 }&#39; &gt; for more information. 
 </span><span class="c1"></span>oc get is -n openshift <span class="p">|</span> awk <span class="s1">&#39;{ print $1 }&#39;</span>
 
 NAME
-apicast-gateway
-dotnet
-dotnet-runtime
-httpd
-java
-jboss-webserver30-tomcat7-openshift
-jboss-webserver30-tomcat8-openshift
-jboss-webserver31-tomcat7-openshift
-jboss-webserver31-tomcat8-openshift
-jenkins
-mariadb
-mongodb
+…
 mysql
 nodejs
-perl
-php
-postgresql
-python
-redhat-openjdk18-openshift
-redhat-sso72-openshift
-redis
-rhdm70-decisioncentral-openshift
-rhdm70-kieserver-openshift
-ruby
-wildfly</code></pre></td></tr></table>
+wildfly
+…</code></pre></td></tr></table>
 </div>
 </div>
 <ul>
-<li><strong>Source Strategy</strong>  Here we define the content of our builder image, they are three types:
+<li><strong>Source Strategy</strong>  Here we define the content of our builder image, they are three types of sources available:
 
 <ul>
-<li><strong>Source code</strong> We provide a git repository to the builder image.</li>
+<li><strong>Source code</strong> We provide a git repository to the BuildConfig.</li>
 <li><strong>Binary</strong>  jar/war file, scripts or executable (the builder image provide the execution context).</li>
 <li><strong>Dockerfile</strong> We defined and build the image ourselves.<br /></li>
 </ul></li>
 </ul>
 
+<p>One last observations is that builder images are opinionated about the way they build software. If you want to take advantage of the automatic build features they provide your project need to comply with the accepted build rules. Example: To run the Node.js application the <a href="https://github.com/cesarvr/hello-world-nodejs/blob/master/package.json#L7">package.json</a> need to implement the <em>start</em> script, If you are using Java you need a <em>pom.xml</em> to generate a war/jar with certain properties, etc.</p>
+
 <h2 id="1-source-code">1 Source Code</h2>
 
-<p>Let&rsquo;s create a build configuration object, that use a git URL as source strategy, the command is very similar to use <code>oc new-app</code> we used above:.</p>
+<p>This source strategy is the most common one, because is basically the one used by default when you create an application using the catalog. The objective of this approach is, in simple terms, to pull your code from some git repository and give you back an immutable image.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
@@ -366,7 +337,7 @@ wildfly</code></pre></td></tr></table>
 <pre class="chroma">oc new-build nodejs~https://github.com/cesarvr/hello-world-nodejs --name node-build</pre></td></tr></table>
 </div>
 </div>
-<p>First parameter is the builder image <code>nodejs</code> then separated by <code>~</code> we pass the <a href="https://github.com/cesarvr/hello-world-nodejs">git repository</a> and finally we choose a name for our build configuration <code>node-build</code>.</p>
+<p>First parameter is the builder image, we are using <em>nodejs</em> then separated by <code>~</code> we pass the <a href="https://github.com/cesarvr/hello-world-nodejs">git repository</a> and finally we choose a name for our build configuration <em>node-build</em>.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
@@ -385,24 +356,47 @@ NAME         TYPE      FROM         LATEST
 node-build   Source    Git          1</pre></td></tr></table>
 </div>
 </div>
-<p>To run this build  we just need to execute this command:</p>
+<p>After we execute the command a BuildConfig is created but nothing has happened yet, for the build process to start we need to trigger the build by executing:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
 </span></pre></td>
 <td class="lntd">
-<pre class="chroma">oc start-build node-build --follow</pre></td></tr></table>
+<pre class="chroma">oc start-build node-build --follow
+
+build &#34;node-build-1&#34; started … </pre></td></tr></table>
 </div>
 </div>
-<p>As soon as our build finish, it store an image with the constructed software into the registry <code>docker-registry.default.svc:5000/hello01/node-build</code>. Where <code>docker-registry.default.svc:5000/</code> is the server, <code>hello01</code> is the namespace/project and <code>node-build</code> is the image to be deploy.</p>
+<h3 id="how-it-works">How it works</h3>
+
+<p>The BuildConfig instantiate a builder image (<code>nodejs</code> in this case) and set the git URL as an environment variable, then the scripts inside this image take control and pull the code and execute <code>npm install</code> and push an image (code+dependencies) into Openshift private registry.</p>
+
+<p>You can find the destination of the produced image by typing:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">oc get is node-build   
+
+NAME          DOCKER REPO                                            TAGS      UPDATED
+node-build    docker-registry.default.svc:5000/hello01/node-build    latest    11 minutes ago </pre></td></tr></table>
+</div>
+</div>
+<p>Where <code>docker-registry.default.svc:5000/</code> is the server, <code>hello01</code> is the namespace/project and <code>node-build</code> is your image.</p>
 
 <blockquote>
-<p><em>When to use this?</em> If your your project build setup is compatible with any of the builder images of the catalog or the cost of adapting seems reasonable, then you should definitely use this option.</p>
+<p><em>When to use this?</em> If your your project build setup is compatible with any of the builder images of the catalog or the cost of adapting your project to any of this images seems reasonable, then you should definitely use this option.</p>
 </blockquote>
 
 <h2 id="2-binary">2 Binary</h2>
 
-<p>This type of build configuration works by passing a binary. In other words we can handle the construction of our software externally and then pass it to the builder configuration so it can provide an execution context.</p>
+<p>This strategy delegates the build process to you, but still provide you with the option of using the images of the catalog for execution:</p>
 
 <p>First let create the build configuration:</p>
 <div class="highlight"><div class="chroma">
@@ -413,7 +407,7 @@ node-build   Source    Git          1</pre></td></tr></table>
 <pre class="chroma"> oc new-build nodejs --name node-binary --binary=true</pre></td></tr></table>
 </div>
 </div>
-<p>Very similar to the one above but notice the lack of git repository and the addition of <code>binary=true</code>, this tell our image to wait until we provide a software capable of run in the provided context.</p>
+<p>Very similar to the one we use for source code but notice however the lack of git repository and the addition of <code>binary=true</code>, this tell our image that we are just interested in the tools for running our application.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
@@ -432,7 +426,7 @@ NAME         TYPE      FROM         LATEST
 node-binary   Source    Binary       0</pre></td></tr></table>
 </div>
 </div>
-<p>Now we need to construct our application:</p>
+<p>Now as we said before we need to handle the construction of our application externally:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
@@ -445,7 +439,7 @@ cd cesarvr/hello-world-nodejs
 npm install  # install the depedencies. </pre></td></tr></table>
 </div>
 </div>
-<p>Now we are inside our working folder we need to push the content to the build:</p>
+<p>After executing <code>npm install</code> our application is ready to run. Next step then is to push the content of our folder to the BuildConfig:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><span class="lnt">1
@@ -456,7 +450,7 @@ npm install  # install the depedencies. </pre></td></tr></table>
 Uploading directory &#34;.&#34; as binary input for the build ...</pre></td></tr></table>
 </div>
 </div>
-<p>This command will push your scripts into the build configuration object and trigger the build, think of it like a replacement of the <code>git clone</code> command in the usual build process. Everything from here is similar to the <a href="#source-code">source-code</a> strategy.</p>
+<p>This command will push your scripts into the build configuration object and trigger the build process jumping all the building steps and just creating our image.</p>
 
 <p>If you are a Java developer, you need to choose the appropriate builder image (wildfly, jboss or redhat-openjdk18), use <code>--from-file</code> instead of <code>--from-dir</code> and pass your <em>jar/pom.xml</em>.</p>
 <div class="highlight"><div class="chroma">
@@ -475,15 +469,15 @@ Uploading directory &#34;.&#34; as binary input for the build ...</pre></td></tr
  oc start-build java-binary-build --from-file=pom.xml</pre></td></tr></table>
 </div>
 </div>
-<p>Everything should work the same as our example above, only difference is that might take more time to finish.</p>
+<p>Everything should work the same as our example above, only difference is that might take more time to boot up.</p>
 
 <blockquote>
-<p><em>When to use this?</em> If you have a build system in place which is not compatible with any builder images (e.g., you are using gradle or C++ binary), then is better to generate your binary using Jenkins and pass the final product jar/war/ELF to the build object. There is the option of generating your own builder image.</p>
+<p><em>When to use this?</em> If you have a legacy build system/framework in place that is not compatible with any builder image, example: Wildfly only supports Maven and my team is using Gradle. What I would do in that case is to generate my binary as usual and then use this strategy to create my final image.</p>
 </blockquote>
 
 <h2 id="3-dockerfile">3 Dockerfile</h2>
 
-<p>Using this way mean you take care of the image creation by defining a Dockerfile and delegate it&rsquo;s construction to the build configuration object.</p>
+<p>This way you take care of the build process and image creation but we want to delegate it&rsquo;s construction to the BuildConfig, this way it can grab the base image from our private/corporate repository. This method require us to define a Dockerfile and delegate it&rsquo;s construction to the BuildConfig.</p>
 
 <p>Let&rsquo;s define our Dockerfile, I&rsquo;ll call it <a href="https://gist.github.com/cesarvr/fac37fa7825f5ad7a576801fed07d0c8">build.Dockerfile</a>.</p>
 <div class="highlight"><div class="chroma">
@@ -504,19 +498,15 @@ Uploading directory &#34;.&#34; as binary input for the build ...</pre></td></tr
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"> cat build.Dockerfile <span class="p">|</span> oc new-build --name node-docker --dockerfile<span class="o">=</span><span class="s1">&#39;-&#39;</span>
+<pre class="chroma"><code class="language-sh" data-lang="sh"> cat build.Dockerfile <span class="p">|</span> oc new-build --name node-container --dockerfile<span class="o">=</span><span class="s1">&#39;-&#39;</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>The first section we pipe the content of the file to our <code>oc new-build</code> command, this works because we added <code>--dockerfile='-'</code> that <code>-</code> there, tell the command to read from <a href="https://en.wikipedia.org/wiki/Standard_streams#Standard_input_(stdin)">standard input</a>. This command requires that the files we want to work with (<code>COPY</code> in this case) to exist in the folder where we made the call to <code>oc new-build</code> command, otherwise it won&rsquo;t work.</p>
 
- <span class="c1">#if your are lazy.
-</span><span class="c1"></span> curl https://gist.githubusercontent.com/cesarvr/fac37fa7825f5ad7a576801fed07d0c8/raw/8f79f2aa9a6aae7936186e0e641c3cece9d76bd9/Dockerfile <span class="p">|</span> oc new-build --name node-docker --dockerfile<span class="o">=</span><span class="s1">&#39;-&#39;</span></code></pre></td></tr></table>
-</div>
-</div>
 <blockquote>
-<p>Sadly Docker strategy is disable in Openshift.io, but you can still practice by using <a href="https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md">oc cluster up</a> or <a href="https://github.com/minishift/minishift">minishift</a>.</p>
+<p>Sadly Docker strategy is disable in Openshift.io, but good news is you can still practice by using <a href="https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md">oc cluster up</a> or <a href="https://github.com/minishift/minishift">minishift</a>.</p>
 </blockquote>
 
 <p>To trigger the build:</p>
@@ -525,16 +515,18 @@ Uploading directory &#34;.&#34; as binary input for the build ...</pre></td></tr
 <pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh">oc start-build node-docker</code></pre></td></tr></table>
+<pre class="chroma"><code class="language-sh" data-lang="sh">oc start-build node-container</code></pre></td></tr></table>
 </div>
 </div>
+<p>When you run this the container will be build according to our specifications in the <em>.Dockerfile</em>.</p>
+
 <blockquote>
-<p><em>When to use this?</em>  You should use this method when working with legacy software (e.g., if you are using EJB 1.0, JDK 1.4, etc.) or when you current execution runtime is not supported.</p>
+<p><em>When to use this?</em>  You should use this method when working with a runtime not supported by any builder image available (e.g., EJB 1.0, JDK 1.4, etc.).</p>
 </blockquote>
 
 <h2 id="4-importing-images">4 Importing Images</h2>
 
-<p>You can also import images. If you are creating your own images and pushing it to an external/internal registry then you can deploy this images in Openshift. You can do this by creating an image stream object.</p>
+<p>This one not using a BuildConfig but I just included because is another option and can be useful in desperate circumstances. If you are creating your own images and pushing it to an external/internal registry then you can deploy this images in Openshift. You can do this by creating an image stream object.</p>
 
 <p>Importing an image inside your cluster is easy:</p>
 <div class="highlight"><div class="chroma">
@@ -560,15 +552,15 @@ Uploading directory &#34;.&#34; as binary input for the build ...</pre></td></tr
  microservice   your-docker-registry.io/hello01/cutting-edge:latest   latest    12 seconds ago</pre></td></tr></table>
 </div>
 </div>
-<p>This object monitors the targeted image for changes, as soon as you push a new version of this image this object triggers a message. In the next section we are going to see how to respond to this events.</p>
-
 <blockquote>
-<p><em>When to use this?</em>  If your legacy build system is pusing images to a internal registry like nexus, then you can use this method to deploy your applications.</p>
+<p><em>When to use this?</em>  If you have legacy applications running in containers and they are stored in an external registry like Nexus, then you can use this method to deploy your applications. Use this way only as temporary solution or as your last choice.</p>
 </blockquote>
 
 <h1 id="wrapping-up">Wrapping Up</h1>
 
-<p>Now that you multiple ways to construct your application in the cloud using Openshift, you might want to know how to optimize those build to get the most efficient runtime container as possible. To help you with that I wrote this article on how to do <a href="http://cesarvr.github.io/post/ocp-chainbuild/">chain builds</a>, by chaining builds you can divide the build process into two images one handling the build(compilers, build frameworks, etc) and the other image very small and with just the necessary for runtime.</p>
+<p>Now that you multiple ways to construct your application in the cloud using Openshift, you might want to know how to optimize those build to get the most efficient runtime container as possible. To help you with that I wrote this article on how to do <a href="http://cesarvr.github.io/post/ocp-chainbuild/">chain builds</a>, by chaining your builds you can divide the build process into two images one handling the build(compilers, build frameworks, etc) and the other image very small and with just the necessary for runtime.</p>
+
+<p>In the next post I&rsquo;m going to talk about how can create a DeploymentConfig to deploy this images streams we have created so far (<a href="#1-source-code">node-build</a>, <a href="#2-binary">node-binary</a>, <a href="#3-dockerfile">node-container</a> and <a href="#4-importing-images">import</a>).</p>
     </div>
 
     
