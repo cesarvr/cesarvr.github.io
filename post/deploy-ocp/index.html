@@ -24,7 +24,7 @@
 
 <meta name="mobile-web-app-capable" content="yes">
 
-<meta name="description" content="In this article we are going to review multiple ways to build applications in Openshift." />
+<meta name="description" content="If you are migrating legacy applications or creating a automatic build system, Openshift BuildConfig offers you various choices to help you with that job." />
 
 
 
@@ -56,7 +56,7 @@
 
 
 <meta property="og:title" content="4 Ways to Build Applications in Openshift" />
-<meta property="og:description" content="In this article we are going to review multiple ways to build applications in Openshift." />
+<meta property="og:description" content="If you are migrating legacy applications or creating a automatic build system, Openshift BuildConfig offers you various choices to help you with that job." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/deploy-ocp/" />
 
@@ -79,12 +79,12 @@
 
 
 <meta itemprop="name" content="4 Ways to Build Applications in Openshift">
-<meta itemprop="description" content="In this article we are going to review multiple ways to build applications in Openshift.">
+<meta itemprop="description" content="If you are migrating legacy applications or creating a automatic build system, Openshift BuildConfig offers you various choices to help you with that job.">
 
 
 <meta itemprop="datePublished" content="2018-07-28T19:24:19&#43;01:00" />
 <meta itemprop="dateModified" content="2018-07-28T19:24:19&#43;01:00" />
-<meta itemprop="wordCount" content="1557">
+<meta itemprop="wordCount" content="1594">
 
   <meta itemprop="image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true">
 
@@ -95,7 +95,7 @@
 <meta name="twitter:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true"/>
 
 <meta name="twitter:title" content="4 Ways to Build Applications in Openshift"/>
-<meta name="twitter:description" content="In this article we are going to review multiple ways to build applications in Openshift."/>
+<meta name="twitter:description" content="If you are migrating legacy applications or creating a automatic build system, Openshift BuildConfig offers you various choices to help you with that job."/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -247,8 +247,6 @@ if (!doNotTrack) {
 <ul>
 <li>
 <ul>
-<li><a href="#before-we-start">Before We Start</a></li>
-<li><a href="#practice">Practice</a></li>
 <li><a href="#build-configuration">Build configuration</a></li>
 <li><a href="#1-source-code">1 Source Code</a>
 <ul>
@@ -268,22 +266,18 @@ if (!doNotTrack) {
     <div class="post-content">
       <p></p>
 
-<p>One of the good things about Openshift is how easy is to getting started, you go to the web console and as soon as you arrive to the landing page you are received with a catalog of choices that includes programming languages, frameworks, databases, combinations of db+language, etc. With two or three clicks your are ready to deploy your application. But after few days of usage you start wondering how to migrate my legacy applications ? How to migrate that no longer supported JDK 1.5 application ?  or How easy is to adapt my current build systems ? To solve this problems comes the BuildConfig to the rescue.</p>
+<p>One of the good things about Openshift is how easy is to getting started, you go to the web console and as soon as you arrive to the landing page you are received with a catalog of choices that includes programming languages, frameworks, databases, combinations of db+language, etc. With two or three clicks your are ready to deploy your application. But after few days of usage you start wondering &ndash; How to migrate my legacy applications ? How to migrate that no longer supported JDK 1.5 application ?  How easy is to adapt my current build systems ? To solve this problems comes the BuildConfig to the rescue.</p>
 
-<h2 id="before-we-start">Before We Start</h2>
-
-<p>If you are not familiar with some of the concepts below you can read this <a href="https://github.com/cesarvr/Openshift">getting started guide</a>, that would help you get up and running.</p>
-
-<h2 id="practice">Practice</h2>
+<p>But before we start talking about the BuildConfig, to make the most of this post make sure you get introduced to the basics by reading this <a href="https://github.com/cesarvr/Openshift">getting started guide</a>, that would help you get up and running in case you don&rsquo;t understand a particular concept.</p>
 
 <p>To follow this guide you just need a Openshift installation or you can access <a href="https://manage.openshift.com/">Openshift.io</a> (I run my examples there so it should be fine) for free. Also you have other alternatives like <a href="https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md">oc-client</a> or if you prefer a Virtual Machine you can use <a href="https://github.com/minishift/minishift">Minishift</a>.</p>
 
 <h2 id="build-configuration">Build configuration</h2>
 
-<p>The <em>BuildConfig</em> is as an abstraction to handle your application construction process, is divided in two parts a builder image and source strategy:</p>
+<p>The <em>BuildConfig</em> is as an abstraction to handle your application construction process, this component is divided in two parts a builder image and source strategy:</p>
 
 <ul>
-<li><strong>Builder Image</strong> A builder image is a <em>special</em> type of image/container which include the build tools (gradle, maven, npm, pip, etc.), <a href="https://github.com/openshift/source-to-image">scripts</a> to automatise build process and execution tools (node, python, jvm, etc.). Once your code is ready an immutable image with the working software is pushed to the registry.<br />
+<li><strong>Builder Image</strong> A builder image is a <em>special</em> type of image/container provided by Openshift which include the build tools (gradle, maven, npm, pip, etc.), <a href="https://github.com/openshift/source-to-image">scripts</a> to automatise build process and execution tools (node, python, jvm, etc.).<br />
 
 <ul>
 <li>Each programming language or framework require a specific builder image, if we use Node.js for example we should use the <em>nodejs</em> builder image, this builder image include everything necessary to build a Node.js application.<br /></li>
@@ -324,7 +318,7 @@ wildfly
 </ul></li>
 </ul>
 
-<p>One last observations is that builder images are opinionated about the way they build software. If you want to take advantage of the automatic build features they provide your project need to comply with the accepted build rules. Example: To run the Node.js application the <a href="https://github.com/cesarvr/hello-world-nodejs/blob/master/package.json#L7">package.json</a> need to implement the <em>start</em> script, If you are using Java you need a <em>pom.xml</em> to generate a war/jar with certain properties, etc.</p>
+<p>Once you trigger a BuildConfig object, the builder image will take care of building your code, once your code is build into an ready to execute application the BuildConfig push the image into the registry.</p>
 
 <h2 id="1-source-code">1 Source Code</h2>
 
@@ -393,6 +387,8 @@ node-build    docker-registry.default.svc:5000/hello01/node-build    latest    1
 <blockquote>
 <p><em>When to use this?</em> If your your project build setup is compatible with any of the builder images of the catalog or the cost of adapting your project to any of this images seems reasonable, then you should definitely use this option.</p>
 </blockquote>
+
+<p>One last observations is that builder images are opinionated about the way they build software. If you want to take advantage of the automatic build features they provide your project need to comply with the build rules. Example: To run the Node.js application the <a href="https://github.com/cesarvr/hello-world-nodejs/blob/master/package.json#L7">package.json</a> need to implement the <em>start</em> script, If you are using Java you need a <em>pom.xml</em> to generate a war/jar with certain properties, etc.</p>
 
 <h2 id="2-binary">2 Binary</h2>
 
