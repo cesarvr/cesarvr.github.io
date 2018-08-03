@@ -24,7 +24,7 @@
 
 <meta name="mobile-web-app-capable" content="yes">
 
-<meta name="description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with that job." />
+<meta name="description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with those challenges." />
 
 
 
@@ -56,7 +56,7 @@
 
 
 <meta property="og:title" content="4 Ways to Build Applications in Openshift" />
-<meta property="og:description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with that job." />
+<meta property="og:description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with those challenges." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/deploy-ocp/" />
 
@@ -79,12 +79,12 @@
 
 
 <meta itemprop="name" content="4 Ways to Build Applications in Openshift">
-<meta itemprop="description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with that job.">
+<meta itemprop="description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with those challenges.">
 
 
 <meta itemprop="datePublished" content="2018-07-28T19:24:19&#43;01:00" />
 <meta itemprop="dateModified" content="2018-07-28T19:24:19&#43;01:00" />
-<meta itemprop="wordCount" content="1571">
+<meta itemprop="wordCount" content="1491">
 
   <meta itemprop="image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true">
 
@@ -95,7 +95,7 @@
 <meta name="twitter:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true"/>
 
 <meta name="twitter:title" content="4 Ways to Build Applications in Openshift"/>
-<meta name="twitter:description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with that job."/>
+<meta name="twitter:description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with those challenges."/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -256,7 +256,8 @@ if (!doNotTrack) {
 <li><a href="#3-dockerfile">3 Dockerfile</a></li>
 <li><a href="#4-importing-images">4 Importing Images</a></li>
 </ul></li>
-<li><a href="#wrapping-up">Wrapping Up</a></li>
+<li><a href="#optimizing">Optimizing</a></li>
+<li><a href="#deploy">Deploy</a></li>
 </ul>
 </nav>
   </div>
@@ -266,9 +267,13 @@ if (!doNotTrack) {
     <div class="post-content">
       <p></p>
 
-<p>One of the good things about Openshift is how easy is to getting started, you just go to the webconsole and as soon as you arrive to the landing page you are welcome with a catalog of choices that includes programming languages, frameworks, databases, combinations of db+language, etc. With two or three clicks your are ready to deploy your application. But after few days of usage you start wondering &ndash; How to migrate my legacy applications ? How to migrate that no longer supported JDK 1.5 application ?  How easy is to adapt my current build systems ? To solve these problems, the BuildConfig comes to the rescue.</p>
+<p>In this post we are going to talk about 4 BuildConfig strategies to build your software. By that I mean transform your software project from source code into an ready to deploy image.</p>
 
-<p>But before we start talking about the BuildConfig, to make the most of this post make sure you get introduced to the basics by reading this <a href="https://github.com/cesarvr/Openshift">getting started guide</a>, that would help you get up and running in case you don&rsquo;t understand a particular concept.</p>
+<p>This strategies might be useful for people who look for:
+- Want to deploy new software.
+- Working with build automation system in Openshift.
+- Want to run existing software in Openshift.<br />
+- Your software runtime/library is not longer supported.</p>
 
 <p>To follow this guide you just need a <a href="https://github.com/cesarvr/Openshift">Openshift installation</a> or you can access <a href="https://manage.openshift.com/">Openshift.io</a> (I run my examples there so it should be fine) for free. Also you have other alternatives like <a href="https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md">oc-client</a> or if you prefer a Virtual Machine you can use <a href="https://github.com/minishift/minishift">Minishift</a>.</p>
 
@@ -297,7 +302,7 @@ if (!doNotTrack) {
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># delete this &lt; | awk &#39;{ print $1 }&#39; &gt; for more information. 
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># delete this &lt; | awk &#39;{ print $1 }&#39; &gt; for more information.
 </span><span class="c1"></span>oc get is -n openshift <span class="p">|</span> awk <span class="s1">&#39;{ print $1 }&#39;</span>
 
 NAME
@@ -329,9 +334,9 @@ wildfly
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># create
-</span><span class="c1"></span>oc new-build --name &lt;name&gt; &lt;options&gt; 
+</span><span class="c1"></span>oc new-build --name &lt;name&gt; &lt;options&gt;
 
-<span class="c1"># search 
+<span class="c1"># search
 </span><span class="c1"></span>oc get bc/&lt;name&gt;</code></pre></td></tr></table>
 </div>
 </div>
@@ -382,7 +387,7 @@ node-build   Source    Git          1</pre></td></tr></table>
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-sh" data-lang="sh">oc start-build node-build --follow
-  build <span class="s2">&#34;node-build-1&#34;</span> started … </code></pre></td></tr></table>
+  build <span class="s2">&#34;node-build-1&#34;</span> started …</code></pre></td></tr></table>
 </div>
 </div>
 <h3 id="how-it-works">How it works</h3>
@@ -401,7 +406,7 @@ node-build   Source    Git          1</pre></td></tr></table>
 <pre class="chroma">oc get is node-build   
 
 NAME          DOCKER REPO                                            TAGS      UPDATED
-node-build    docker-registry.default.svc:5000/hello01/node-build    latest    11 minutes ago </pre></td></tr></table>
+node-build    docker-registry.default.svc:5000/hello01/node-build    latest    11 minutes ago</pre></td></tr></table>
 </div>
 </div>
 <p>Where <code>docker-registry.default.svc:5000/</code> is the server, <code>hello01</code> is the namespace/project and <code>node-build</code> is your image.</p>
@@ -454,7 +459,7 @@ node-binary   Source    Binary       0</pre></td></tr></table>
 <td class="lntd">
 <pre class="chroma">git clone https://github.com/cesarvr/hello-world-nodejs
 cd cesarvr/hello-world-nodejs
-npm install  # install the depedencies. </pre></td></tr></table>
+npm install  # install the depedencies.</pre></td></tr></table>
 </div>
 </div>
 <p>After executing <code>npm install</code> our application is ready to run. Next step then is to push the content of our folder to the BuildConfig:</p>
@@ -564,8 +569,8 @@ Uploading directory &#34;.&#34; as binary input for the build ...</pre></td></tr
 </span><span class="lnt">4
 </span></pre></td>
 <td class="lntd">
-<pre class="chroma">oc get is 
- 
+<pre class="chroma">oc get is
+
  Name                   Docker Repo                                  TAG           …
  microservice   your-docker-registry.io/hello01/cutting-edge:latest   latest    12 seconds ago</pre></td></tr></table>
 </div>
@@ -574,9 +579,11 @@ Uploading directory &#34;.&#34; as binary input for the build ...</pre></td></tr
 <p><em>When to use this?</em>  If you have legacy applications running in containers and they are stored in an external registry like Nexus, then you can use this method to deploy your applications. Use this way only as temporary solution or as your last choice.</p>
 </blockquote>
 
-<h1 id="wrapping-up">Wrapping Up</h1>
+<h1 id="optimizing">Optimizing</h1>
 
 <p>Now that you know multiple ways to construct your application in the cloud using Openshift, you might want to know how to optimize those build to get the most efficient runtime container as possible. To help you with that I wrote this article on how to do <a href="http://cesarvr.github.io/post/ocp-chainbuild/">chain builds</a>, by chaining your builds you can divide the build process into two images one handling the build(compilers, build frameworks, etc) and the other image very small and with just the necessary for runtime.</p>
+
+<h1 id="deploy">Deploy</h1>
 
 <p>In the next post I&rsquo;m going to talk about how can create a DeploymentConfig to deploy this images streams we have created so far (<a href="#1-source-code">node-build</a>, <a href="#2-binary">node-binary</a>, <a href="#3-dockerfile">node-container</a> and <a href="#4-importing-images">import</a>).</p>
 
