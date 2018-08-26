@@ -14,11 +14,12 @@
     
     <item>
       <title>4 Ways to Build Applications in Openshift</title>
-      <link>/post/deploy-ocp/</link>
+      <link>/post/buildconfig/</link>
       <pubDate>Sat, 28 Jul 2018 19:24:19 +0100</pubDate>
       
-      <guid>/post/deploy-ocp/</guid>
-      <description>&lt;p&gt;&lt;/p&gt;</description>
+      <guid>/post/buildconfig/</guid>
+      <description>&lt;p&gt;We are going to discuss the different strategies for building our software in OpenShift. These strategies are useful if you need to solve any of the following problems:
+&lt;/p&gt;</description>
     </item>
     
     <item>
