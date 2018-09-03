@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Creating Your Own Containers - Cesar</title>
+  <title>Creating Your Own Containers - Nube</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -32,7 +32,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.48-DEV" />
+<meta name="generator" content="Hugo 0.45.1" />
 
 
 <link rel="canonical" href="/post/2018-05-22-create-containers/" />
@@ -59,9 +59,25 @@
 <meta property="og:description" content="In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/2018-05-22-create-containers/" />
-<meta property="og:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/containers/container_are_linux.png?raw=true" />
+
+  <meta property="og:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/containers/container_are_linux.png?raw=true" />
+
+
+
 <meta property="article:published_time" content="2018-05-22T00:00:00&#43;00:00"/>
+
 <meta property="article:modified_time" content="2018-05-22T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
 <meta itemprop="name" content="Creating Your Own Containers">
 <meta itemprop="description" content="In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux.">
 
@@ -74,7 +90,7 @@
 
 
 
-<meta itemprop="keywords" content="" />
+<meta itemprop="keywords" content="Containers,Linux,C,C&#43;&#43;," />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/containers/container_are_linux.png?raw=true"/>
 
@@ -91,7 +107,7 @@
 <![endif]-->
 
 
-<script type="application/javascript">
+<script>
 var doNotTrack = false;
 if (!doNotTrack) {
 	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
@@ -108,7 +124,7 @@ if (!doNotTrack) {
 <body>
   <div id="mobile-navbar" class="mobile-navbar">
   <div class="mobile-header-logo">
-    <a href="/" class="logo">Cesar</a>
+    <a href="/" class="logo">Nube</a>
   </div>
   <div class="mobile-navbar-icon">
     <span></span>
@@ -156,7 +172,7 @@ if (!doNotTrack) {
     <div class="logo-wrapper">
   <a href="/" class="logo">
     
-      Cesar
+      Nube
     
   </a>
 </div>
@@ -217,7 +233,9 @@ if (!doNotTrack) {
       
       <div class="post-meta">
         <span class="post-time"> 2018-05-22 </span>
-        
+        <div class="post-category">
+            
+          </div>
         
 
         
@@ -310,7 +328,7 @@ if (!doNotTrack) {
 <pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
 </span><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
   <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello, World! </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span> 
+  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
 <span class="p">}</span></code></pre></td></tr></table>
 </div>
 </div>
@@ -349,10 +367,10 @@ if (!doNotTrack) {
 </span></pre></td>
 <td class="lntd">
 <pre class="chroma">  +--------+  
-  | parent | 
-  |--------| 
+  | parent |
+  |--------|
   | main() |  
-  +--------+ </pre></td></tr></table>
+  +--------+</pre></td></tr></table>
 </div>
 </div>
 <p>To create a new process we need to clone the actual process and provide a function to be executed in it. Let&rsquo;s start by writing the function, we&rsquo;ll call it <code>jail</code>.</p>
@@ -383,12 +401,12 @@ if (!doNotTrack) {
 </span></pre></td>
 <td class="lntd">
 <pre class="chroma">  +--------+  
-  | parent | 
-  |--------| 
-  | main() | 
-  |--------| 
+  | parent |
+  |--------|
+  | main() |
+  |--------|
   | jail() |  
-  +--------+ </pre></td></tr></table>
+  +--------+</pre></td></tr></table>
 </div>
 </div>
 <p>Our next step is to invoke the system call to create the child process, for this we are going to use the <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a> system call.</p>
@@ -561,7 +579,7 @@ if (!doNotTrack) {
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="c1">//we can call it like this: run(&#34;/bin/sh&#34;); 
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="c1">//we can call it like this: run(&#34;/bin/sh&#34;);
 </span><span class="c1"></span><span class="kt">int</span> <span class="nf">run</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">)</span> <span class="p">{</span>
   <span class="kt">char</span> <span class="o">*</span><span class="n">_args</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span> <span class="p">};</span>
   <span class="n">execvp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">_args</span><span class="p">);</span>
@@ -585,7 +603,7 @@ if (!doNotTrack) {
 <pre class="chroma"><code class="language-c++" data-lang="c++"><span class="c1">//we can call it like this: run(&#34;/bin/sh&#34;,&#34;-c&#34;, &#34;echo hello!&#34;);  
 </span><span class="c1"></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">P</span><span class="o">&gt;</span>
 <span class="kt">int</span> <span class="n">run</span><span class="p">(</span><span class="n">P</span><span class="p">...</span> <span class="n">params</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">//basically generating the arguments array at compile time. 
+  <span class="c1">//basically generating the arguments array at compile time.
 </span><span class="c1"></span>  <span class="kt">char</span> <span class="o">*</span><span class="n">args</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span><span class="p">...,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">};</span>
   <span class="k">return</span> <span class="nf">execvp</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">);</span>
 <span class="p">}</span>
@@ -605,7 +623,7 @@ if (!doNotTrack) {
 <td class="lntd">
 <pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span> <span class="c1">// load the shell process.
-</span><span class="c1"></span>  
+</span><span class="c1"></span>
   <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
@@ -687,10 +705,10 @@ sh-4.4$</pre></td></tr></table>
 <td class="lntd">
 <pre class="chroma">                 Linux Kernel
  +-----------------------------------------------+
- 
+
     Global Namespace&#39;s { UTS, PID, MOUNTS ... }
  +-----------------------------------------------+
- 
+
          parent                   child process        
   +-------------------+            +---------+       
   |                   |            |         |
@@ -720,10 +738,10 @@ sh-4.4$</pre></td></tr></table>
 <td class="lntd">
 <pre class="chroma">                  Linux Kernel
  +-----------------------------------------------------+
- 
+
   Global Namespace { UTS, ... }              UTS
  +-----------------------------+      +----------------+
-                                            
+
          parent                         child process        
   +-------------------+                  +---------+       
   |                   |                  |         |
@@ -879,9 +897,9 @@ child pid: <span class="m">1</span>
 </span><span class="lnt">9
 </span></pre></td>
 <td class="lntd">
-<pre class="chroma">   folders our process can access 
+<pre class="chroma">   folders our process can access
     ----------------------------
-                 a 
+                 a
                  |
               b --- c  
               |
@@ -902,7 +920,7 @@ child pid: <span class="m">1</span>
 </span><span class="lnt">7
 </span></pre></td>
 <td class="lntd">
-<pre class="chroma">   folders our process can access 
+<pre class="chroma">   folders our process can access
     ----------------------------
                 b   
                 |
@@ -1096,9 +1114,9 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 
   <span class="n">setup_variables</span><span class="p">();</span>
   <span class="n">setup_root</span><span class="p">(</span><span class="s">&#34;./root&#34;</span><span class="p">);</span>
-  
+
   <span class="n">mount</span><span class="p">(</span><span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="s">&#34;/proc&#34;</span><span class="p">,</span> <span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  
+
   <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span>
   <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
 <span class="p">}</span>
@@ -1135,10 +1153,10 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-c" data-lang="c">  <span class="n">mount</span><span class="p">(</span><span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="s">&#34;/proc&#34;</span><span class="p">,</span> <span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  
+
   <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span>
 
-  <span class="n">umount</span><span class="p">(</span><span class="s">&#34;/proc&#34;</span><span class="p">);</span> 
+  <span class="n">umount</span><span class="p">(</span><span class="s">&#34;/proc&#34;</span><span class="p">);</span>
   <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span></code></pre></td></tr></table>
 </div>
 </div>
@@ -1320,7 +1338,7 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
   <span class="n">clone_process</span><span class="p">(</span><span class="n">jail</span><span class="p">,</span> <span class="n">CLONE_NEWPID</span> <span class="o">|</span> <span class="n">CLONE_NEWUTS</span> <span class="o">|</span> <span class="n">SIGCHLD</span> <span class="p">);</span>
 
   <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span> 
+<span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
 </div>
@@ -1351,8 +1369,8 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 </span></pre></td>
 <td class="lntd">
 <pre class="chroma">   Init-1
-   ------ 
-     |  child&#39;s 
+   ------
+     |  child&#39;s
      |  
  ----------------------
  |          |         |
@@ -1360,7 +1378,7 @@ systemd-2  bash-3   our-container-4
                       |
                     jail - 5
                       |
-                    shell - 6 </pre></td></tr></table>
+                    shell - 6</pre></td></tr></table>
 </div>
 </div>
 <p>When we apply the flag <code>CLONE_NEWPID</code> this happens:</p>
@@ -1380,8 +1398,8 @@ systemd-2  bash-3   our-container-4
 </span></pre></td>
 <td class="lntd">
 <pre class="chroma">   Init-1
-   ------ 
-     |  child&#39;s 
+   ------
+     |  child&#39;s
      |  
  ----------------------                    
  |          |         |
@@ -1389,7 +1407,7 @@ systemd-2  bash-3   our-container-4
                       |
                      jail - 5
                       |
-                    shell - 6 </pre></td></tr></table>
+                    shell - 6</pre></td></tr></table>
 </div>
 </div>
 <p>Nothing changes at a global scale, but from our process&rsquo;s perspective we see the world like this:</p>
@@ -1403,8 +1421,8 @@ systemd-2  bash-3   our-container-4
 </span></pre></td>
 <td class="lntd">
 <pre class="chroma">   jail - 1
-   ------ 
-     |  child&#39;s 
+   ------
+     |  child&#39;s
      |  
    shell-2  </pre></td></tr></table>
 </div>
@@ -1464,7 +1482,7 @@ systemd-2  bash-3   our-container-4
 <pre class="chroma"><span class="lnt">1
 </span></pre></td>
 <td class="lntd">
-<pre class="chroma">/sys/fs/cgroup/pids/container/ </pre></td></tr></table>
+<pre class="chroma">/sys/fs/cgroup/pids/container/</pre></td></tr></table>
 </div>
 </div>
 <p>Let&rsquo;s write the code to create the folder:</p>
@@ -1537,7 +1555,7 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
 <span class="cp">#define CGROUP_FOLDER &#34;/sys/fs/cgroup/pids/container/&#34;
 </span><span class="cp">#define concat(a,b) (a&#34;&#34; b)
 </span><span class="cp"></span>
-<span class="c1">// update a given file with a string value. 
+<span class="c1">// update a given file with a string value.
 </span><span class="c1"></span><span class="kt">void</span> <span class="nf">write_rule</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">path</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
   <span class="kt">int</span> <span class="n">fp</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">O_WRONLY</span> <span class="o">|</span> <span class="n">O_APPEND</span> <span class="p">);</span>
   <span class="n">write</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
@@ -1546,9 +1564,9 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
 
 
 <span class="kt">void</span> <span class="nf">limitProcessCreation</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// create a folder 
+  <span class="c1">// create a folder
 </span><span class="c1"></span>  <span class="n">mkdir</span><span class="p">(</span> <span class="n">PID_CGROUP_FOLDER</span><span class="p">,</span> <span class="n">S_IRUSR</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">);</span>  
-  
+
   <span class="c1">//getpid() give us a integer and we transform it to a string.
 </span><span class="c1"></span>  <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">pid</span>  <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">getpid</span><span class="p">()).</span><span class="n">c_str</span><span class="p">();</span>
 
@@ -1572,7 +1590,7 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">limitProcessCreation</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// create a folder 
+  <span class="c1">// create a folder
 </span><span class="c1"></span>  <span class="n">mkdir</span><span class="p">(</span> <span class="n">PID_CGROUP_FOLDER</span><span class="p">,</span> <span class="n">S_IRUSR</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">);</span>    
 
   <span class="c1">//getpid give us a integer and we transform it to a string.
@@ -1600,9 +1618,9 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">limitProcessCreation</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// create a folder 
+  <span class="c1">// create a folder
 </span><span class="c1"></span>  <span class="n">mkdir</span><span class="p">(</span> <span class="n">PID_CGROUP_FOLDER</span><span class="p">,</span> <span class="n">S_IRUSR</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">);</span>  
-  
+
   <span class="c1">//getpid give us a integer and we transform it to a string.
 </span><span class="c1"></span>  <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">pid</span>  <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">getpid</span><span class="p">()).</span><span class="n">c_str</span><span class="p">();</span>
 
@@ -1664,7 +1682,9 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
     
 
     <footer class="post-footer">
-      
+      <div class="post-tags">
+          
+        </div>
 
       
       <nav class="post-nav">
@@ -1737,14 +1757,6 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
   </div>
 
 <div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
-  </span>
-
   <span class="copyright-year">
     &copy;
     

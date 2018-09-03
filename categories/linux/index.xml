@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Linux on Nube</title>
+    <link>/categories/linux/</link>
+    <description>Recent content in Linux on Nube</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Cesar Valdez</copyright>
+    <lastBuildDate>Tue, 22 May 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Creating Your Own Containers</title>
+      <link>/post/2018-05-22-create-containers/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2018-05-22-create-containers/</guid>
+      <description>What is this post about This post is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are based on this excellent talk by Liz Rice.
+Why C Because I love the simplicity of the language (maybe I&amp;rsquo;m just a romantic) and also it is the lingua franca of Linux, which means that it helps to get a better understanding about how things work at a system level.</description>
+    </item>
+    
+    <item>
+      <title>Containers For Beginners</title>
+      <link>/post/2017-12-22-Containers/</link>
+      <pubDate>Fri, 22 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2017-12-22-Containers/</guid>
+      <description>What is a container ? A container is just a way to achieve process isolation. Unlike virtual machines, they don’t achieve isolation by simulating hardware, but by using existing Linux kernel features.
+In a typical Unix/Linux OS all processes share the same user space, but with the introduction of new features in Linux 2.6+, you can create a process that has its own particular set of isolated contexts like file tree, threads, etc.</description>
+    </item>
+    
+  </channel>
+</rss>

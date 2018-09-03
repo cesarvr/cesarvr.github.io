@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Buildconfig on Cesar</title>
+    <title>Buildconfig on Nube</title>
     <link>/tags/buildconfig/</link>
-    <description>Recent content in Buildconfig on Cesar</description>
+    <description>Recent content in Buildconfig on Nube</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Cesar Valdez</copyright>
@@ -13,31 +13,13 @@
     
     
     <item>
-      <title>4 Ways to Build Applications in Openshift</title>
+      <title>4 Ways to Build Applications in OpenShift</title>
       <link>/post/buildconfig/</link>
       <pubDate>Sat, 28 Jul 2018 19:24:19 +0100</pubDate>
       
       <guid>/post/buildconfig/</guid>
-      <description>&lt;p&gt;We are going to discuss the different strategies for building our software in OpenShift. These strategies are useful if you need to solve any of the following problems:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Learn how to build your software&lt;/li&gt;
-&lt;li&gt;You want to automate your builds&lt;/li&gt;
-&lt;li&gt;Build existing applications&lt;/li&gt;
-&lt;li&gt;You want to run legacy applications inside containers on the cloud&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Exporting external images to Openshift</title>
-      <link>/post/2017-11-12-imagestream/</link>
-      <pubDate>Sun, 12 Nov 2017 00:00:00 +0000</pubDate>
-      
-      <guid>/post/2017-11-12-imagestream/</guid>
-      <description>Getting Started First you need to have an Openshift installation on the cloud or in your machine, the second option is the easiest one thanks to the oc cluster up command, this will create a small local installation of openshift in your machine, if your are not familiar take a quick look at the documentation.
-Creating a project Once oc cluster up finish you should have an Openshift installation up and ready in your local machine, now next step is to login in and create a project.</description>
+      <description>&lt;p&gt;We are going to discuss the different strategies for building our software in OpenShift. These strategies are useful if you need to solve any of the following problems:
+&lt;/p&gt;</description>
     </item>
     
   </channel>

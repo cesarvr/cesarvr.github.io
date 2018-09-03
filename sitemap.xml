@@ -47,6 +47,12 @@
   </url>
   
   <url>
+    <loc>/tags/android/</loc>
+    <lastmod>2017-12-01T19:51:38+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/tags/build/</loc>
     <lastmod>2018-07-21T11:18:43+02:00</lastmod>
     <priority>0</priority>
@@ -59,12 +65,48 @@
   </url>
   
   <url>
+    <loc>/tags/c/</loc>
+    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/c&#43;&#43;/</loc>
+    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/</loc>
+    <loc>/tags/containers/</loc>
+    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/containers/</loc>
+    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/cordova/</loc>
+    <lastmod>2017-12-01T19:51:38+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/docker/</loc>
+    <lastmod>2017-12-22T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/how-to/</loc>
     <lastmod>2018-07-28T19:24:19+01:00</lastmod>
     <priority>0</priority>
   </url>
@@ -72,6 +114,42 @@
   <url>
     <loc>/tags/imagestream/</loc>
     <lastmod>2017-11-12T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/ios/</loc>
+    <lastmod>2017-12-01T19:51:38+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/javascript/</loc>
+    <lastmod>2017-12-01T19:51:38+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/linux/</loc>
+    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/linux/</loc>
+    <lastmod>2018-05-22T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/mobile/</loc>
+    <lastmod>2017-12-01T19:51:38+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2018-07-28T19:24:19+01:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -89,7 +167,7 @@
   
   <url>
     <loc>/tags/</loc>
-    <lastmod>2018-07-21T11:18:43+02:00</lastmod>
+    <lastmod>2017-12-01T19:51:38+00:00</lastmod>
     <priority>0</priority>
   </url>
   

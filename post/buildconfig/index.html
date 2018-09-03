@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>4 Ways to Build Applications in Openshift - Cesar</title>
+  <title>4 Ways to Build Applications in OpenShift - Nube</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -24,7 +24,7 @@
 
 <meta name="mobile-web-app-capable" content="yes">
 
-<meta name="description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with those challenges." />
+<meta name="description" content="If you are migrating legacy applications or creating an automatic build system, OpenShift BuildConfig offers you various choices to help you with those challenges." />
 
 
 
@@ -32,7 +32,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.48-DEV" />
+<meta name="generator" content="Hugo 0.45.1" />
 
 
 <link rel="canonical" href="/post/buildconfig/" />
@@ -55,15 +55,31 @@
 
 
 
-<meta property="og:title" content="4 Ways to Build Applications in Openshift" />
-<meta property="og:description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with those challenges." />
+<meta property="og:title" content="4 Ways to Build Applications in OpenShift" />
+<meta property="og:description" content="If you are migrating legacy applications or creating an automatic build system, OpenShift BuildConfig offers you various choices to help you with those challenges." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/buildconfig/" />
-<meta property="og:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true" />
+
+  <meta property="og:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true" />
+
+
+
 <meta property="article:published_time" content="2018-07-28T19:24:19&#43;01:00"/>
+
 <meta property="article:modified_time" content="2018-07-28T19:24:19&#43;01:00"/>
-<meta itemprop="name" content="4 Ways to Build Applications in Openshift">
-<meta itemprop="description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with those challenges.">
+
+
+
+
+
+
+
+
+
+
+
+<meta itemprop="name" content="4 Ways to Build Applications in OpenShift">
+<meta itemprop="description" content="If you are migrating legacy applications or creating an automatic build system, OpenShift BuildConfig offers you various choices to help you with those challenges.">
 
 
 <meta itemprop="datePublished" content="2018-07-28T19:24:19&#43;01:00" />
@@ -74,12 +90,12 @@
 
 
 
-<meta itemprop="keywords" content="openshift,buildconfig," />
+<meta itemprop="keywords" content="OpenShift,BuildConfig," />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/logo/ocp.png?raw=true"/>
 
-<meta name="twitter:title" content="4 Ways to Build Applications in Openshift"/>
-<meta name="twitter:description" content="If you are migrating legacy applications or creating an automatic build system, Openshift BuildConfig offers you various choices to help you with those challenges."/>
+<meta name="twitter:title" content="4 Ways to Build Applications in OpenShift"/>
+<meta name="twitter:description" content="If you are migrating legacy applications or creating an automatic build system, OpenShift BuildConfig offers you various choices to help you with those challenges."/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -91,7 +107,7 @@
 <![endif]-->
 
 
-<script type="application/javascript">
+<script>
 var doNotTrack = false;
 if (!doNotTrack) {
 	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
@@ -108,7 +124,7 @@ if (!doNotTrack) {
 <body>
   <div id="mobile-navbar" class="mobile-navbar">
   <div class="mobile-header-logo">
-    <a href="/" class="logo">Cesar</a>
+    <a href="/" class="logo">Nube</a>
   </div>
   <div class="mobile-navbar-icon">
     <span></span>
@@ -156,7 +172,7 @@ if (!doNotTrack) {
     <div class="logo-wrapper">
   <a href="/" class="logo">
     
-      Cesar
+      Nube
     
   </a>
 </div>
@@ -213,11 +229,13 @@ if (!doNotTrack) {
           <article class="post bg-white">
     
     <header class="post-header">
-      <h1 class="post-title">4 Ways to Build Applications in Openshift</h1>
+      <h1 class="post-title">4 Ways to Build Applications in OpenShift</h1>
       
       <div class="post-meta">
         <span class="post-time"> 2018-07-28 </span>
-        
+        <div class="post-category">
+            
+          </div>
         
 
         
@@ -252,7 +270,8 @@ if (!doNotTrack) {
 
     
     <div class="post-content">
-      <p>We are going to discuss the different strategies for building our software in OpenShift. These strategies are useful if you need to solve any of the following problems:</p>
+      <p>We are going to discuss the different strategies for building our software in OpenShift. These strategies are useful if you need to solve any of the following problems:
+</p>
 
 <ul>
 <li>Learn how to build your software</li>
@@ -260,8 +279,6 @@ if (!doNotTrack) {
 <li>Build existing applications</li>
 <li>You want to run legacy applications inside containers on the cloud</li>
 </ul>
-
-<p></p>
 
 <p>You can run these examples in a local instance of OpenShift or a Virtual Machine. Also, if you don&rsquo;t want to install it locally, you can get free access to OpenShift.io.</p>
 
@@ -581,7 +598,7 @@ java-ms     java-ms-hello01.7e14.starter-us-west-2.openshiftapps.com
 # URL <span class="k">for</span> the exterior ^^</code></pre></td></tr></table>
 </div>
 </div>
-<p>Our application should be available to <a href="https://java-microservice-hello01.7e14.starter-us-west-2.openshiftapps.com/">receive traffic</a>.</p>
+<p>Our application should be available to <a href="http://java-microservice-hello01.7e14.starter-us-west-2.openshiftapps.com/">receive traffic</a>.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
@@ -594,7 +611,7 @@ java-ms     java-ms-hello01.7e14.starter-us-west-2.openshiftapps.com
 </div>
 <h1 id="optimizing">Optimizing</h1>
 
-<p>Now that you know multiple ways to construct your application in the cloud using OpenShift, you might want to know how to optimize those build to get the most efficient runtime container as possible. To help you with that I wrote this article on how to do <a href="https://cesarvr.github.io/post/ocp-chainbuild/">chain builds</a>, by chaining your builds you can divide the build process into two images one handling the build(compilers, build frameworks, etc) and the other image very small and with just the necessary for runtime.</p>
+<p>Now that you know multiple ways to construct your application in the cloud using OpenShift, you might want to know how to optimize those build to get the most efficient runtime container as possible. To help you with that I wrote this article on how to do <a href="http://cesarvr.github.io/post/ocp-chainbuild/">chain builds</a>, by chaining your builds you can divide the build process into two images one handling the build(compilers, build frameworks, etc) and the other image very small and with just the necessary for runtime.</p>
 
 <p>Many thanks to <a href="https://github.com/primashah">Prima</a> for editorial help.</p>
     </div>
@@ -607,8 +624,6 @@ java-ms     java-ms-hello01.7e14.starter-us-west-2.openshiftapps.com
 
     <footer class="post-footer">
       <div class="post-tags">
-          <a href="/tags/openshift/">openshift</a>
-          <a href="/tags/buildconfig/">buildconfig</a>
           
         </div>
 
@@ -678,14 +693,6 @@ java-ms     java-ms-hello01.7e14.starter-us-west-2.openshiftapps.com
   </div>
 
 <div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
-  </span>
-
   <span class="copyright-year">
     &copy;
     

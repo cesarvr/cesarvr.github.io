@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>How to generate a PDF Documents using Cordova, for Android and IOS - Cesar</title>
+  <title>How to generate a PDF Documents using Cordova, for Android and IOS - Nube</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -33,7 +33,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.48-DEV" />
+<meta name="generator" content="Hugo 0.45.1" />
 
 
 <link rel="canonical" href="/post/2017-12-01-cordova-pdf-generator/" />
@@ -59,8 +59,24 @@
 <meta property="og:title" content="How to generate a PDF Documents using Cordova, for Android and IOS" />
 <meta property="og:description" content="Why Some of my work at Red Hat is to design and develop end-to-end mobile/desktop application using Apache Cordova and using Node.JS, One of the typical challenges I face, when working with some costumer, is how to generate reports in PDF format, the usual way to solve this was to use a server side API render the document there and send it to the phone, this is not nice, the first reason, you need network connectivity for this to work, the second is the lack of good and free PDF API&rsquo;s in the server side, so I decide to write a plugin to move this job to the mobile device, the advantages of doing this are:" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="/post/2017-12-01-cordova-pdf-generator/" /><meta property="article:published_time" content="2017-12-01T19:51:38&#43;00:00"/>
+<meta property="og:url" content="/post/2017-12-01-cordova-pdf-generator/" />
+
+
+
+<meta property="article:published_time" content="2017-12-01T19:51:38&#43;00:00"/>
+
 <meta property="article:modified_time" content="2017-12-01T19:51:38&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
 <meta itemprop="name" content="How to generate a PDF Documents using Cordova, for Android and IOS">
 <meta itemprop="description" content="Why Some of my work at Red Hat is to design and develop end-to-end mobile/desktop application using Apache Cordova and using Node.JS, One of the typical challenges I face, when working with some costumer, is how to generate reports in PDF format, the usual way to solve this was to use a server side API render the document there and send it to the phone, this is not nice, the first reason, you need network connectivity for this to work, the second is the lack of good and free PDF API&rsquo;s in the server side, so I decide to write a plugin to move this job to the mobile device, the advantages of doing this are:">
 
@@ -71,7 +87,7 @@
 
 
 
-<meta itemprop="keywords" content="" />
+<meta itemprop="keywords" content="Cordova,Mobile,JavaScript,IOS,Android," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="How to generate a PDF Documents using Cordova, for Android and IOS"/>
 <meta name="twitter:description" content="Why Some of my work at Red Hat is to design and develop end-to-end mobile/desktop application using Apache Cordova and using Node.JS, One of the typical challenges I face, when working with some costumer, is how to generate reports in PDF format, the usual way to solve this was to use a server side API render the document there and send it to the phone, this is not nice, the first reason, you need network connectivity for this to work, the second is the lack of good and free PDF API&rsquo;s in the server side, so I decide to write a plugin to move this job to the mobile device, the advantages of doing this are:"/>
@@ -86,7 +102,7 @@
 <![endif]-->
 
 
-<script type="application/javascript">
+<script>
 var doNotTrack = false;
 if (!doNotTrack) {
 	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
@@ -103,7 +119,7 @@ if (!doNotTrack) {
 <body>
   <div id="mobile-navbar" class="mobile-navbar">
   <div class="mobile-header-logo">
-    <a href="/" class="logo">Cesar</a>
+    <a href="/" class="logo">Nube</a>
   </div>
   <div class="mobile-navbar-icon">
     <span></span>
@@ -151,7 +167,7 @@ if (!doNotTrack) {
     <div class="logo-wrapper">
   <a href="/" class="logo">
     
-      Cesar
+      Nube
     
   </a>
 </div>
@@ -261,7 +277,7 @@ if (!doNotTrack) {
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh">cordova create hello-pdf   <span class="c1"># this will create a new cordova project 
+<pre class="chroma"><code class="language-sh" data-lang="sh">cordova create hello-pdf   <span class="c1"># this will create a new cordova project
 </span><span class="c1"></span>
 <span class="c1"># initializing both platforms
 </span><span class="c1"></span>cordova platform add ios  <span class="c1"># Make sure you installed XCode
@@ -380,12 +396,12 @@ cordova plugin add cordova-pdf-generator</code></pre></td></tr></table>
         <span class="nx">listeningElement</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="s1">&#39;display:none;&#39;</span><span class="p">);</span>
         <span class="nx">receivedElement</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="s1">&#39;display:block;&#39;</span><span class="p">);</span>
 
-        <span class="c1">// Our code start here 
+        <span class="c1">// Our code start here
 </span><span class="c1"></span>        <span class="kd">var</span> <span class="nx">opts</span> <span class="o">=</span> <span class="p">{</span>
             <span class="nx">type</span><span class="o">:</span> <span class="s2">&#34;share&#34;</span><span class="p">,</span>          <span class="c1">//Open a context menu and ask the user what to do next (print, mail, etc..).
 </span><span class="c1"></span>            <span class="nx">fileName</span><span class="o">:</span> <span class="s1">&#39;v8-tutorial.pdf&#39;</span> <span class="c1">//it will use this filename as a place-holder
 </span><span class="c1"></span>        <span class="p">}</span>
-        
+
         <span class="nx">pdf</span><span class="p">.</span><span class="nx">fromURL</span><span class="p">(</span><span class="s1">&#39;http://cesarvr.github.io/2015/11/20/javascript-v8.html&#39;</span><span class="p">,</span> <span class="nx">opts</span><span class="p">)</span>
         <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">status</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;success-&gt;&#39;</span><span class="p">,</span> <span class="nx">status</span><span class="p">))</span>
         <span class="p">.</span><span class="k">catch</span><span class="p">((</span><span class="nx">error</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">));</span>
@@ -414,7 +430,7 @@ cordova plugin add cordova-pdf-generator</code></pre></td></tr></table>
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1">#put our www/ folder inside our target platform.
-</span><span class="c1"></span>cordova prepare 
+</span><span class="c1"></span>cordova prepare
 
 <span class="c1">#Deploy in Android.
 </span><span class="c1"></span>cordova run android
@@ -442,7 +458,9 @@ cordova plugin add cordova-pdf-generator</code></pre></td></tr></table>
     
 
     <footer class="post-footer">
-      
+      <div class="post-tags">
+          
+        </div>
 
       
       <nav class="post-nav">
@@ -515,14 +533,6 @@ cordova plugin add cordova-pdf-generator</code></pre></td></tr></table>
   </div>
 
 <div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
-  </span>
-
   <span class="copyright-year">
     &copy;
     
