@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en-us" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Finding Performance Bottlenecks in JavaScript. - Nube</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="description" content="How to use the Chrome performance monitor to optimise JavaScript performance." />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.48" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/js-performance/" />
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+<link href="/dist/jane.min.css?v=2.7.0" rel="stylesheet">
+
+
+
+
+<meta property="og:title" content="Finding Performance Bottlenecks in JavaScript." />
+<meta property="og:description" content="How to use the Chrome performance monitor to optimise JavaScript performance." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/js-performance/" />
+<meta property="og:image" content="https://raw.githubusercontent.com/cesarvr/hugo-blog/master/static/static/logo/js.png" />
+<meta property="article:published_time" content="2018-09-06T15:23:40&#43;01:00"/>
+<meta property="article:modified_time" content="2018-09-06T15:23:40&#43;01:00"/>
+<meta itemprop="name" content="Finding Performance Bottlenecks in JavaScript.">
+<meta itemprop="description" content="How to use the Chrome performance monitor to optimise JavaScript performance.">
+
+
+<meta itemprop="datePublished" content="2018-09-06T15:23:40&#43;01:00" />
+<meta itemprop="dateModified" content="2018-09-06T15:23:40&#43;01:00" />
+<meta itemprop="wordCount" content="750">
+
+  <meta itemprop="image" content="https://raw.githubusercontent.com/cesarvr/hugo-blog/master/static/static/logo/js.png">
+
+
+
+<meta itemprop="keywords" content="JavaScript,Chrome,Performance," />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://raw.githubusercontent.com/cesarvr/hugo-blog/master/static/static/logo/js.png"/>
+
+<meta name="twitter:title" content="Finding Performance Bottlenecks in JavaScript."/>
+<meta name="twitter:description" content="How to use the Chrome performance monitor to optimise JavaScript performance."/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-110580110-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Nube</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="http://localhost:1313/categories/">Categories</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="http://localhost:1313/about/">About</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://github.com/cesarvr" rel="noopener" target="_blank">
+              Code
+              <i class="iconfont icon-new-window"></i>
+            </a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="http://localhost:1313/post/">Writing</a>
+          
+        
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      Nube
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+      <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="http://localhost:1313/categories/">Categories</a>
+          
+
+        
+
+      </li>
+    
+      <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="http://localhost:1313/about/">About</a>
+          
+
+        
+
+      </li>
+    
+      <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://github.com/cesarvr" rel="noopener" target="_blank">
+              Code
+            <i class="iconfont icon-new-window"></i>
+            </a>
+          
+
+        
+
+      </li>
+    
+      <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="http://localhost:1313/post/">Writing</a>
+          
+
+        
+
+      </li>
+    
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">Finding Performance Bottlenecks in JavaScript.</h1>
+      
+      <div class="post-meta">
+        <span class="post-time"> 2018-09-06 </span>
+        <div class="post-category">
+            
+          </div>
+        
+
+        
+        
+
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+    
+    <div class="post-content">
+      <p>One of my hobbies is to write (and sometimes re-write) graphics engines. I do this because I love the challenge of writing not only fast code but scalable code and also because I like visual stuff. This time I decide to write one in JavaScript using WebGL and as soon as I have a workable set of API&rsquo;s I decide to write an simple vortex animation to see how well my new shinny new engine will perform.</p>
+
+<p></p>
+
+<p>I run this demo using Chrome and to my surprise, I got 9 frames per seconds (FPS), that speed almost broke my spirit. But, out of curiosity I tried the demo in Firefox.62 and guess what? I got a solid 60 FPS, cool!, now my moral was at level again. Now I wanted a third browser just to make sure and I tested in Edge where I got a solid speed of 60 FPS. The good thing is that I just need to optimise for one browser, so I decided to take a look.</p>
+
+<h1 id="microsoft-edge"><strong>Microsoft Edge</strong></h1>
+
+<p><img src="https://raw.githubusercontent.com/cesarvr/hugo-blog/master/static/js-performance/vortex-edge.gif" alt="Edge" /></p>
+
+<h1 id="chrome"><strong>Chrome</strong></h1>
+
+<p><img src="https://raw.githubusercontent.com/cesarvr/hugo-blog/master/static/js-performance/vortex-chrome.gif" alt="Chrome" /></p>
+
+<p>For that animation I create the total of 1600 particles and I try to update each particle with different speed and angle to get a vortex like effect, after that, I clear the screen and paint all the particles on the screen in a time range below the 33 millisecond (ms), otherwise is going to look slow. The code was looking something like this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-js" data-lang="js"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-js" data-lang="js">    <span class="nx">particles</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">particle</span> <span class="p">=&gt;</span> <span class="p">{</span>
+      <span class="c1">//update particles
+</span><span class="c1"></span>
+    <span class="p">})</span>
+
+    <span class="nx">particles</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">particle</span> <span class="p">=&gt;</span> <span class="p">{</span>
+      <span class="c1">//render the particles
+</span><span class="c1"></span>    <span class="p">})</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>I take a quick look at what at this loops and I got the impression that the problem has to do with the utilisation of <code>forEach</code> instead of using a classic for from C. I would sound silly but here was my rationale (or foolish assumption) about that decision, My mind was telling me that for each iteration a memory scope was being created and that was messing with the speed of my animation. With that story, I edited my code.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">  <span class="k">for</span><span class="o">(</span><span class="nb">let</span> <span class="nv">i</span><span class="o">=</span><span class="m">0</span><span class="p">;</span> i&lt;particles.length<span class="p">;</span> i++<span class="o">)</span> <span class="o">{</span>
+    <span class="nb">let</span> <span class="nv">particle</span> <span class="o">=</span> particles<span class="o">[</span>i<span class="o">]</span>
+    // update...
+  <span class="o">}</span>
+
+
+  <span class="k">for</span><span class="o">(</span><span class="nb">let</span> <span class="nv">i</span><span class="o">=</span><span class="m">0</span><span class="p">;</span> i&lt;particles.length<span class="p">;</span> i++<span class="o">)</span> <span class="o">{</span>
+    <span class="nb">let</span> <span class="nv">particle</span> <span class="o">=</span> particles<span class="o">[</span>i<span class="o">]</span>
+    // render...
+  <span class="o">}</span>
+
+  //....</code></pre></td></tr></table>
+</div>
+</div>
+<p>Now the code looks more verbose and less elegant but more C like and was giving me the impression that maybe should be faster. But I run the code again and I got 10 FPS, where are my other 50 frames ?. Now the code is not only slow but now I added a new problem of code ugliness.</p>
+
+<h1 id="solving-the-mystery">Solving The Mystery</h1>
+
+<p>Ironically Chrome has one of the best tools (in my opinion) to instrument JavaScript applications and after that humbling experience, I decided I maybe should start using it.</p>
+
+<p>Chrome profiler up and running:</p>
+
+<p><img src="https://raw.githubusercontent.com/cesarvr/hugo-blog/master/static/js-performance/debugger-chrome.gif" alt="debugger-chrome" /></p>
+
+<p>My first surprise is to see how much the profiler has improved, I&rsquo;m able to see the correlation between the frames, time and instructions executed. After watching that I discover how much I wasted my time.</p>
+
+<p><img src="https://raw.githubusercontent.com/cesarvr/hugo-blog/master/static/js-performance/profiling.PNG" alt="profiler" /></p>
+
+<p>Before looking this graph just keep in mind that, to perceive an animation as fluid the program need to generate a new frame every 33ms. This meant that to hunt the bottleneck, I just need to look for functions that are beyond that threshold. The profiler has facilitated this task by painting in yellow the spots that are lagging the most. To look for a more detailed view I used the <em>Call Tree</em> section.</p>
+
+<p><img src="https://raw.githubusercontent.com/cesarvr/hugo-blog/master/static/js-performance/data!!.PNG" alt="data" /></p>
+
+<p>The performance problem was calling <em>gl.getError()</em> inside the <code>paint</code> function, in Chrome.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-js" data-lang="js"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-js" data-lang="js"><span class="nx">paint</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span> <span class="p">{</span>
+  <span class="cm">/*
+</span><span class="cm">     bindBuffer... 3.3ms
+</span><span class="cm">  */</span>
+  <span class="nx">gl</span><span class="p">.</span><span class="nx">getError</span><span class="p">()</span> <span class="c1">// 119.8ms  
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>That method <em>gl.getError()</em> logs to the console any exception that happens in that blackbox which is WebGL and for some reason calling this function is very slow (≈119ms) in Chrome, even when I run my demo with the inspector closed. Other browsers are smarter and are deactivating that mechanism if the inspector is closed. But again that my guess again.</p>
+
+<p>I rollback those ugly changes and run the code again, <a href="http://webgl-hello01.7e14.starter-us-west-2.openshiftapps.com/gl_point/">the demo now runs</a> at 60 FPS across all browsers (Android included). The main problem here was assuming I can solve that problem without measuring and doing that is just wasting time and energy. As Michael Abrash put it his awesome book, <a href="http://www.jagregory.com/abrash-black-book/#understanding-high-performance">Graphic Programming Black Book</a>.</p>
+
+<blockquote>
+<p>Assume nothing&hellip; If you don’t measure performance, you’re just guessing, and if you’re guessing, you’re not very likely to write top-notch code.</p>
+</blockquote>
+    </div>
+
+    
+    
+
+    
+    
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/post/buildconfig/">
+            <span class="next-text nav-default">4 Ways to Build Applications in OpenShift</span>
+            <span class="prev-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://twitter.com/cvaldezr" rel="me noopener" class="iconfont icon-twitter"
+        title="twitter" target="_blank">
+      </a>
+      <a href="https://linkedin.com/in/cesarvr" rel="me noopener" class="iconfont icon-linkedin"
+        title="linkedin" target="_blank">
+      </a>
+  <a href="http://localhost:1313/index.xml" rel="noopener alternate" type="application/rss&#43;xml" class="iconfont icon-rss"
+    title="rss" target="_blank">
+  </a>
+  </div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+       -
+    2018
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span><span class="author">
+        Cesar Valdez
+        
+      </span></span>
+
+  
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+<script type="text/javascript" src="/dist/jane.min.js?v=2.7.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
