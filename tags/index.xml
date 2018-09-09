@@ -2,103 +2,103 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Nube</title>
-    <link>http://localhost:1313/tags/</link>
+    <link>/tags/</link>
     <description>Recent content in Tags on Nube</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Cesar Valdez</copyright>
     <lastBuildDate>Sat, 21 Jul 2018 11:18:43 +0200</lastBuildDate>
     
-	<atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Build</title>
-      <link>http://localhost:1313/tags/build/</link>
+      <link>/tags/build/</link>
       <pubDate>Sat, 21 Jul 2018 11:18:43 +0200</pubDate>
       
-      <guid>http://localhost:1313/tags/build/</guid>
+      <guid>/tags/build/</guid>
       <description></description>
     </item>
     
     <item>
       <title>C</title>
-      <link>http://localhost:1313/tags/c/</link>
+      <link>/tags/c/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/tags/c/</guid>
+      <guid>/tags/c/</guid>
       <description></description>
     </item>
     
     <item>
       <title>C&#43;&#43;</title>
-      <link>http://localhost:1313/tags/c&#43;&#43;/</link>
+      <link>/tags/c&#43;&#43;/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/tags/c&#43;&#43;/</guid>
+      <guid>/tags/c&#43;&#43;/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Chrome</title>
-      <link>http://localhost:1313/tags/chrome/</link>
+      <link>/tags/chrome/</link>
       <pubDate>Thu, 06 Sep 2018 15:23:40 +0100</pubDate>
       
-      <guid>http://localhost:1313/tags/chrome/</guid>
+      <guid>/tags/chrome/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Containers</title>
-      <link>http://localhost:1313/tags/containers/</link>
+      <link>/tags/containers/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/tags/containers/</guid>
+      <guid>/tags/containers/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Docker</title>
-      <link>http://localhost:1313/tags/docker/</link>
+      <link>/tags/docker/</link>
       <pubDate>Fri, 22 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/tags/docker/</guid>
+      <guid>/tags/docker/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Javascript</title>
-      <link>http://localhost:1313/tags/javascript/</link>
+      <link>/tags/javascript/</link>
       <pubDate>Thu, 06 Sep 2018 15:23:40 +0100</pubDate>
       
-      <guid>http://localhost:1313/tags/javascript/</guid>
+      <guid>/tags/javascript/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Linux</title>
-      <link>http://localhost:1313/tags/linux/</link>
+      <link>/tags/linux/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/tags/linux/</guid>
+      <guid>/tags/linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Openshift</title>
-      <link>http://localhost:1313/tags/openshift/</link>
+      <link>/tags/openshift/</link>
       <pubDate>Sat, 21 Jul 2018 11:18:43 +0200</pubDate>
       
-      <guid>http://localhost:1313/tags/openshift/</guid>
+      <guid>/tags/openshift/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Performance</title>
-      <link>http://localhost:1313/tags/performance/</link>
+      <link>/tags/performance/</link>
       <pubDate>Thu, 06 Sep 2018 15:23:40 +0100</pubDate>
       
-      <guid>http://localhost:1313/tags/performance/</guid>
+      <guid>/tags/performance/</guid>
       <description></description>
     </item>
     

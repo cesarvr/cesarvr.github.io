@@ -2,32 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>C on Nube</title>
-    <link>http://localhost:1313/categories/c/</link>
+    <link>/categories/c/</link>
     <description>Recent content in C on Nube</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Cesar Valdez</copyright>
     <lastBuildDate>Tue, 22 May 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://localhost:1313/categories/c/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/c/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Creating Your Own Containers</title>
-      <link>http://localhost:1313/post/2018-05-22-create-containers/</link>
+      <link>/post/2018-05-22-create-containers/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/post/2018-05-22-create-containers/</guid>
+      <guid>/post/2018-05-22-create-containers/</guid>
       <description>What is this post about This post is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are based on this excellent talk by Liz Rice.
 Why C Because I love the simplicity of the language (maybe I&amp;rsquo;m just a romantic) and also it is the lingua franca of Linux, which means that it helps to get a better understanding about how things work at a system level.</description>
     </item>
     
     <item>
       <title>Embedding Javascript v8</title>
-      <link>http://localhost:1313/post/2015-11-20-javascript-v8/</link>
+      <link>/post/2015-11-20-javascript-v8/</link>
       <pubDate>Fri, 20 Nov 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/post/2015-11-20-javascript-v8/</guid>
+      <guid>/post/2015-11-20-javascript-v8/</guid>
       <description>Building V8 Javascript Engine. Introduction I was thinking sometime ago about starting hacking with V8, aside from the fact that I work every day with Javascript, is that the Chromium engineers are doing a very good job making V8 fast and efficient and for some task good Javascript code is faster than C++, here is a great talk about the sophisticated JIT generation in Javascript.
 After many days of procrastination, I put my hands-on and start the task of downloading the project and prayed that everything would just work, like many things in life it didn&amp;rsquo;t work the first time, here I documented all the steps, if somebody wants to start playing with this, hopefully this will make their life easy.</description>
     </item>

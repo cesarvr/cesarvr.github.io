@@ -2,139 +2,139 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Nube</title>
-    <link>http://localhost:1313/categories/</link>
+    <link>/categories/</link>
     <description>Recent content in Categories on Nube</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Cesar Valdez</copyright>
     <lastBuildDate>Fri, 01 Dec 2017 19:51:38 +0000</lastBuildDate>
     
-	<atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Android</title>
-      <link>http://localhost:1313/categories/android/</link>
+      <link>/categories/android/</link>
       <pubDate>Fri, 01 Dec 2017 19:51:38 +0000</pubDate>
       
-      <guid>http://localhost:1313/categories/android/</guid>
+      <guid>/categories/android/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Buildconfig</title>
-      <link>http://localhost:1313/categories/buildconfig/</link>
+      <link>/categories/buildconfig/</link>
       <pubDate>Sat, 28 Jul 2018 19:24:19 +0100</pubDate>
       
-      <guid>http://localhost:1313/categories/buildconfig/</guid>
+      <guid>/categories/buildconfig/</guid>
       <description></description>
     </item>
     
     <item>
       <title>C</title>
-      <link>http://localhost:1313/categories/c/</link>
+      <link>/categories/c/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/categories/c/</guid>
+      <guid>/categories/c/</guid>
       <description></description>
     </item>
     
     <item>
       <title>C&#43;&#43;</title>
-      <link>http://localhost:1313/categories/c&#43;&#43;/</link>
+      <link>/categories/c&#43;&#43;/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/categories/c&#43;&#43;/</guid>
+      <guid>/categories/c&#43;&#43;/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Chrome</title>
-      <link>http://localhost:1313/categories/chrome/</link>
+      <link>/categories/chrome/</link>
       <pubDate>Thu, 06 Sep 2018 15:23:40 +0100</pubDate>
       
-      <guid>http://localhost:1313/categories/chrome/</guid>
+      <guid>/categories/chrome/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Containers</title>
-      <link>http://localhost:1313/categories/containers/</link>
+      <link>/categories/containers/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/categories/containers/</guid>
+      <guid>/categories/containers/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Cordova</title>
-      <link>http://localhost:1313/categories/cordova/</link>
+      <link>/categories/cordova/</link>
       <pubDate>Fri, 01 Dec 2017 19:51:38 +0000</pubDate>
       
-      <guid>http://localhost:1313/categories/cordova/</guid>
+      <guid>/categories/cordova/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Imagestream</title>
-      <link>http://localhost:1313/categories/imagestream/</link>
+      <link>/categories/imagestream/</link>
       <pubDate>Sat, 28 Jul 2018 19:24:19 +0100</pubDate>
       
-      <guid>http://localhost:1313/categories/imagestream/</guid>
+      <guid>/categories/imagestream/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Ios</title>
-      <link>http://localhost:1313/categories/ios/</link>
+      <link>/categories/ios/</link>
       <pubDate>Fri, 01 Dec 2017 19:51:38 +0000</pubDate>
       
-      <guid>http://localhost:1313/categories/ios/</guid>
+      <guid>/categories/ios/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Javascript</title>
-      <link>http://localhost:1313/categories/javascript/</link>
+      <link>/categories/javascript/</link>
       <pubDate>Thu, 06 Sep 2018 15:23:40 +0100</pubDate>
       
-      <guid>http://localhost:1313/categories/javascript/</guid>
+      <guid>/categories/javascript/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Linux</title>
-      <link>http://localhost:1313/categories/linux/</link>
+      <link>/categories/linux/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:1313/categories/linux/</guid>
+      <guid>/categories/linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mobile</title>
-      <link>http://localhost:1313/categories/mobile/</link>
+      <link>/categories/mobile/</link>
       <pubDate>Fri, 01 Dec 2017 19:51:38 +0000</pubDate>
       
-      <guid>http://localhost:1313/categories/mobile/</guid>
+      <guid>/categories/mobile/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Openshift</title>
-      <link>http://localhost:1313/categories/openshift/</link>
+      <link>/categories/openshift/</link>
       <pubDate>Sat, 28 Jul 2018 19:24:19 +0100</pubDate>
       
-      <guid>http://localhost:1313/categories/openshift/</guid>
+      <guid>/categories/openshift/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Performance</title>
-      <link>http://localhost:1313/categories/performance/</link>
+      <link>/categories/performance/</link>
       <pubDate>Thu, 06 Sep 2018 15:23:40 +0100</pubDate>
       
-      <guid>http://localhost:1313/categories/performance/</guid>
+      <guid>/categories/performance/</guid>
       <description></description>
     </item>
     

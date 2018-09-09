@@ -1,221 +1,221 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<?xml-stylesheet type="text/xsl" href="http://localhost:1313/sitemap.xsl"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://localhost:1313/post/js-performance/</loc>
+    <loc>/post/js-performance/</loc>
     <lastmod>2018-09-06T15:23:40+01:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/buildconfig/</loc>
+    <loc>/post/buildconfig/</loc>
     <lastmod>2018-07-28T19:24:19+01:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/ocp-chainbuild/</loc>
+    <loc>/post/ocp-chainbuild/</loc>
     <lastmod>2018-07-21T11:18:43+02:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/about/</loc>
+    <loc>/about/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/2018-05-22-create-containers/</loc>
+    <loc>/post/2018-05-22-create-containers/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/2017-12-22-Containers/</loc>
+    <loc>/post/2017-12-22-Containers/</loc>
     <lastmod>2017-12-22T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/2017-12-01-cordova-pdf-generator/</loc>
+    <loc>/post/2017-12-01-cordova-pdf-generator/</loc>
     <lastmod>2017-12-01T19:51:38+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/2017-11-12-imagestream/</loc>
+    <loc>/post/2017-11-12-imagestream/</loc>
     <lastmod>2017-11-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/2015-11-20-javascript-v8/</loc>
+    <loc>/post/2015-11-20-javascript-v8/</loc>
     <lastmod>2015-11-20T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/2015-09-01-archlinux-install/</loc>
+    <loc>/post/2015-09-01-archlinux-install/</loc>
     <lastmod>2015-09-01T19:51:38+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/android/</loc>
+    <loc>/categories/android/</loc>
     <lastmod>2017-12-01T19:51:38+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/tags/build/</loc>
+    <loc>/tags/build/</loc>
     <lastmod>2018-07-21T11:18:43+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/buildconfig/</loc>
+    <loc>/categories/buildconfig/</loc>
     <lastmod>2018-07-28T19:24:19+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/tags/c/</loc>
+    <loc>/categories/c/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/c/</loc>
+    <loc>/tags/c/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/tags/c&#43;&#43;/</loc>
+    <loc>/categories/c&#43;&#43;/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/c&#43;&#43;/</loc>
+    <loc>/tags/c&#43;&#43;/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>/categories/</loc>
     <lastmod>2017-12-01T19:51:38+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/tags/chrome/</loc>
+    <loc>/categories/chrome/</loc>
     <lastmod>2018-09-06T15:23:40+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/chrome/</loc>
+    <loc>/tags/chrome/</loc>
     <lastmod>2018-09-06T15:23:40+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/tags/containers/</loc>
+    <loc>/categories/containers/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/containers/</loc>
+    <loc>/tags/containers/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/cordova/</loc>
+    <loc>/categories/cordova/</loc>
     <lastmod>2017-12-01T19:51:38+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/tags/docker/</loc>
+    <loc>/tags/docker/</loc>
     <lastmod>2017-12-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/imagestream/</loc>
+    <loc>/categories/imagestream/</loc>
     <lastmod>2018-07-28T19:24:19+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/ios/</loc>
+    <loc>/categories/ios/</loc>
     <lastmod>2017-12-01T19:51:38+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/tags/javascript/</loc>
+    <loc>/categories/javascript/</loc>
     <lastmod>2018-09-06T15:23:40+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/javascript/</loc>
+    <loc>/tags/javascript/</loc>
     <lastmod>2018-09-06T15:23:40+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/tags/linux/</loc>
+    <loc>/categories/linux/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/linux/</loc>
+    <loc>/tags/linux/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/mobile/</loc>
+    <loc>/categories/mobile/</loc>
     <lastmod>2017-12-01T19:51:38+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/</loc>
+    <loc>/</loc>
     <lastmod>2018-09-06T15:23:40+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/tags/openshift/</loc>
+    <loc>/categories/openshift/</loc>
+    <lastmod>2018-07-28T19:24:19+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/openshift/</loc>
     <lastmod>2018-07-21T11:18:43+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/openshift/</loc>
-    <lastmod>2018-07-28T19:24:19+01:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://localhost:1313/tags/performance/</loc>
+    <loc>/categories/performance/</loc>
     <lastmod>2018-09-06T15:23:40+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/categories/performance/</loc>
+    <loc>/tags/performance/</loc>
     <lastmod>2018-09-06T15:23:40+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/</loc>
+    <loc>/post/</loc>
     <lastmod>2018-09-06T15:23:40+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>/tags/</loc>
     <lastmod>2018-07-21T11:18:43+02:00</lastmod>
     <priority>0</priority>
   </url>
