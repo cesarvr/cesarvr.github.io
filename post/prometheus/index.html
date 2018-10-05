@@ -6,11 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
-  <title>Containers Patterns - Nube</title>
+  <title>Creating Your Own Istio (Part 1) - Nube</title>
   
-  <meta name="description" content="I just wanted a excuse to put in practice some of the concepts behind container patterns, which is just a way to (like object oriented programming) isolate behaviour in containers (objects) and make them work together to solve a problem.
+  <meta name="description" content="You can also close(false) or open(true) something for this content.
 
-What I want to do is to create a reusable container that allow me to perform some actions like counting how many time people visit certain endpoint, calculate the response speed, etc, make this container collaborate with other containers following the rule of &ldquo;Single Responsability Principle&rdquo;, which means they doesn&rsquo;t know about each other (again, very much like OOP).
+P.S. comment can only be closed
+
+comment: false
+toc: true
+autoCollapseToc: false
+
+You can also define another contentCopyright. e.g. contentCopyright: &ldquo;This is another copyright.&rdquo;
+
+contentCopyright: false
+reward: false
+
+mathjax: false
+
+I just wanted a excuse to put in practice some of the concepts behind the paper called Design patterns for container-based distributed systems, which is a set of reusable patterns that can help  (like object oriented programming) isolate behaviour in containers and make them work together. Container collaborating between each other, sounds pretty much like micro-service to me ? Well is in part, but the difference is that we can add behaviour to an existing application/microservice using containers.
 
 ">
   <meta name="author" content="">
@@ -60,14 +73,31 @@ What I want to do is to create a reusable container that allow me to perform som
 
 <article class="post post-view">
   <header class="post-header">
-    <h1 class="post-title">Containers Patterns</h1>
+    <h1 class="post-title">Creating Your Own Istio (Part 1)</h1>
     <p class="post-meta">2018.9.19</p>
   </header>
-  <div class="post-content"><p>I just wanted a excuse to put in practice some of the concepts behind container patterns, which is just a way to (like object oriented programming) isolate behaviour in containers (objects) and make them work together to solve a problem.</p>
+  <div class="post-content"><h1 id="you-can-also-close-false-or-open-true-something-for-this-content">You can also close(false) or open(true) something for this content.</h1>
 
-<p>What I want to do is to create a reusable container that allow me to perform some actions like counting how many time people visit certain endpoint, calculate the response speed, etc, make this container collaborate with other containers following the rule of &ldquo;Single Responsability Principle&rdquo;, which means they doesn&rsquo;t know about each other (again, very much like OOP).</p>
+<h1 id="p-s-comment-can-only-be-closed">P.S. comment can only be closed</h1>
+
+<p>comment: false
+toc: true
+autoCollapseToc: false</p>
+
+<h1 id="you-can-also-define-another-contentcopyright-e-g-contentcopyright-this-is-another-copyright">You can also define another contentCopyright. e.g. contentCopyright: &ldquo;This is another copyright.&rdquo;</h1>
+
+<p>contentCopyright: false
+reward: false</p>
+
+<h2 id="mathjax-false">mathjax: false</h2>
+
+<p>I just wanted a excuse to put in practice some of the concepts behind the paper called <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/45406.pdf">Design patterns for container-based distributed systems</a>, which is a set of reusable patterns that can help  (like object oriented programming) isolate behaviour in containers and make them work together. Container collaborating between each other, sounds pretty much like micro-service to me ? Well is in part, but the difference is that we can add behaviour to an existing application/microservice using containers.</p>
 
 <p></p>
+
+<p>An example of adding behaviour is the enhancing nature of this <em>&ldquo;service mesh&rdquo;</em> frameworks like Istio, Linkdr?, Prometheus. You just add that container to your application and you get some new functionality without affecting (in theory) your application main purpose. By doing the equivalent to a object decorator in OOP, enhance your application traceability, stability, etc; you get the idea.</p>
+
+<p>As a way to understand how this patterns can be implemented I decided to develop some of the features of Istio like profiling, traceability or for example (I don&rsquo;t know if Istio does this) the ability to turn off a endpoint at will.</p>
 
 <h1 id="serving-web-pages-behaviour">Serving Web Pages Behaviour</h1>
 
@@ -232,6 +262,14 @@ oc create -f python.yml
 
 <p>Now in the next part we are going to write a program that take that message and do report back what web page the user are visiting, speed and we can even write a dashboard to deactivate a certain endpoint for a specific service/application.</p></div>
   <footer class="post-footer">
+    
+    <ul class="post-tags">
+      
+      <li><a href="/tags/openshift/">openshift</a></li>
+      
+      <li><a href="/tags/imagestream/">imagestream</a></li>
+      
+    </ul>
     
   </footer>
   

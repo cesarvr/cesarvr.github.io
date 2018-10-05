@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Openshift on Nube</title>
-    <link>/categories/openshift/</link>
-    <description>Recent content in Openshift on Nube</description>
+    <title>Build on Nube</title>
+    <link>/categories/build/</link>
+    <description>Recent content in Build on Nube</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Cesar Valdez</copyright>
     <lastBuildDate>Wed, 19 Sep 2018 14:30:07 +0100</lastBuildDate>
     
-	<atom:link href="/categories/openshift/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/build/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -36,26 +36,6 @@ reward: false&lt;/p&gt;
 &lt;p&gt;I just wanted a excuse to put in practice some of the concepts behind the paper called &lt;a href=&#34;https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/45406.pdf&#34;&gt;Design patterns for container-based distributed systems&lt;/a&gt;, which is a set of reusable patterns that can help  (like object oriented programming) isolate behaviour in containers and make them work together. Container collaborating between each other, sounds pretty much like micro-service to me ? Well is in part, but the difference is that we can add behaviour to an existing application/microservice using containers.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>4 Ways to Build Applications in OpenShift</title>
-      <link>/post/buildconfig/</link>
-      <pubDate>Sat, 28 Jul 2018 19:24:19 +0100</pubDate>
-      
-      <guid>/post/buildconfig/</guid>
-      <description>&lt;p&gt;We are going to discuss the different strategies for building our software in OpenShift. These strategies are useful if you need to solve any of the following problems:
-&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Exporting external images to Openshift</title>
-      <link>/post/2017-11-12-imagestream/</link>
-      <pubDate>Sun, 12 Nov 2017 00:00:00 +0000</pubDate>
-      
-      <guid>/post/2017-11-12-imagestream/</guid>
-      <description>Getting Started First you need to have an Openshift installation on the cloud or in your machine, the second option is the easiest one thanks to the oc cluster up command, this will create a small local installation of openshift in your machine, if your are not familiar take a quick look at the documentation.
-Creating a project Once oc cluster up finish you should have an Openshift installation up and ready in your local machine, now next step is to login in and create a project.</description>
     </item>
     
   </channel>

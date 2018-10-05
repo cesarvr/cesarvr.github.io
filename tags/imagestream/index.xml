@@ -7,19 +7,35 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Cesar Valdez</copyright>
-    <lastBuildDate>Sun, 12 Nov 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 19 Sep 2018 14:30:07 +0100</lastBuildDate>
     
 	<atom:link href="/tags/imagestream/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Exporting external images to Openshift</title>
-      <link>/post/2017-11-12-imagestream/</link>
-      <pubDate>Sun, 12 Nov 2017 00:00:00 +0000</pubDate>
+      <title>Creating Your Own Istio (Part 1)</title>
+      <link>/post/prometheus/</link>
+      <pubDate>Wed, 19 Sep 2018 14:30:07 +0100</pubDate>
       
-      <guid>/post/2017-11-12-imagestream/</guid>
-      <description>Getting Started First you need to have an Openshift installation on the cloud or in your machine, the second option is the easiest one thanks to the oc cluster up command, this will create a small local installation of openshift in your machine, if your are not familiar take a quick look at the documentation.
-Creating a project Once oc cluster up finish you should have an Openshift installation up and ready in your local machine, now next step is to login in and create a project.</description>
+      <guid>/post/prometheus/</guid>
+      <description>&lt;h1 id=&#34;you-can-also-close-false-or-open-true-something-for-this-content&#34;&gt;You can also close(false) or open(true) something for this content.&lt;/h1&gt;
+
+&lt;h1 id=&#34;p-s-comment-can-only-be-closed&#34;&gt;P.S. comment can only be closed&lt;/h1&gt;
+
+&lt;p&gt;comment: false
+toc: true
+autoCollapseToc: false&lt;/p&gt;
+
+&lt;h1 id=&#34;you-can-also-define-another-contentcopyright-e-g-contentcopyright-this-is-another-copyright&#34;&gt;You can also define another contentCopyright. e.g. contentCopyright: &amp;ldquo;This is another copyright.&amp;rdquo;&lt;/h1&gt;
+
+&lt;p&gt;contentCopyright: false
+reward: false&lt;/p&gt;
+
+&lt;h2 id=&#34;mathjax-false&#34;&gt;mathjax: false&lt;/h2&gt;
+
+&lt;p&gt;I just wanted a excuse to put in practice some of the concepts behind the paper called &lt;a href=&#34;https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/45406.pdf&#34;&gt;Design patterns for container-based distributed systems&lt;/a&gt;, which is a set of reusable patterns that can help  (like object oriented programming) isolate behaviour in containers and make them work together. Container collaborating between each other, sounds pretty much like micro-service to me ? Well is in part, but the difference is that we can add behaviour to an existing application/microservice using containers.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

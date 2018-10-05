@@ -7,10 +7,36 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Cesar Valdez</copyright>
-    <lastBuildDate>Sat, 21 Jul 2018 11:18:43 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 19 Sep 2018 14:30:07 +0100</lastBuildDate>
     
 	<atom:link href="/tags/openshift/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Creating Your Own Istio (Part 1)</title>
+      <link>/post/prometheus/</link>
+      <pubDate>Wed, 19 Sep 2018 14:30:07 +0100</pubDate>
+      
+      <guid>/post/prometheus/</guid>
+      <description>&lt;h1 id=&#34;you-can-also-close-false-or-open-true-something-for-this-content&#34;&gt;You can also close(false) or open(true) something for this content.&lt;/h1&gt;
+
+&lt;h1 id=&#34;p-s-comment-can-only-be-closed&#34;&gt;P.S. comment can only be closed&lt;/h1&gt;
+
+&lt;p&gt;comment: false
+toc: true
+autoCollapseToc: false&lt;/p&gt;
+
+&lt;h1 id=&#34;you-can-also-define-another-contentcopyright-e-g-contentcopyright-this-is-another-copyright&#34;&gt;You can also define another contentCopyright. e.g. contentCopyright: &amp;ldquo;This is another copyright.&amp;rdquo;&lt;/h1&gt;
+
+&lt;p&gt;contentCopyright: false
+reward: false&lt;/p&gt;
+
+&lt;h2 id=&#34;mathjax-false&#34;&gt;mathjax: false&lt;/h2&gt;
+
+&lt;p&gt;I just wanted a excuse to put in practice some of the concepts behind the paper called &lt;a href=&#34;https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/45406.pdf&#34;&gt;Design patterns for container-based distributed systems&lt;/a&gt;, which is a set of reusable patterns that can help  (like object oriented programming) isolate behaviour in containers and make them work together. Container collaborating between each other, sounds pretty much like micro-service to me ? Well is in part, but the difference is that we can add behaviour to an existing application/microservice using containers.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Chaining Builds In Openshift</title>
