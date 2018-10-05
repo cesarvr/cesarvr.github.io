@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/post/prometheus/</loc>
+    <lastmod>2018-09-19T14:30:07+01:00</lastmod>
+  </url>
   
   <url>
     <loc>/post/js-performance/</loc>
@@ -180,7 +185,7 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2018-09-06T15:23:40+01:00</lastmod>
+    <lastmod>2018-09-19T14:30:07+01:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -210,7 +215,7 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2018-09-06T15:23:40+01:00</lastmod>
+    <lastmod>2018-09-19T14:30:07+01:00</lastmod>
     <priority>0</priority>
   </url>
   

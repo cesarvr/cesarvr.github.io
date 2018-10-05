@@ -1,307 +1,66 @@
 <!DOCTYPE html>
-<html lang="en-us" itemscope itemtype="http://schema.org/WebPage">
+<html lang="en-us">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="renderer" content="webkit">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
   <title>Creating Your Own Containers - Nube</title>
   
-
-<meta name="renderer" content="webkit" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
-<meta name="MobileOptimized" content="width"/>
-<meta name="HandheldFriendly" content="true"/>
-
-
-<meta name="applicable-device" content="pc,mobile">
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-<meta name="theme-color" content="#f8f5ec" />
-<meta name="msapplication-navbutton-color" content="#f8f5ec">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
-
-<meta name="mobile-web-app-capable" content="yes">
-
-<meta name="description" content="In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux." />
-
-
-
-
-
-
-
-<meta name="generator" content="Hugo 0.48" />
-
-
-<link rel="canonical" href="/post/2018-05-22-create-containers/" />
-
-
-
-<link rel="icon" href="/favicon.ico" />
-
-
-
-
-
-
-
-
-
-
-<link href="/dist/jane.min.css?v=2.7.0" rel="stylesheet">
-
-
-
-
-<meta property="og:title" content="Creating Your Own Containers" />
-<meta property="og:description" content="In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="/post/2018-05-22-create-containers/" />
-<meta property="og:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/containers/container_are_linux.png?raw=true" />
-<meta property="article:published_time" content="2018-05-22T00:00:00&#43;00:00"/>
-<meta property="article:modified_time" content="2018-05-22T00:00:00&#43;00:00"/>
-<meta itemprop="name" content="Creating Your Own Containers">
-<meta itemprop="description" content="In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux.">
-
-
-<meta itemprop="datePublished" content="2018-05-22T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2018-05-22T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="4336">
-
-  <meta itemprop="image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/containers/container_are_linux.png?raw=true">
-
-
-
-<meta itemprop="keywords" content="Containers,Linux,C,C&#43;&#43;," />
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://github.com/cesarvr/hugo-blog/blob/master/static/static/containers/container_are_linux.png?raw=true"/>
-
-<meta name="twitter:title" content="Creating Your Own Containers"/>
-<meta name="twitter:description" content="In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux."/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
-
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-110580110-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
+  <meta name="description" content="What is this post about This post is basically about how to create your own container program using C. In this article we are going to review the technology and principles that make the isolation of processes a reality in Linux, the steps are based on this excellent talk by Liz Rice.
+Why C Because I love the simplicity of the language (maybe I&rsquo;m just a romantic) and also it is the lingua franca of Linux, which means that it helps to get a better understanding about how things work at a system level.">
+  <meta name="author" content="">
+  
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700,700i" rel="stylesheet">
+  <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/atom-one-dark.min.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
+  
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="icon" href="/img/favicon.ico">
+  
+  <meta name="generator" content="Hugo 0.48">
+  
+  <link rel="alternate" type="application/atom+xml" href="/index.xml" title="Nube">
+  
 </head>
-<body>
-  <div id="mobile-navbar" class="mobile-navbar">
-  <div class="mobile-header-logo">
-    <a href="/" class="logo">Nube</a>
-  </div>
-  <div class="mobile-navbar-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-<nav id="mobile-menu" class="mobile-menu slideout-menu">
-  <ul class="mobile-menu-list">
-    <li class="mobile-menu-item">
-        
-          
-          
-            <a class="menu-item-link" href="/categories/">Categories</a>
-          
-        
-      </li><li class="mobile-menu-item">
-        
-          
-          
-            <a class="menu-item-link" href="/about/">About</a>
-          
-        
-      </li><li class="mobile-menu-item">
-        
-          
-          
-            <a class="menu-item-link" href="https://github.com/cesarvr" rel="noopener" target="_blank">
-              Code
-              <i class="iconfont icon-new-window"></i>
-            </a>
-          
-        
-      </li><li class="mobile-menu-item">
-        
-          
-          
-            <a class="menu-item-link" href="/post/">Writing</a>
-          
-        
-      </li>
+<body class="single">
+  <header class="header">
     
-  </ul>
-</nav>
-
-
-  
-
-  
-
-  <header id="header" class="header container">
-    <div class="logo-wrapper">
-  <a href="/" class="logo">
+    <p class="title"><a href="/">Nube</a></p>
     
-      Nube
-    
-  </a>
-</div>
-
-<nav class="site-navbar">
-  <ul id="menu" class="menu">
-    
-      <li class="menu-item">
+    <button class="menu-toggle" type="button"></button>
+    <nav class="menu">
+      <ul>
         
-          
-          
-            <a class="menu-item-link" href="/categories/">Categories</a>
-          
-
         
-
-      </li>
-    
-      <li class="menu-item">
+        <li class="">
+          <a href="categories/">Categories</a>
+        </li>
         
-          
-          
-            <a class="menu-item-link" href="/about/">About</a>
-          
-
+        <li class="">
+          <a href="/about/">About</a>
+        </li>
         
-
-      </li>
-    
-      <li class="menu-item">
+        <li class="">
+          <a href="https://github.com/cesarvr">Code</a>
+        </li>
         
-          
-          
-            <a class="menu-item-link" href="https://github.com/cesarvr" rel="noopener" target="_blank">
-              Code
-            <i class="iconfont icon-new-window"></i>
-            </a>
-          
-
+        <li class="">
+          <a href="/post/">Writing</a>
+        </li>
         
-
-      </li>
-    
-      <li class="menu-item">
-        
-          
-          
-            <a class="menu-item-link" href="/post/">Writing</a>
-          
-
-        
-
-      </li>
-    
-    
-  </ul>
-</nav>
-
+      </ul>
+    </nav>
   </header>
+  <main class="main">
 
-  <div id="mobile-panel">
-    <main id="main" class="main bg-llight">
-      <div class="content-wrapper">
-        <div id="content" class="content container">
-          <article class="post bg-white">
-    
-    <header class="post-header">
-      <h1 class="post-title">Creating Your Own Containers</h1>
-      
-      <div class="post-meta">
-        <span class="post-time"> 2018-05-22 </span>
-        <div class="post-category">
-            
-          </div>
-        
-
-        
-        
-
-        
-        
-      </div>
-    </header>
-
-    
-    
-<div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">Table of Contents</h2>
-  <div class="post-toc-content">
-    <nav id="TableOfContents">
-<ul>
-<li><a href="#what-is-this-post-about">What is this post about</a>
-<ul>
-<li><a href="#why-c">Why C</a></li>
-<li><a href="#why-you-might-care-about-it">Why you might care about it</a></li>
-<li><a href="#hello-world">Hello World!</a></li>
-<li><a href="#how-to-create-a-process">How to create a process</a></li>
-<li><a href="#running-programs">Running programs</a></li>
-<li><a href="#environment-variables">Environment variables</a></li>
-<li><a href="#linux-namespaces">Linux namespaces</a>
-<ul>
-<li><a href="#universal-time-sharing">Universal Time Sharing</a></li>
-<li><a href="#new-process-tree">New Process Tree</a></li>
-</ul></li>
-<li><a href="#isolating-a-file-system">Isolating A File System</a>
-<ul>
-<li><a href="#changing-the-root">Changing The Root</a>
-<ul>
-<li><a href="#preparing-the-root-folder">Preparing The Root Folder</a></li>
-<li><a href="#configuration">Configuration</a></li>
-<li><a href="#coding">Coding</a></li>
-<li><a href="#mounting-file-systems">Mounting File Systems</a></li>
-</ul></li>
-<li><a href="#unmount">Unmount</a>
-<ul>
-<li><a href="#how-it-works">How it works</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#control-group">Control Group</a>
-<ul>
-<li><a href="#limiting-process-creation">Limiting Process Creation</a></li>
-</ul></li>
-<li><a href="#wrapping-up">Wrapping Up</a>
-<ul>
-<li><a href="#how-about-performance">How about performance ?</a></li>
-<li><a href="#what-s-the-difference-between-vm-and-containers">What&rsquo;s the difference between VM and Containers ?</a></li>
-<li><a href="#are-containers-faster-than-vm">Are containers faster than VM ?</a></li>
-<li><a href="#can-i-use-vm-and-containers">Can I use VM and containers ?</a></li>
-</ul></li>
-</ul></li>
-</ul>
-</nav>
-  </div>
-</div>
-
-    
-    <div class="post-content">
-      
+<article class="post post-view">
+  <header class="post-header">
+    <h1 class="post-title">Creating Your Own Containers</h1>
+    <p class="post-meta">2018.5.22</p>
+  </header>
+  <div class="post-content">
 
 <h1 id="what-is-this-post-about">What is this post about</h1>
 
@@ -318,368 +77,195 @@ if (!doNotTrack) {
 <h2 id="hello-world">Hello World!</h2>
 
 <p>Enough with the introduction let&rsquo;s write our container, in other words, a program that isolates other programs. We are going to start by writing the obligatory <em>Hello World</em>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello, World! </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c">#include &lt;iostream&gt;
+int main() {
+  printf(&quot;Hello, World! \n&quot;);
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p>To compile the code, we just call:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">g++ container.cc -o container  </code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-bash">g++ container.cc -o container  
+</code></pre>
+
 <p>This will generate our binary called <em>container</em>, that we can now execute by doing:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh">./container   
-# Hello World!</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-sh">./container   
+# Hello World!
+</code></pre>
+
 <h2 id="how-to-create-a-process">How to create a process</h2>
 
 <p>The first functionality we need to implement in our program is a way to execute other programs, but when you execute a program in Linux the program takes control of the process, which means you are no longer in control, to solve this we are going to create a new process and execute the program there.</p>
 
 <p>Right now our process looks like this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">  +--------+  
+
+<pre><code>  +--------+  
   | parent |
   |--------|
   | main() |  
-  +--------+</pre></td></tr></table>
-</div>
-</div>
+  +--------+
+</code></pre>
+
 <p>To create a new process we need to clone the actual process and provide a function to be executed in it. Let&rsquo;s start by writing the function, we&rsquo;ll call it <code>jail</code>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello !! ( child ) </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>  
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c">int jail(void *args) {
+  printf(&quot;Hello !! ( child ) \n&quot;);
+  return EXIT_SUCCESS;  
+}
+</code></pre>
+
 <p>Now our process will look something like this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">  +--------+  
+
+<pre><code>  +--------+  
   | parent |
   |--------|
   | main() |
   |--------|
   | jail() |  
-  +--------+</pre></td></tr></table>
-</div>
-</div>
+  +--------+
+</code></pre>
+
 <p>Our next step is to invoke the system call to create the child process, for this we are going to use the <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a> system call.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;sched.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;sys/wait.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello !! ( child ) </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello, World! ( parent ) </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+<pre><code class="language-c">#include &lt;iostream&gt;
+#include &lt;sched.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/wait.h&gt;
 
-  <span class="n">clone</span><span class="p">(</span><span class="n">jail</span><span class="p">,</span> <span class="n">stack_memory</span><span class="p">(),</span> <span class="n">SIGCHLD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+int jail(void *args) {
+  printf(&quot;Hello !! ( child ) \n&quot;);
+  return EXIT_SUCCESS;
+}
 
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+int main(int argc, char** argv) {
+  printf(&quot;Hello, World! ( parent ) \n&quot;);
+
+  clone(jail, stack_memory(), SIGCHLD, 0);
+
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p>The first parameter is our entry point function, <em>second</em> parameter requires a pointer to allocated memory, <em>third</em> (SIGCHLD) this flag tells the process to emit a signal when finished and the <em>fourth</em> and last one is only necessary if we want to pass arguments to the <code>jail</code> function, in this case we pass just <code>0</code>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">  +--------+             +--------+
+
+<pre><code>  +--------+             +--------+
   | parent |             |  copy  |
   |--------|             |--------|
   | main() |  clone --&gt;  | jail() |
   |--------|             +--------+                     
   | jail() |              
-  +--------+                </pre></td></tr></table>
-</div>
-</div>
+  +--------+                
+</code></pre>
+
 <p>After creating the new process we need to tell the parent process to wait until the child finishes execution, otherwise the child can become a <a href="https://en.wikipedia.org/wiki/Zombie_process">zombie</a>. The <a href="http://man7.org/linux/man-pages/man2/wait.2.html">wait</a> system call does just that.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"> <span class="n">wait</span><span class="p">(</span><span class="n">nullptr</span><span class="p">);</span> <span class="o">//</span><span class="n">wait</span> <span class="k">for</span> <span class="n">every</span> <span class="n">child</span><span class="p">.</span></code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c"> wait(nullptr); //wait for every child.
+</code></pre>
+
 <p>The updated code will look like this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;sched.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;sys/wait.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello !! ( child ) </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello, World! ( parent ) </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;sched.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/wait.h&gt;
 
-  <span class="n">clone</span><span class="p">(</span><span class="n">jail</span><span class="p">,</span> <span class="n">stack_memory</span><span class="p">(),</span> <span class="n">SIGCHLD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">wait</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+int jail(void *args) {
+  printf(&quot;Hello !! ( child ) \n&quot;);
+  return EXIT_SUCCESS;
+}
+
+int main(int argc, char** argv) {
+  printf(&quot;Hello, World! ( parent ) \n&quot;);
+
+  clone(jail, stack_memory(), SIGCHLD, 0);
+  wait(nullptr);
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p>Compile and execute.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh">./container
-<span class="c1">#Hello, World! ( parent )
-</span><span class="c1"></span>#Hello !! <span class="o">(</span> child <span class="o">)</span></code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-sh">./container
+#Hello, World! ( parent )
+#Hello !! ( child )
+</code></pre>
+
 <p>Here our program sends the first greeting (parent), then we clone the process and run the <code>jail</code> function inside and it ends up printing a greeting as well.</p>
 
 <h2 id="running-programs">Running programs</h2>
 
 <p>It&rsquo;s time to load a real program. Let&rsquo;s chose <a href="https://en.wikipedia.org/wiki/Unix_shell">shell</a>, so we can test what&rsquo;s happening inside our container. To load a program we are going to use <a href="https://linux.die.net/man/3/execvp">execvp</a>, this function will replace the current process in this case, the child with a instance of the program.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">execvp</span><span class="p">(</span><span class="s">&#34;&lt;path-to-executable&gt;&#34;</span><span class="p">,</span> <span class="p">{</span><span class="n">array</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">parameters</span><span class="o">-</span><span class="n">including</span><span class="o">-</span><span class="n">executable</span><span class="p">});</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c++">execvp(&quot;&lt;path-to-executable&gt;&quot;, {array-of-parameters-including-executable});
+</code></pre>
+
 <p>The syntax to run the program will look something like this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">char</span> <span class="o">*</span><span class="n">_args</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span> <span class="p">};</span>
-<span class="n">execvp</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">,</span> <span class="n">_args</span><span class="p">);</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c++">char *_args[] = {&quot;/bin/sh&quot;, (char *)0 };
+execvp(&quot;/bin/sh&quot;, _args);
+</code></pre>
+
 <p>To keep it simpler and reusable we can wrap it into a function.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="c1">//we can call it like this: run(&#34;/bin/sh&#34;);
-</span><span class="c1"></span><span class="kt">int</span> <span class="nf">run</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">char</span> <span class="o">*</span><span class="n">_args</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span> <span class="p">};</span>
-  <span class="n">execvp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">_args</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c++">//we can call it like this: run(&quot;/bin/sh&quot;);
+int run(const char *name) {
+  char *_args[] = {(char *)name, (char *)0 };
+  execvp(name, _args);
+}
+</code></pre>
+
 <p>This version is enough for our purposes, but it doesn&rsquo;t support multiple parameters, so just for fun I wrote this alternative version that accepts multiple parameters using some C++ templates black magic.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="c1">//we can call it like this: run(&#34;/bin/sh&#34;,&#34;-c&#34;, &#34;echo hello!&#34;);  
-</span><span class="c1"></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">P</span><span class="o">&gt;</span>
-<span class="kt">int</span> <span class="n">run</span><span class="p">(</span><span class="n">P</span><span class="p">...</span> <span class="n">params</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">//basically generating the arguments array at compile time.
-</span><span class="c1"></span>  <span class="kt">char</span> <span class="o">*</span><span class="n">args</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span><span class="p">...,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">};</span>
-  <span class="k">return</span> <span class="nf">execvp</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c++">//we can call it like this: run(&quot;/bin/sh&quot;,&quot;-c&quot;, &quot;echo hello!&quot;);  
+template &lt;typename... P&gt;
+int run(P... params) {
+  //basically generating the arguments array at compile time.
+  char *args[] = {(char *)params..., (char *)0};
+  return execvp(args[0], args);
+}
+</code></pre>
+
 <p>Now that we have defined our function, we should update the entry point function for our child process.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span> <span class="c1">// load the shell process.
-</span><span class="c1"></span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c++">int jail(void *args) {
+  run(&quot;/bin/sh&quot;); // load the shell process.
+
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p>We compile/run this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">process created with pid: 12406
-sh-4.4$</pre></td></tr></table>
-</div>
-</div>
+
+<pre><code>process created with pid: 12406
+sh-4.4$
+</code></pre>
+
 <h2 id="environment-variables">Environment variables</h2>
 
 <p>After playing around with <code>sh</code> we are noticing that is far from being isolate. To understand how changing the execution context changes how the underlying process behave, we are going to run a simple example by clearing the environment variables for the <code>sh</code> process.</p>
 
 <p>This is easy we just need to clear the variables before passing the control to <code>/bin/sh</code>. We can delete all the environment variables for the child context using the function <a href="https://linux.die.net/man/3/clearenv">clearenv</a>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">clearenv</span><span class="p">();</span>   <span class="c1">// remove all environment variables for this process.
-</span><span class="c1"></span>
-  <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c++">int jail(void *args) {
+  clearenv();   // remove all environment variables for this process.
+
+  run(&quot;/bin/sh&quot;);
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p>We run the code again and inside the shell we run the command <code>env</code>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh">  <span class="c1"># env
-</span><span class="c1"></span>  <span class="nv">SHLVL</span><span class="o">=</span><span class="m">1</span>
-  <span class="nv">PWD</span><span class="o">=</span>/</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-sh">  # env
+  SHLVL=1
+  PWD=/
+</code></pre>
+
 <p>Not bad, we solved the information leak from the guest and we are able to observe that performing changes in the context of the child process stays local to the child process.</p>
 
 <h2 id="linux-namespaces">Linux namespaces</h2>
@@ -689,26 +275,11 @@ sh-4.4$</pre></td></tr></table>
 <p>Imagine a scenario where we have to deal with a program that needs to change the host name of the machine to work, if you execute this program in your machine it can mess with other programs like for example your network file sharing services. Imagine that somebody gives us the task to look for the most efficient way to do this, the first option that comes to mind is using a VM, but we need to provision the VM (Memory, Storage, CPU, etc..), install the OS, etc. It can take a couple of hours. It won&rsquo;t be nice if your Operative System can deal with that isolation for you? This is where <a href="https://en.wikipedia.org/wiki/Linux_namespaces">Linux Namespaces</a> come into the picture.</p>
 
 <p>Here is a quick illustration.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">                 Linux Kernel
+
+<pre><code>                 Linux Kernel
  +-----------------------------------------------+
 
-    Global Namespace&#39;s { UTS, PID, MOUNTS ... }
+    Global Namespace's { UTS, PID, MOUNTS ... }
  +-----------------------------------------------+
 
          parent                   child process        
@@ -716,29 +287,14 @@ sh-4.4$</pre></td></tr></table>
   |                   |            |         |
   | childEntryPoint() | clone --&gt;  | /bin/sh |   
   |                   |            |         |
-  +-------------------+            +---------+</pre></td></tr></table>
-</div>
-</div>
+  +-------------------+            +---------+
+</code></pre>
+
 <p>All the processes in the system share the same UTS Namespace.</p>
 
 <p>This is what we want:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">                  Linux Kernel
+
+<pre><code>                  Linux Kernel
  +-----------------------------------------------------+
 
   Global Namespace { UTS, ... }              UTS
@@ -749,70 +305,41 @@ sh-4.4$</pre></td></tr></table>
   |                   |                  |         |
   |      jail()       |    clone --&gt;     | /bin/sh |   
   |                   |                  |         |
-  +-------------------+                  +---------+</pre></td></tr></table>
-</div>
-</div>
+  +-------------------+                  +---------+
+</code></pre>
+
 <p>To get a copy of the global UTS for our child process we simply pass the <code>CLONE_NEWUTS</code> flag to <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a>, the updated code will look like this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">clearenv</span><span class="p">();</span>   <span class="c1">// remove all environment variables for this process.
-</span><span class="c1"></span>  <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello, World! ( parent ) </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+<pre><code class="language-c">int jail(void *args) {
+  clearenv();   // remove all environment variables for this process.
+  run(&quot;/bin/sh&quot;);
+  return EXIT_SUCCESS;
+}
 
-  <span class="n">clone</span><span class="p">(</span><span class="n">jail</span><span class="p">,</span> <span class="n">stack_memory</span><span class="p">(),</span> <span class="n">CLONE_NEWUTS</span> <span class="o">|</span> <span class="n">SIGCHLD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="cp">#                           ^^ new flag
-</span><span class="cp"></span>  <span class="n">wait</span><span class="p">(</span><span class="n">nullptr</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+int main(int argc, char** argv) {
+  printf(&quot;Hello, World! ( parent ) \n&quot;);
+
+  clone(jail, stack_memory(), CLONE_NEWUTS | SIGCHLD, 0);
+  #                           ^^ new flag
+  wait(nullptr);
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p>Now lets prove our hypothesis, we recompile and execute our program:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh">./container                                                     
-error: clone<span class="o">()</span>: Operation not permitted</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-sh">./container                                                     
+error: clone(): Operation not permitted
+</code></pre>
+
 <p>This happens because what we&rsquo;re trying to do (cloning the UTS namespace) requires <a href="https://lwn.net/Articles/486306/">CAP_SYS_ADMIN</a>, or in other words; we need elevated privileges.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">sudo ./container                                      
+
+<pre><code>sudo ./container                                      
 [sudo] password for cesar:
 process created with pid: 12906
-sh-4.4#</pre></td></tr></table>
-</div>
-</div>
+sh-4.4#
+</code></pre>
+
 <p>It works! Now let&rsquo;s see what happen when we modify the host name:</p>
 
 <p><img src="https://raw.githubusercontent.com/cesarvr/cesarvr.github.io/master/static/containers/uts.gif" alt="alt text" title="Cloning UTS Namespace" /></p>
@@ -820,61 +347,33 @@ sh-4.4#</pre></td></tr></table>
 <h3 id="new-process-tree">New Process Tree</h3>
 
 <p>This time we are going to isolate our shell process from the rest of the processes, from it&rsquo;s point of view it will be running solo in the machine, this one like the example above requires to pass just a flag <code>CLONE_NEWPID</code> in this case. To illustrate the effect of this flag we are going to display the process identifier using <a href="http://man7.org/linux/man-pages/man2/getpid.2.html">getpid</a>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">clearenv</span><span class="p">();</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;child process: %d&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
-  <span class="n">run2</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello, World! ( parent ) </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;parent %d&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
+<pre><code class="language-c++">int jail(void *args) {
+  clearenv();
+  printf(&quot;child process: %d&quot;, getpid());
+  run2(&quot;/bin/sh&quot;);
+  return EXIT_SUCCESS;
+}
 
-  <span class="n">clone</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">stack_memory</span><span class="p">(),</span> <span class="n">CLONE_NEWPID</span> <span class="o">|</span> <span class="n">CLONE_NEWUTS</span> <span class="o">|</span> <span class="n">SIGCHLD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="cp">#                            ^^ new flag
-</span><span class="cp"></span>  <span class="n">wait</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+int main(int argc, char** argv) {
+  printf(&quot;Hello, World! ( parent ) \n&quot;);
+  printf(&quot;parent %d&quot;, getpid());
+
+  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  #                            ^^ new flag
+  wait(nullptr);
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p>Compile and run:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh">sudo ./container                                  
-parent pid: <span class="m">3306</span>
-child pid: <span class="m">1</span>
-/ #</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-sh">sudo ./container                                  
+parent pid: 3306
+child pid: 1
+/ #
+</code></pre>
+
 <p>As you can observe the child <em>PID</em> is 1, from the child process&rsquo;s perspective, it is the only process in the machine. Now let&rsquo;s see if we can still see other processes in the system by executing <code>ps</code>.</p>
 
 <p><img src="https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/pid-ns.gif?raw=true" alt="alt text" title="PID NS" /></p>
@@ -886,20 +385,8 @@ child pid: <span class="m">1</span>
 <h3 id="changing-the-root">Changing The Root</h3>
 
 <p>This one is easy we just want to change the root folder of our process using <a href="https://linux.die.net/man/1/chroot">chroot</a>. We basically can select a folder and isolate our process inside that folder in such a way that (theoretically) it cannot navigate outside. I drew this illustration to show what we will try to achieve.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">   folders our process can access
+
+<pre><code>   folders our process can access
     ----------------------------
                  a
                  |
@@ -907,49 +394,30 @@ child pid: <span class="m">1</span>
               |
              ----
              |  |
-             d  e  </pre></td></tr></table>
-</div>
-</div>
+             d  e  
+</code></pre>
+
 <p>The root here is represented by <code>a</code>, you can navigate all the way from <code>a</code> to <code>e</code>. If you execute <code>chroot(&quot;b&quot;)</code> we&rsquo;ll end up with this tree.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">   folders our process can access
+
+<pre><code>   folders our process can access
     ----------------------------
                 b   
                 |
                ----
                |  |
-               d  e  </pre></td></tr></table>
-</div>
-</div>
+               d  e  
+</code></pre>
+
 <p>Now we only can traverse from <code>b</code> to <code>e</code> or <code>d</code>, that&rsquo;s the point behind changing the root, we can save sensitive files in <code>a</code> because the process cannot escape from <code>b</code>.</p>
 
 <p>Let&rsquo;s write the necessary code to change the root.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="nf">setup_root</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">folder</span><span class="p">){</span>
-  <span class="n">chroot</span><span class="p">(</span><span class="n">folder</span><span class="p">);</span>
-  <span class="n">chdir</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c++">void setup_root(const char* folder){
+  chroot(folder);
+  chdir(&quot;/&quot;);
+}
+</code></pre>
+
 <p>For this we are going to hide the complexity behind a function called <code>setupFileSystem</code> then we change the root of the folder using <a href="http://man7.org/linux/man-pages/man2/chroot.2.html">chroot</a> and last but not least tell the process to jump to the new root folder.</p>
 
 <h4 id="preparing-the-root-folder">Preparing The Root Folder</h4>
@@ -957,115 +425,63 @@ child pid: <span class="m">1</span>
 <p>We can change the root to an empty folder but if we do that we are going to lose the tools we are using so far to inspect the quality of our container (ls, cd, etc..), to avoid this we need to get some Linux base folder that include all these tools. I&rsquo;ll choose <a href="https://github.com/yobasystems/alpine">Alpine Linux</a> because is very lightweight.</p>
 
 <p>Just grab the base <a href="http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs-3.7.0-x86_64.tar.gz">install</a>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">mkdir root &amp;&amp; cd root
-curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs-3.7.0-x86_64.tar.gz</pre></td></tr></table>
-</div>
-</div>
+
+<pre><code>mkdir root &amp;&amp; cd root
+curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs-3.7.0-x86_64.tar.gz
+</code></pre>
+
 <p>Uncompress into a folder called <code>root</code> at the same level as our binary.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">tar -xvf alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz</pre></td></tr></table>
-</div>
-</div>
+
+<pre><code>tar -xvf alpine-minirootfs-3.7.0_rc1-x86_64.tar.gz
+</code></pre>
+
 <p><img src="https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/setup_folder.gif?raw=true" alt="alt text" title="setup folder" /></p>
 
 <h4 id="configuration">Configuration</h4>
 
 <p>Also we want to setup some environment variables to help shell to find the binaries and to help other processes to know what type of screen we have, we are going to replace <code>clearenv</code> with a function that takes care of those tasks.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="nf">setup_variables</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">clearenv</span><span class="p">();</span>
-  <span class="n">setenv</span><span class="p">(</span><span class="s">&#34;TERM&#34;</span><span class="p">,</span> <span class="s">&#34;xterm-256color&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">setenv</span><span class="p">(</span><span class="s">&#34;PATH&#34;</span><span class="p">,</span> <span class="s">&#34;/bin/:/sbin/:usr/bin:/usr/sbin&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c++">void setup_variables() {
+  clearenv();
+  setenv(&quot;TERM&quot;, &quot;xterm-256color&quot;, 0);
+  setenv(&quot;PATH&quot;, &quot;/bin/:/sbin/:usr/bin:/usr/sbin&quot;, 0);
+}
+</code></pre>
+
 <h4 id="coding">Coding</h4>
 
 <p>This is the how the code looks after we implemented the functions:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="nf">setup_variables</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">clearenv</span><span class="p">();</span>
-  <span class="n">setenv</span><span class="p">(</span><span class="s">&#34;TERM&#34;</span><span class="p">,</span> <span class="s">&#34;xterm-256color&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">setenv</span><span class="p">(</span><span class="s">&#34;PATH&#34;</span><span class="p">,</span> <span class="s">&#34;/bin/:/sbin/:usr/bin:/usr/sbin&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span>
 
-<span class="kt">void</span> <span class="nf">setup_root</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">folder</span><span class="p">){</span>
-  <span class="n">chroot</span><span class="p">(</span><span class="n">folder</span><span class="p">);</span>
-  <span class="n">chdir</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">);</span>
-<span class="p">}</span>
+<pre><code class="language-c++">void setup_variables() {
+  clearenv();
+  setenv(&quot;TERM&quot;, &quot;xterm-256color&quot;, 0);
+  setenv(&quot;PATH&quot;, &quot;/bin/:/sbin/:usr/bin:/usr/sbin&quot;, 0);
+}
 
-<span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;child process: %d&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
+void setup_root(const char* folder){
+  chroot(folder);
+  chdir(&quot;/&quot;);
+}
 
-  <span class="n">setup_variables</span><span class="p">();</span>
-  <span class="n">setup_root</span><span class="p">(</span><span class="s">&#34;./root&#34;</span><span class="p">);</span>
+int jail(void *args) {
+  printf(&quot;child process: %d&quot;, getpid());
 
-  <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
+  setup_variables();
+  setup_root(&quot;./root&quot;);
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;parent %d&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
+  run(&quot;/bin/sh&quot;);
+  return EXIT_SUCCESS;
+}
 
-  <span class="n">clone</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">stack_memory</span><span class="p">(),</span> <span class="n">CLONE_NEWPID</span> <span class="o">|</span> <span class="n">CLONE_NEWUTS</span> <span class="o">|</span> <span class="n">SIGCHLD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">wait</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+int main(int argc, char** argv) {
+  printf(&quot;parent %d&quot;, getpid());
+
+  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  wait(nullptr);
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p>Now let&rsquo;s see the code in action:</p>
 
 <p><img src="https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/setup_root.gif?raw=true" alt="alt text" title="chroot" /></p>
@@ -1077,273 +493,149 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 <p>Mounting a file system is like exposing the content of a device like a disk, network or other entities by using the folder and files metaphors. In simple terms that&rsquo;s what is. To mount something in Linux we need a resource that understands this metaphor like <a href="https://en.wikipedia.org/wiki/Procfs">procfs</a> and a folder, we are going to choose the folder <code>/proc</code> that comes with the alpine distribution.</p>
 
 <p>To mount a file system in Linux we can use the <a href="http://man7.org/linux/man-pages/man2/mount.2.html">mount</a> system call. This call requires the following parameters to work:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">mount</span><span class="p">(</span><span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="s">&#34;/proc&#34;</span><span class="p">,</span> <span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span></code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c">mount(&quot;proc&quot;, &quot;/proc&quot;, &quot;proc&quot;, 0, 0);
+</code></pre>
+
 <p>The first parameter is the resource, the second is the folder destination and the third parameter is the type of file system, in this case <a href="https://en.wikipedia.org/wiki/Procfs">procfs</a>.</p>
 
 <p>Implementing the code is simple we just add the same line as above after we configure the <strong>chroot</strong>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;child process: %d&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
 
-  <span class="n">setup_variables</span><span class="p">();</span>
-  <span class="n">setup_root</span><span class="p">(</span><span class="s">&#34;./root&#34;</span><span class="p">);</span>
+<pre><code class="language-c">int jail(void *args) {
+  printf(&quot;child process: %d&quot;, getpid());
 
-  <span class="n">mount</span><span class="p">(</span><span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="s">&#34;/proc&#34;</span><span class="p">,</span> <span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  setup_variables();
+  setup_root(&quot;./root&quot;);
 
-  <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
+  mount(&quot;proc&quot;, &quot;/proc&quot;, &quot;proc&quot;, 0, 0);
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;parent %d&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
+  run(&quot;/bin/sh&quot;);
+  return EXIT_SUCCESS;
+}
 
-  <span class="n">clone</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">stack_memory</span><span class="p">(),</span> <span class="n">CLONE_NEWPID</span> <span class="o">|</span> <span class="n">CLONE_NEWUTS</span> <span class="o">|</span> <span class="n">SIGCHLD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">wait</span><span class="p">(</span><span class="n">nullptr</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+int main(int argc, char** argv) {
+  printf(&quot;parent %d&quot;, getpid());
+
+  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  wait(nullptr);
+  return EXIT_SUCCESS;
+}
+
+</code></pre>
+
 <h3 id="unmount">Unmount</h3>
 
 <p>Every time we <a href="http://man7.org/linux/man-pages/man2/mount.2.html">mount</a> a file system it is always good practice to release what we don&rsquo;t use. To release the binding we use <a href="http://man7.org/linux/man-pages/man2/umount.2.html">unmount</a>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">umount</span><span class="p">(</span><span class="s">&#34;&lt;mounted-folder&gt;&#34;</span><span class="p">)</span></code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c">umount(&quot;&lt;mounted-folder&gt;&quot;)
+</code></pre>
+
 <p>We are going to <a href="http://man7.org/linux/man-pages/man2/umount.2.html">unmount</a> just before our contained process exits:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c">  <span class="n">mount</span><span class="p">(</span><span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="s">&#34;/proc&#34;</span><span class="p">,</span> <span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 
-  <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span>
+<pre><code class="language-c">  mount(&quot;proc&quot;, &quot;/proc&quot;, &quot;proc&quot;, 0, 0);
 
-  <span class="n">umount</span><span class="p">(</span><span class="s">&#34;/proc&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span></code></pre></td></tr></table>
-</div>
-</div>
+  run(&quot;/bin/sh&quot;);
+
+  umount(&quot;/proc&quot;);
+  return EXIT_SUCCESS;
+</code></pre>
+
 <p>There is a small challenge here, that wasn&rsquo;t obvious for me the first time. Every time we call <code>run</code> our process gets replaced by a new process image and we won&rsquo;t be able to call <code>umount</code>, basically the instructions are going to stop in <code>run</code> and from there <code>sh</code> is in control and we can forget about the last two instructions.</p>
 
 <p>The solution to this is to decouple this program loading from the rest of the child function. As we learned above, to run a function in a separated process in Linux we use <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a>. Let&rsquo;s make use of this knowledge and re-factor our code.</p>
 
 <p>Let&rsquo;s start by grouping our process creation instructions into a reusable function:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;parent %d&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
 
-  <span class="n">clone</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">stack_memory</span><span class="p">(),</span> <span class="n">CLONE_NEWPID</span> <span class="o">|</span> <span class="n">CLONE_NEWUTS</span> <span class="o">|</span> <span class="n">SIGCHLD</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-  <span class="n">wait</span><span class="p">(</span><span class="n">nullptr</span><span class="p">);</span>
+<pre><code class="language-c">int main(int argc, char** argv) {
+  printf(&quot;parent %d&quot;, getpid());
 
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  wait(nullptr);
+
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p>We can rewrite these two instructions into a nicer interface:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="n">template</span> <span class="o">&lt;</span><span class="kr">typename</span> <span class="n">Function</span><span class="o">&gt;</span>
-<span class="kt">void</span> <span class="n">clone_process</span><span class="p">(</span><span class="n">Function</span><span class="o">&amp;&amp;</span> <span class="n">function</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">){</span>
- <span class="k">auto</span> <span class="n">pid</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">stack_memory</span><span class="p">(),</span> <span class="n">flags</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 
- <span class="n">wait</span><span class="p">(</span><span class="n">nullptr</span><span class="p">);</span>
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+<pre><code class="language-c">template &lt;typename Function&gt;
+void clone_process(Function&amp;&amp; function, int flags){
+ auto pid = clone(function, stack_memory(), flags, 0);
+
+ wait(nullptr);
+}
+</code></pre>
+
 <p>Here, I&rsquo;m using a C++ template to create a new &ldquo;generic type&rdquo; called <strong>Function</strong> which will morph into a C function, then we pass the function to <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a>, also we pass the flags as an integer.</p>
 
 <p>To use our function we just re-write our <em>main</em> function:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
 
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;parent pid: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
-  <span class="n">clone_process</span><span class="p">(</span><span class="n">jail</span><span class="p">,</span> <span class="n">CLONE_NEWPID</span> <span class="o">|</span> <span class="n">CLONE_NEWUTS</span> <span class="o">|</span> <span class="n">SIGCHLD</span> <span class="p">);</span>
+<pre><code class="language-c">int main(int argc, char** argv) {
 
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+  printf(&quot;parent pid: %d\n&quot;, getpid());
+  clone_process(jail, CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD );
+
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p>Nice, now let&rsquo;s use this function to run our binary in a child-process:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
 
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;child pid: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
-  <span class="n">setup_variables</span><span class="p">();</span>
+<pre><code class="language-c++">int jail(void *args) {
 
-  <span class="n">setup_root</span><span class="p">(</span><span class="s">&#34;./root&#34;</span><span class="p">);</span>
-  <span class="n">mount</span><span class="p">(</span><span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="s">&#34;/proc&#34;</span><span class="p">,</span> <span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  printf(&quot;child pid: %d\n&quot;, getpid());
+  setup_variables();
 
-  <span class="k">auto</span> <span class="n">runThis</span> <span class="o">=</span> <span class="p">[](</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span><span class="kt">int</span> <span class="p">{</span> <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span> <span class="p">};</span>
+  setup_root(&quot;./root&quot;);
+  mount(&quot;proc&quot;, &quot;/proc&quot;, &quot;proc&quot;, 0, 0);
 
-  <span class="n">clone_process</span><span class="p">(</span><span class="n">runThis</span><span class="p">,</span> <span class="n">SIGCHLD</span><span class="p">);</span>
+  auto runThis = [](void *args) -&gt;int { run(&quot;/bin/sh&quot;); };
 
-  <span class="n">umount</span><span class="p">(</span><span class="s">&#34;/proc&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+  clone_process(runThis, SIGCHLD);
+
+  umount(&quot;/proc&quot;);
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p>Let&rsquo;s explain the changes:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="k">auto</span> <span class="n">runThis</span> <span class="o">=</span> <span class="p">[](</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span><span class="kt">int</span> <span class="p">{</span> <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span> <span class="p">};</span>
 
-<span class="n">clone_process</span><span class="p">(</span><span class="n">runThis</span><span class="p">,</span> <span class="n">SIGCHLD</span><span class="p">);</span></code></pre></td></tr></table>
-</div>
-</div>
+<pre><code class="language-c">auto runThis = [](void *args) -&gt;int { run(&quot;/bin/sh&quot;); };
+
+clone_process(runThis, SIGCHLD);
+</code></pre>
+
 <p>Here we use a C++ feature called (<a href="https://en.cppreference.com/w/cpp/language/lambda">Lambda</a>) which basically is like an in-line function, the we plug it to our generic typed <code>clone_process</code> and the compiler do the rest.</p>
 
 <p>Our final version looks like this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
 
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;child pid: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
-  <span class="n">setHostName</span><span class="p">(</span><span class="s">&#34;my-container&#34;</span><span class="p">);</span>
-  <span class="n">setup_variables</span><span class="p">();</span>
+<pre><code class="language-c++">int jail(void *args) {
 
-  <span class="n">setup_root</span><span class="p">(</span><span class="s">&#34;./root&#34;</span><span class="p">);</span>
+  printf(&quot;child pid: %d\n&quot;, getpid());
+  setHostName(&quot;my-container&quot;);
+  setup_variables();
 
-  <span class="n">mount</span><span class="p">(</span><span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="s">&#34;/proc&#34;</span><span class="p">,</span> <span class="s">&#34;proc&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  setup_root(&quot;./root&quot;);
 
-  <span class="k">auto</span> <span class="n">runThis</span> <span class="o">=</span> <span class="p">[](</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span><span class="kt">int</span> <span class="p">{</span> <span class="n">run</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span> <span class="p">};</span>
+  mount(&quot;proc&quot;, &quot;/proc&quot;, &quot;proc&quot;, 0, 0);
 
-  <span class="n">clone_process</span><span class="p">(</span><span class="n">runThis</span><span class="p">,</span> <span class="n">SIGCHLD</span><span class="p">);</span>
+  auto runThis = [](void *args) -&gt;int { run(&quot;/bin/sh&quot;); };
 
-  <span class="n">umount</span><span class="p">(</span><span class="s">&#34;/proc&#34;</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
+  clone_process(runThis, SIGCHLD);
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+  umount(&quot;/proc&quot;);
+  return EXIT_SUCCESS;
+}
 
-  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;parent pid: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
-  <span class="n">clone_process</span><span class="p">(</span><span class="n">jail</span><span class="p">,</span> <span class="n">CLONE_NEWPID</span> <span class="o">|</span> <span class="n">CLONE_NEWUTS</span> <span class="o">|</span> <span class="n">SIGCHLD</span> <span class="p">);</span>
+int main(int argc, char** argv) {
 
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+  printf(&quot;parent pid: %d\n&quot;, getpid());
+  clone_process(jail, CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD );
+
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
 <p><img src="https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/mount-ns.gif?raw=true" alt="mounting procfs" /></p>
 
 <p>Now our program is capable of successfully mount <a href="https://en.wikipedia.org/wiki/Procfs">procfs</a>, release the file system after we exit and the best thing of all it can show the processes inside the container.</p>
@@ -1355,24 +647,10 @@ curl -Ol http://nl.alpinelinux.org/alpine/v3.7/releases/x86_64/alpine-minirootfs
 <p>When we create the child process (<code>jail</code>) we use the flag <code>CLONE_NEWPID</code>, this flag gives our cloned process something like it&rsquo;s own process tree.</p>
 
 <p>This is how our system looks under normal conditions.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">   Init-1
+
+<pre><code>   Init-1
    ------
-     |  child&#39;s
+     |  child's
      |  
  ----------------------
  |          |         |
@@ -1380,28 +658,15 @@ systemd-2  bash-3   our-container-4
                       |
                     jail - 5
                       |
-                    shell - 6</pre></td></tr></table>
-</div>
-</div>
+                    shell - 6
+
+</code></pre>
+
 <p>When we apply the flag <code>CLONE_NEWPID</code> this happens:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">   Init-1
+
+<pre><code>   Init-1
    ------
-     |  child&#39;s
+     |  child's
      |  
  ----------------------                    
  |          |         |
@@ -1409,39 +674,25 @@ systemd-2  bash-3   our-container-4
                       |
                      jail - 5
                       |
-                    shell - 6</pre></td></tr></table>
-</div>
-</div>
+                    shell - 6
+</code></pre>
+
 <p>Nothing changes at a global scale, but from our process&rsquo;s perspective we see the world like this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">   jail - 1
+
+<pre><code>   jail - 1
    ------
-     |  child&#39;s
+     |  child's
      |  
-   shell-2  </pre></td></tr></table>
-</div>
-</div>
+   shell-2  
+</code></pre>
+
 <p>Try to call <code>ps</code> inside this version and you will get the following:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh">PID   USER     TIME   COMMAND
-    <span class="m">1</span> root       <span class="m">0</span>:00 ./container
-    <span class="m">2</span> root       <span class="m">0</span>:00 /bin/sh</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-sh">PID   USER     TIME   COMMAND
+    1 root       0:00 ./container
+    2 root       0:00 /bin/sh
+</code></pre>
+
 <p>Moral of the story is when you clone the PID tree, your process is no longer able to track other processes but it still can track it&rsquo;s child processes. You might wonder by looking the graph above that nothing has change in the global process tree after applying the flag and wonder if you can search the PID of isolated processes in the system, the answer is yes, for example if you run <code>ps aux | grep sh</code> you&rsquo;ll be able to see your container. Here some <em>homework</em> try to run a contained process using this application or Docker and try to kill it from the outside.</p>
 
 <p>Here is a small demo about locating the contained process:</p>
@@ -1461,192 +712,104 @@ systemd-2  bash-3   our-container-4
 <p>Before we start I&rsquo;ll explain how we can interact with (<a href="https://www.kernel.org/doc/Documentation/cgroup-v2.txt">Linux Control Group</a>), you might have heard the phrase that in Linux <a href="https://en.wikipedia.org/wiki/Everything_is_a_file">&ldquo;Everything is a file&rdquo;</a>, cgroup like procfs is another example of that philosophy. This means cgroup is a kernel feature that can be mounted like any other file system and interface with it using any I/O API or the applications you use to handle files. For this example I&rsquo;ll use the Linux I/O interface by excellence which is <a href="http://man7.org/linux/man-pages/man3/fopen.3.html">open</a>, <a href="https://linux.die.net/man/2/write">write</a>, <a href="https://linux.die.net/man/3/read">read</a> and <a href="http://man7.org/linux/man-pages/man3/fclose.3.html">close</a>. Now the next step is to understand what folder or files we need to modify.</p>
 
 <p>The control group file system directory is usually mounted here:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma"> /sys/fs/cgroup  </pre></td></tr></table>
-</div>
-</div>
+
+<pre><code> /sys/fs/cgroup  
+</code></pre>
+
 <p>We want to limit the creation of processes, so we need to go to the <code>pids</code> folder.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma"> /sys/fs/cgroup/pids/  </pre></td></tr></table>
-</div>
-</div>
+
+<pre><code> /sys/fs/cgroup/pids/  
+</code></pre>
+
 <p>Once we&rsquo;re here, we can create a top folder that will encapsulate all the rules, it can have any acceptable folder name I&rsquo;ll choose the name <em>container</em>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">/sys/fs/cgroup/pids/container/</pre></td></tr></table>
-</div>
-</div>
+
+<pre><code>/sys/fs/cgroup/pids/container/
+</code></pre>
+
 <p>Let&rsquo;s write the code to create the folder:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;sys/stat.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp">
-</span><span class="cp">#define CGROUP_FOLDER &#34;/sys/fs/cgroup/pids/container/&#34;
-</span><span class="cp"></span>
-<span class="kt">void</span> <span class="nf">limitProcessCreation</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// create a folder
-</span><span class="c1"></span>  <span class="n">mkdir</span><span class="p">(</span> <span class="n">PID_CGROUP_FOLDER</span><span class="p">,</span> <span class="n">S_IRUSR</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">);</span>  
 
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+<pre><code class="language-c">#include &lt;sys/stat.h&gt;
+#include &lt;sys/types.h&gt;
+#define CGROUP_FOLDER &quot;/sys/fs/cgroup/pids/container/&quot;
+
+void limitProcessCreation() {
+  // create a folder
+  mkdir( PID_CGROUP_FOLDER, S_IRUSR | S_IWUSR);  
+
+}
+
+</code></pre>
+
 <p>When we create this folder, <strong>cgroup</strong> automatically generates some files inside, those files describe the rules and states of the processes in that group, at the moment we don&rsquo;t have any process attached.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh">/sys/fs/cgroup/pids/container/$ ls  
-cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.events  pids.max  tasks</code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-sh">/sys/fs/cgroup/pids/container/$ ls  
+cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.events  pids.max  tasks
+</code></pre>
+
 <p>To attach a process here we need to <a href="https://linux.die.net/man/2/write">write</a> the process identifier (PID) of our process to the file <code>cgroup.procs</code>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;fcntl.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="cp">#define CGROUP_FOLDER &#34;/sys/fs/cgroup/pids/container/&#34;
-</span><span class="cp">#define concat(a,b) (a&#34;&#34; b)
-</span><span class="cp"></span>
-<span class="c1">// update a given file with a string value.
-</span><span class="c1"></span><span class="kt">void</span> <span class="nf">write_rule</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">path</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">fp</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">O_WRONLY</span> <span class="o">|</span> <span class="n">O_APPEND</span> <span class="p">);</span>
-  <span class="n">write</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
-  <span class="n">close</span><span class="p">(</span><span class="n">fp</span><span class="p">);</span>
-<span class="p">}</span>
+
+<pre><code class="language-c">#include &lt;string.h&gt;
+#include &lt;fcntl.h&gt;
+
+#define CGROUP_FOLDER &quot;/sys/fs/cgroup/pids/container/&quot;
+#define concat(a,b) (a&quot;&quot; b)
+
+// update a given file with a string value.
+void write_rule(const char* path, const char* value) {
+  int fp = open(path, O_WRONLY | O_APPEND );
+  write(fp, value, strlen(value));
+  close(fp);
+}
 
 
-<span class="kt">void</span> <span class="nf">limitProcessCreation</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// create a folder
-</span><span class="c1"></span>  <span class="n">mkdir</span><span class="p">(</span> <span class="n">PID_CGROUP_FOLDER</span><span class="p">,</span> <span class="n">S_IRUSR</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">);</span>  
+void limitProcessCreation() {
+  // create a folder
+  mkdir( PID_CGROUP_FOLDER, S_IRUSR | S_IWUSR);  
 
-  <span class="c1">//getpid() give us a integer and we transform it to a string.
-</span><span class="c1"></span>  <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">pid</span>  <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">getpid</span><span class="p">()).</span><span class="n">c_str</span><span class="p">();</span>
+  //getpid() give us a integer and we transform it to a string.
+  const char* pid  = std::to_string(getpid()).c_str();
 
-  <span class="n">write_rule</span><span class="p">(</span><span class="n">concat</span><span class="p">(</span><span class="n">CGROUP_FOLDER</span><span class="p">,</span> <span class="s">&#34;cgroup.procs&#34;</span><span class="p">),</span> <span class="n">pid</span><span class="p">);</span>
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+  write_rule(concat(CGROUP_FOLDER, &quot;cgroup.procs&quot;), pid);
+}
+</code></pre>
+
 <p>We&rsquo;ve registered our process id, next we need to <a href="https://linux.die.net/man/2/write">write</a> to the file <code>pids.max</code> to limit the number of processes our children can create, let&rsquo;s try with 5.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">limitProcessCreation</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// create a folder
-</span><span class="c1"></span>  <span class="n">mkdir</span><span class="p">(</span> <span class="n">PID_CGROUP_FOLDER</span><span class="p">,</span> <span class="n">S_IRUSR</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">);</span>    
 
-  <span class="c1">//getpid give us a integer and we transform it to a string.
-</span><span class="c1"></span>  <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">pid</span>  <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">getpid</span><span class="p">()).</span><span class="n">c_str</span><span class="p">();</span>
+<pre><code class="language-c">void limitProcessCreation() {
+  // create a folder
+  mkdir( PID_CGROUP_FOLDER, S_IRUSR | S_IWUSR);    
 
-  <span class="n">write_rule</span><span class="p">(</span><span class="n">concat</span><span class="p">(</span><span class="n">CGROUP_FOLDER</span><span class="p">,</span> <span class="s">&#34;cgroup.procs&#34;</span><span class="p">),</span> <span class="n">pid</span><span class="p">);</span>
-  <span class="n">write_rule</span><span class="p">(</span><span class="n">concat</span><span class="p">(</span><span class="n">CGROUP_FOLDER</span><span class="p">,</span> <span class="s">&#34;pids.max&#34;</span><span class="p">),</span> <span class="s">&#34;5&#34;</span><span class="p">);</span>
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+  //getpid give us a integer and we transform it to a string.
+  const char* pid  = std::to_string(getpid()).c_str();
+
+  write_rule(concat(CGROUP_FOLDER, &quot;cgroup.procs&quot;), pid);
+  write_rule(concat(CGROUP_FOLDER, &quot;pids.max&quot;), &quot;5&quot;);
+}
+</code></pre>
+
 <p>After our process has ended, it is a good idea to release the resources so the kernel can cleanup the container folder we created above, the way to notify this is to update the file <code>notify_on_release</code> with the value of 1.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">limitProcessCreation</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// create a folder
-</span><span class="c1"></span>  <span class="n">mkdir</span><span class="p">(</span> <span class="n">PID_CGROUP_FOLDER</span><span class="p">,</span> <span class="n">S_IRUSR</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">);</span>  
 
-  <span class="c1">//getpid give us a integer and we transform it to a string.
-</span><span class="c1"></span>  <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">pid</span>  <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">getpid</span><span class="p">()).</span><span class="n">c_str</span><span class="p">();</span>
+<pre><code class="language-c">void limitProcessCreation() {
+  // create a folder
+  mkdir( PID_CGROUP_FOLDER, S_IRUSR | S_IWUSR);  
 
-  <span class="n">write_rule</span><span class="p">(</span><span class="n">concat</span><span class="p">(</span><span class="n">CGROUP_FOLDER</span><span class="p">,</span> <span class="s">&#34;cgroup.procs&#34;</span><span class="p">),</span> <span class="n">pid</span><span class="p">);</span>
-  <span class="n">write_rule</span><span class="p">(</span><span class="n">concat</span><span class="p">(</span><span class="n">CGROUP_FOLDER</span><span class="p">,</span> <span class="s">&#34;notify_on_release&#34;</span><span class="p">),</span> <span class="s">&#34;1&#34;</span><span class="p">);</span>
-  <span class="n">write_rule</span><span class="p">(</span><span class="n">concat</span><span class="p">(</span><span class="n">CGROUP_FOLDER</span><span class="p">,</span> <span class="s">&#34;pids.max&#34;</span><span class="p">),</span> <span class="s">&#34;5&#34;</span><span class="p">);</span>
-<span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+  //getpid give us a integer and we transform it to a string.
+  const char* pid  = std::to_string(getpid()).c_str();
+
+  write_rule(concat(CGROUP_FOLDER, &quot;cgroup.procs&quot;), pid);
+  write_rule(concat(CGROUP_FOLDER, &quot;notify_on_release&quot;), &quot;1&quot;);
+  write_rule(concat(CGROUP_FOLDER, &quot;pids.max&quot;), &quot;5&quot;);
+}
+</code></pre>
+
 <p>Now our function is ready to be called from the main program:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">jail</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">limitProcessCreation</span><span class="p">();</span>
-  <span class="cp">#...
-</span><span class="cp"></span><span class="p">}</span></code></pre></td></tr></table>
-</div>
-</div>
+
+<pre><code class="language-c">int jail(void *args) {
+  limitProcessCreation();
+  #...
+}
+</code></pre>
+
 <p>We need to call it before we change the root folder, this way we can setup the execution context. After we compile and run we should get something like this:</p>
 
 <p><img src="https://github.com/cesarvr/cesarvr.github.io/blob/master/static/containers/cgroup-pid.gif?raw=true" alt="cgroup" /></p>
@@ -1674,139 +837,72 @@ cgroup.clone_children  cgroup.procs  notify_on_release  pids.current  pids.event
 <p>Why not? I used that combination to write this article. Well, in reality I don&rsquo;t see any problem in using both, just an increase in complexity. In a perfect world I would use just containers.</p>
 
 <p>Well, I hope it has been a very fun read or at least not boring. If you want access to the full source code you can get it from <a href="https://github.com/cesarvr/container">here</a>. With time I&rsquo;ll add more functionalities and maybe will rewrite some of it in Rust or DLango. If you want to learn more about cgroups you can access the <a href="https://www.kernel.org/doc/Documentation/cgroup-v1/">documentation</a> and if you have any improvements or add a new functionality let me know, you can contact me via <a href="https://twitter.com/cvaldezr">Twitter</a> or send a PR via <a href="https://github.com/">Github</a>. Happy hacking!.</p>
-
-    </div>
-
+</div>
+  <footer class="post-footer">
     
-    
-
-    
-    
-
-    <footer class="post-footer">
-      <div class="post-tags">
-          
-        </div>
-
+    <ul class="post-tags">
       
-      <nav class="post-nav">
-        
-          <a class="prev" href="/post/ocp-chainbuild/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">Chaining Builds In Openshift</span>
-            <span class="prev-text nav-mobile">Prev</span>
-          </a>
-        
-          <a class="next" href="/post/2017-12-22-Containers/">
-            <span class="next-text nav-default">Containers For Beginners</span>
-            <span class="prev-text nav-mobile">Next</span>
-            <i class="iconfont icon-right"></i>
-          </a>
-      </nav>
-    </footer>
-  </article>
-
+      <li><a href="/tags/Containers/">Containers</a></li>
+      
+      <li><a href="/tags/Linux/">Linux</a></li>
+      
+      <li><a href="/tags/C/">C</a></li>
+      
+      <li><a href="/tags/C&#43;&#43;/">C&#43;&#43;</a></li>
+      
+    </ul>
+    
+  </footer>
   
   
-
   
-  
-
-  
-
-  
-
-  <div class="disqus-comment">
-  <div class="disqus-button" id="load_disqus" onclick="load_disqus()">
-    Show Disqus Comments
-  </div>
   <div id="disqus_thread"></div>
-  <script type="text/javascript">
-    function load_disqus() {
-      
-      
-      if (window.location.hostname === 'localhost') return;
-
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      var disqus_shortname = 'cesar';
-      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-
-      $('#load_disqus').remove();
-    };
+  <script>
+    var disqus_shortname = 'cesar';
+    (function() { 
+      var d = document, s = d.createElement('script');
+      s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
   </script>
-  <noscript>Please enable JavaScript to view the
-    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+  <noscript>
+    Please enable JavaScript to view the
+    <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
   </noscript>
   
-  </div>
-
-        </div>
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="social-links">
-      <a href="https://twitter.com/cvaldezr" rel="me noopener" class="iconfont icon-twitter"
-        title="twitter" target="_blank">
-      </a>
-      <a href="https://linkedin.com/in/cesarvr" rel="me noopener" class="iconfont icon-linkedin"
-        title="linkedin" target="_blank">
-      </a>
-  <a href="/index.xml" rel="noopener alternate" type="application/rss&#43;xml" class="iconfont icon-rss"
-    title="rss" target="_blank">
-  </a>
-  </div>
-
-<div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
-  </span>
-
-  <span class="copyright-year">
-    &copy;
-    
-       -
-    2018
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span><span class="author">
-        Cesar Valdez
-        
-      </span></span>
-
   
   
-</div>
-
-    </footer>
-
-    <div class="back-to-top" id="back-to-top">
-      <i class="iconfont icon-up"></i>
-    </div>
-  </div>
-  
-<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
-  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
-<script type="text/javascript" src="/dist/jane.min.js?v=2.7.0"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</article>
+</main>
+<footer class="footer">
+  <span>&copy; 2018 Nube</span>
+  <span>&middot;</span>
+  <span>Powered by <a href="https://gohugo.io/" target="_blank">Hugo️️</a>️</span>
+  <span>&middot;</span>
+  <span>Designed by <a href="http://21beats.com/" target="_blank">️21beats️</a>️</span>
+</footer>
+<script src="https://cdn.bootcss.com/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+<script data-no-instant>InstantClick.init();</script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js" data-no-instant></script>
+<script data-no-instant>
+  hljs.initHighlightingOnLoad();
+  addMenuListener();
+  InstantClick.on('change', function() {
+    var blocks = document.querySelectorAll('pre code');
+    for (var i = 0; i < blocks.length; i++) {
+      hljs.highlightBlock(blocks[i]);
+    }
+    addMenuListener();
+  });
+  function addMenuListener() {
+    var $toggle = document.querySelector('.menu-toggle');
+    var $body = document.querySelector('body');
+    $toggle.addEventListener('click', function() {
+      $body.classList.toggle('noscroll');
+    }, false);
+  }
+</script>
 </body>
 </html>
+

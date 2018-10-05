@@ -7,10 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Cesar Valdez</copyright>
-    <lastBuildDate>Thu, 06 Sep 2018 15:23:40 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 19 Sep 2018 14:30:07 +0100</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Containers Patterns</title>
+      <link>/post/prometheus/</link>
+      <pubDate>Wed, 19 Sep 2018 14:30:07 +0100</pubDate>
+      
+      <guid>/post/prometheus/</guid>
+      <description>&lt;p&gt;I just wanted a excuse to put in practice some of the concepts behind container patterns, which is just a way to (like object oriented programming) isolate behaviour in containers (objects) and make them work together to solve a problem.&lt;/p&gt;
+
+&lt;p&gt;What I want to do is to create a reusable container that allow me to perform some actions like counting how many time people visit certain endpoint, calculate the response speed, etc, make this container collaborate with other containers following the rule of &amp;ldquo;Single Responsability Principle&amp;rdquo;, which means they doesn&amp;rsquo;t know about each other (again, very much like OOP).&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Finding Performance Bottlenecks in JavaScript.</title>
@@ -40,7 +53,8 @@
       
       <guid>/post/ocp-chainbuild/</guid>
       <description>New application Creating a Node.js application in Openshift is simple:
-1 2 3 4 5  oc login -u user oc new-project hello # Assuming you are logged and you have a project you can start here.  oc new-app --name node-app nodejs~https://github.com/cesarvr/hello-world-nodejs #new app using nodejs:latest (Node.js 8)   This command will create the backbone (BuildConfig, DeploymentConfig and Service) to orchestrate the different stages from source code to a running application.</description>
+oc login -u user oc new-project hello # Assuming you are logged and you have a project you can start here. oc new-app --name node-app nodejs~https://github.com/cesarvr/hello-world-nodejs #new app using nodejs:latest (Node.js 8)  This command will create the backbone (BuildConfig, DeploymentConfig and Service) to orchestrate the different stages from source code to a running application.
+The size problem But this nice abstraction come with a cost, to explain what I mean, let&amp;rsquo;s review size of our final image using du:</description>
     </item>
     
     <item>
@@ -99,7 +113,7 @@ After many days of procrastination, I put my hands-on and start the task of down
       
       <guid>/post/2015-09-01-archlinux-install/</guid>
       <description>Arch Linux installation instruction for the impatient.
-Partition 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19  fdisk /dev/d #sda all disk in my case.  #15 GB partition. Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 1): #press Enter First sector (2048-209715199, default 2048): #press Enter start in the beginning.</description>
+Partition fdisk /dev/d #sda all disk in my case. #15 GB partition. Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 1): #press Enter First sector (2048-209715199, default 2048): #press Enter start in the beginning. Last sector, +sectors or +size...(): #type +19G and press Enter. #SWAP 1GB Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 2): #press Enter First sector (): #press Enter Last sector, +sectors or +size.</description>
     </item>
     
   </channel>

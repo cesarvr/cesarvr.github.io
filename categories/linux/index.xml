@@ -39,7 +39,7 @@ In a typical Unix/Linux OS all processes share the same user space, but with the
       
       <guid>/post/2015-09-01-archlinux-install/</guid>
       <description>Arch Linux installation instruction for the impatient.
-Partition 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19  fdisk /dev/d #sda all disk in my case.  #15 GB partition. Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 1): #press Enter First sector (2048-209715199, default 2048): #press Enter start in the beginning.</description>
+Partition fdisk /dev/d #sda all disk in my case. #15 GB partition. Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 1): #press Enter First sector (2048-209715199, default 2048): #press Enter start in the beginning. Last sector, +sectors or +size...(): #type +19G and press Enter. #SWAP 1GB Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 2): #press Enter First sector (): #press Enter Last sector, +sectors or +size.</description>
     </item>
     
   </channel>
