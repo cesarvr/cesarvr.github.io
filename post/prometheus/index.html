@@ -8,22 +8,7 @@
   
   <title>Creating Your Own Istio (Part 1) - Nube</title>
   
-  <meta name="description" content="You can also close(false) or open(true) something for this content.
-
-P.S. comment can only be closed
-
-comment: false
-toc: true
-autoCollapseToc: false
-
-You can also define another contentCopyright. e.g. contentCopyright: &ldquo;This is another copyright.&rdquo;
-
-contentCopyright: false
-reward: false
-
-mathjax: false
-
-I just wanted a excuse to put in practice some of the concepts behind the paper called Design patterns for container-based distributed systems, which is a set of reusable patterns that can help  (like object oriented programming) isolate behaviour in containers and make them work together. Container collaborating between each other, sounds pretty much like micro-service to me ? Well is in part, but the difference is that we can add behaviour to an existing application/microservice using containers.
+  <meta name="description" content="I just wanted an excuse to write a container oriented application, what do I mean by that? that&rsquo;s not why micro-services are just a bunch of containers talking to one each other. That&rsquo;s true but what I mean is separate different behaviour of an application inside containers and then reuse this containers in other applications.
 
 ">
   <meta name="author" content="">
@@ -76,32 +61,21 @@ I just wanted a excuse to put in practice some of the concepts behind the paper 
     <h1 class="post-title">Creating Your Own Istio (Part 1)</h1>
     <p class="post-meta">2018.9.19</p>
   </header>
-  <div class="post-content"><h1 id="you-can-also-close-false-or-open-true-something-for-this-content">You can also close(false) or open(true) something for this content.</h1>
-
-<h1 id="p-s-comment-can-only-be-closed">P.S. comment can only be closed</h1>
-
-<p>comment: false
-toc: true
-autoCollapseToc: false</p>
-
-<h1 id="you-can-also-define-another-contentcopyright-e-g-contentcopyright-this-is-another-copyright">You can also define another contentCopyright. e.g. contentCopyright: &ldquo;This is another copyright.&rdquo;</h1>
-
-<p>contentCopyright: false
-reward: false</p>
-
-<h2 id="mathjax-false">mathjax: false</h2>
-
-<p>I just wanted a excuse to put in practice some of the concepts behind the paper called <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/45406.pdf">Design patterns for container-based distributed systems</a>, which is a set of reusable patterns that can help  (like object oriented programming) isolate behaviour in containers and make them work together. Container collaborating between each other, sounds pretty much like micro-service to me ? Well is in part, but the difference is that we can add behaviour to an existing application/microservice using containers.</p>
+  <div class="post-content"><p>I just wanted an excuse to write a container oriented application, what do I mean by that? that&rsquo;s not why micro-services are just a bunch of containers talking to one each other. That&rsquo;s true but what I mean is separate different behaviour of an application inside containers and then reuse this containers in other applications.</p>
 
 <p></p>
 
-<p>An example of adding behaviour is the enhancing nature of this <em>&ldquo;service mesh&rdquo;</em> frameworks like Istio, Linkdr?, Prometheus. You just add that container to your application and you get some new functionality without affecting (in theory) your application main purpose. By doing the equivalent to a object decorator in OOP, enhance your application traceability, stability, etc; you get the idea.</p>
+<p>A good example of this separation of concerns are the so-called <em>&ldquo;service mesh&rdquo;</em> frameworks like Istio, Linkdr?, Prometheus, etc. You add some container to your application and you get some new functionality without affecting (in theory) your application main purpose. They can be thought as the equivalent to an object <a href="https://en.wikipedia.org/wiki/Decorator_pattern">decorator</a> in object oriented programming.</p>
 
-<p>As a way to understand how this patterns can be implemented I decided to develop some of the features of Istio like profiling, traceability or for example (I don&rsquo;t know if Istio does this) the ability to turn off a endpoint at will.</p>
+<p>To understand how to create this type of applications, I decided to deploy a dumb server and enhance/decorate this server with new functionalities, but I&rsquo;ll follow the open close principle or in other words, without modify or touching the source code. By this I&rsquo;ll reasure the re-usability of both containers.</p>
 
-<h1 id="serving-web-pages-behaviour">Serving Web Pages Behaviour</h1>
+<p>But before adding any functionality, first we need to learn how we setup our application to run multiple containers and more important how we can handle communication between the two.</p>
 
-<p>The first container we are going to make is a dumb server application. Have you work with python SimpleHTTPServer before? if not, then is just a python command line tool serves the content of an arbitrary folder.</p>
+<h1 id="simple-web-server">Simple Web Server</h1>
+
+<p>We are going to create a dumb web server using Python SimpleHTTPServer module which is a command line tool to serve the content of an arbitrary folder.</p>
+
+<p>Usage example:</p>
 
 <pre><code class="language-sh"> cd ~/some-folder 
  python -m http.server 8080 # Now the content of &lt;some-folder&gt; is available in localhost:8080 
@@ -109,7 +83,7 @@ reward: false</p>
 
 <h2 id="deploy">Deploy</h2>
 
-<p>Now that we got this web server we can encapsulate it inside a container and run it in Kubernetes/OpenShift. We just need to create a template.</p>
+<p>Now that we got this web server we can encapsulate it inside a container to run it later in Kubernetes/OpenShift, for this we just need to create a template.</p>
 
 <pre><code class="language-sh">apiVersion: v1
 kind: Pod
@@ -126,7 +100,7 @@ spec:
     - containerPort: 8080
 </code></pre>
 
-<p>This template defines that our container will use python base image, after all we need Python interpreter to run that command, then we define the command we want to run inside our container, that goes as follow:</p>
+<p>This template defines that our container will use python base image, after all we need Python interpreter to run that command. then we define the command we want to run inside our container, that goes as follow:</p>
 
 <pre><code class="language-sh">cd /tmp/    # jump to the /tmp folder. 
 git clone https://github.com/cesarvr/demos-webgl demos  # clone a webpage with some WebGL demos. 
@@ -138,10 +112,10 @@ python -m http.server 8080   # run the python server there.
 
 <p>We save this template in a file called <a href="https://gist.github.com/cesarvr/b1ce3b5098292fd01b42b13697301b17">python.yml</a> and passed this template to OpenShift like this:</p>
 
-<pre><code class="language-sh"> oc create -f python.yml
+<pre><code class="language-sh">oc create -f python.yml
 
- # or this way it will pick the template from the github.gist.
- oc create -f https://gist.githubusercontent.com/cesarvr/b1ce3b5098292fd01b42b13697301b17/raw/2e730e761b7ac99ac6b8186caac1f0c31e10063f/python.yml
+# or this way it will pick the template from the github.gist.
+oc create -f https://gist.githubusercontent.com/cesarvr/b1ce3b5098292fd01b42b13697301b17/raw/2e730e761b7ac99ac6b8186caac1f0c31e10063f/python.yml
 </code></pre>
 
 <p>Voila!, in a few seconds our container should be running in our cluster, now let&rsquo;s do some quick configuration to send some traffic, by creating a Service.</p>
