@@ -8,7 +8,7 @@
   
   <title>Creating Your Own Istio (Part 1) - Nube</title>
   
-  <meta name="description" content="Some days ago, I was watching this video about Istio in Google I/O and while watching it, I started to think on how to do it or how they achieve this or that feature. So, as an excuse to learn how to build containers that collaborate with each other, I decided to replicate some of the functionalities I saw in that video for fun and at the same time to learn how I can encapsulate behaviour like I usually do with objects, but with containers.
+  <meta name="description" content="Some days ago I was having some fun writing my WebGL graphics API, when I decide it was time to do some demos. I always like to run some complicated stuff and see how they perform and then do benchmarks like iOS vs Android, etc. And because of that I want those demos to be available in the cloud. I choose to the OpenShift instance because is easier for me.
 
 ">
   <meta name="author" content="">
@@ -61,29 +61,13 @@
     <h1 class="post-title">Creating Your Own Istio (Part 1)</h1>
     <p class="post-meta">2018.9.19</p>
   </header>
-  <div class="post-content"><p>Some days ago, I was watching this video about Istio in Google I/O and while watching it, I started to think on how to do it or how they achieve this or that feature. So, as an excuse to learn how to build containers that collaborate with each other, I decided to replicate some of the functionalities I saw in that video for fun and at the same time to learn how I can encapsulate behaviour like I usually do with objects, but with containers.</p>
+  <div class="post-content"><p>Some days ago I was having some fun writing my WebGL graphics API, when I decide it was time to do some demos. I always like to run some complicated stuff and see how they perform and then do benchmarks like iOS vs Android, etc. And because of that I want those demos to be available in the cloud. I choose to the OpenShift instance because is easier for me.</p>
 
 <p></p>
 
-<p>A good example of this separation of concerns can be found in the so-called <em>&ldquo;service mesh&rdquo;</em> frameworks like Istio, Linkdr?, Prometheus, etc. Where you have some application running in a container like a typical Restful web service and you add another container that enhance the functionality of that application. For me it can be thought as the equivalent to an object <a href="https://en.wikipedia.org/wiki/Decorator_pattern">decorator</a> in object oriented programming.</p>
+<p>To share the demos I though to do the minimum work as possible, so I decide to setup a container with a dumb server using Python SimpleHTTPServer module (I don’t expect a high volume of traffic) and some statics files with the HTML/CSS/Javascript demos and run the container on OpenShift, because I very familiar with the environment and also because I have a free account.</p>
 
-<p>To understand how to create this type of applications, I decided to deploy a dumb server and enhance/decorate this server with new functionalities following the open close principle or in other words, which said that our functionality should be open for extention and close for modification. Let&rsquo;s see to what extend this can be achieved with containers.</p>
-
-<p>But before adding any functionality, first we need to learn how we setup our application to run multiple containers and more important how we can handle communication between the two.</p>
-
-<h1 id="simple-web-server">Simple Web Server</h1>
-
-<p>We are going to create a dumb web server using Python SimpleHTTPServer module which is a command line tool to serve the content of an arbitrary folder. The purpose of using something like this is to demonstrate how we can enhance later the functionality of this process by appending our &ldquo;decorator/ambassador&rdquo; container.</p>
-
-<p>Usage example:</p>
-
-<pre><code class="language-sh"> cd ~/some-folder 
- python -m http.server 8080 # Now the content of &lt;some-folder&gt; is available in localhost:8080 
-</code></pre>
-
-<h2 id="deploy">Deploy</h2>
-
-<p>We got the web server, now we need to deploy it into our Kubernetes/OpenShift cluster. The template would look something this:</p>
+<p>To deploy my simple server I used this template:</p>
 
 <pre><code class="language-sh">apiVersion: v1
 kind: Pod
@@ -100,25 +84,28 @@ spec:
     - containerPort: 8080
 </code></pre>
 
-<p>To run this server we&rsquo;ll use a python base image which come with Python 3. Then we define the command we want to run inside our container, that goes as follow:</p>
+<p>This template just create a <strong>pod</strong> called <em>python-pod</em> using Python base image from the OpenShift catalog. This image includes the Python 3 interpreter needed to run the SimpleHTTPServer module.</p>
+
+<p>Here is the command section in more detail:</p>
 
 <pre><code class="language-sh">cd /tmp/    
 </code></pre>
 
-<p>Jump to the folder temporal folder, Linux systems offer this directory for temporary files, I&rsquo;m going to use this one because it doesn&rsquo;t require any priviledge.</p>
+<p>The Python image ( from the OpenShift catalog ) drops the privilege for almost all folders but <code>/tmp</code>, this is because they recommend to use this image with S2I, but for now that folder its all what I need.</p>
 
-<pre><code class="language-sh">git clone https://github.com/cesarvr/demos-webgl demos  
+<pre><code class="language-sh"> git clone https://github.com/cesarvr/demos-webgl demos  
 </code></pre>
 
-<p>Then I&rsquo;ll clone the static HTML website and save it inside a folder called demos.</p>
+<p>Clone the website and save it inside a folder called demos.</p>
 
-<pre><code class="language-sh">cd demos/static/     
+<pre><code class="language-sh"># actual folder /tmp/
+cd demos/static/     
 python -m http.server 8080   
 </code></pre>
 
-<p>Jump into the static sub-folder and run the Python server module, if you want to closer look to the folder structure here is the <a href="https://github.com/cesarvr/demos-webgl">repository.</a></p>
+<p>Jump into the static sub-folder and run the Python server module, if you want a closer look to the folder structure you can found it in this <a href="https://github.com/cesarvr/demos-webgl">repository.</a></p>
 
-<p>We call this template <a href="https://gist.github.com/cesarvr/b1ce3b5098292fd01b42b13697301b17">python.yml</a> and we feed it to the oc-client like this:</p>
+<p>Save this template as <code>python.yml</code> and run using:</p>
 
 <pre><code class="language-sh">oc create -f python.yml
 
@@ -126,14 +113,22 @@ python -m http.server 8080
 oc create -f https://gist.githubusercontent.com/cesarvr/b1ce3b5098292fd01b42b13697301b17/raw/2e730e761b7ac99ac6b8186caac1f0c31e10063f/python.yml
 </code></pre>
 
-<p>Voila!, in just a few seconds our web server should be running in our cluster. Now let&rsquo;s send some traffic, by creating a Service.</p>
+<p>Voila!, in just a few seconds the web server should be running in our cluster.</p>
+
+<p>Now let&rsquo;s send some traffic:</p>
 
 <pre><code class="language-sh"> oc create service loadbalancer python-pod --tcp=8080:8080
 </code></pre>
 
-<p>We create the Service called python-pod, the name match the name of the pod this way the traffic is sended directly to the pod. Only step left is to expose that Service, which mean basically to open it to receive traffic from outside of the cluster.</p>
+<p>The service object by default send traffic to the pods with label <code>app: &lt;name-of-your-pods&gt;</code>, creating the service with the same name as the pod give us the tag we want.</p>
 
-<pre><code class="language-sh">oc expose svc python-pod 
+<pre><code class="language-yml">selector:
+    app: python-pod
+</code></pre>
+
+<p>Next thing is to expose the service:</p>
+
+<pre><code class="language-sh">oc expose svc python-pod
 
 oc get route
 
@@ -144,53 +139,48 @@ curl python-pod-web-apps.7e14.starter-us-west-2.openshiftapps.com
 # HTML from the static site...
 </code></pre>
 
-<p>If you never hear before the concept of pod, service or router you can follow this <a href="https://github.com/cesarvr/Openshift">guide</a> for begginers.</p>
+<p>Now the website <a href="http://my-service-web-apps.7e14.starter-us-west-2.openshiftapps.com/">available</a>.</p>
+
+<p>If you never hear before the concept of pod, service or router you can follow this <a href="https://github.com/cesarvr/Openshift">guide</a> for beginners.</p>
+
+<h1 id="enhancing-the-web-server">Enhancing The Web Server</h1>
+
+<p>After a few days I started to pay the price of choosing a dumb static web server, because I started to feel like adding more functionalities to the server side, like a visiting counter for each demo for example or how much time is taking to process a request to debug network problem.</p>
+
+<p>I started thinking about this so called <em>service meshes</em> like Istio or Prometheus, the only problem is that my OpenShift account won&rsquo;t give me the account privilege to install any of that. Then I though what if I put another container in front that receive the request take care of the statistic and forward the request to the static web server.</p>
+
+<p>It might seem like a very complex way of adding new behavior to a existing application but take a look at few advantages:</p>
+
+<ul>
+<li><p>It follows the Open/Close principle: Meaning the you don&rsquo;t have to modify the web server container or in a real case the business logic.</p>
+
+<ul>
+<li>You want to migrate a group of legacy services that use some deprecated authentication protocol, you can create a container that works as an adapter for that case, avoiding the need to touch the code of those applications.</li>
+</ul></li>
+
+<li><p>Increase re-usability: I can reuse the statistics container with other applications out of the box, I&rsquo;ll demonstrate this in the final article.</p></li>
+
+<li><p>Single responsibility principle: Each container do one thing and do it well, this very good to put multiple teams working in different key functionalities and also if your container follow this rules (like in OOP) you increase reusability.</p></li>
+
+<li><p>Plug and Play: Adding that behavior is a matter of adding or removing the container.</p></li>
+</ul>
+
+<p>Sounds like a good idea but first I needed to learn how to make containers run side by side and more important how to make sure they can collaborate.</p>
 
 <h1 id="side-container">Side Container</h1>
 
-<h2 id="concepts">Concepts</h2>
+<p>We can think about <strong>pods</strong> like a container of containers, meaning that we can run more than one container inside, and this containers can share resources like network namespace (port mapping) and they can share mounting points (folders).</p>
 
-<p>The trick of collaboration between containers is that the <strong>pod</strong> behaves like a container of containers, meaning we can place there more than one container, and containers running inside the pod can share resources like network namespace (port mapping) and they can share mounting points (folders).</p>
+<h2 id="internal-communication">Internal Communication</h2>
 
-<h2 id="containers-as-objects">Containers as objects</h2>
-
-<p>In object oriented programming (as concieved by Alan Kay) objects collaborate with each other by what he call messages (also known as methods) :</p>
-
-<pre><code class="language-cpp">Class A { 
- void do_something() {}; 
-};
-
-A a; 
-
-# passing a message do_something to A
-a.do_something();  # he knows what to do! 
-
-a.clear(); # Fail!
-</code></pre>
-
-<p>The question is, can we use the same metaphor with containers ? The answer is why not, but we need a little bit more inmagination. To collaborate with each other we can use (as mentioned above) various methods we can use sockets or the filesystem. So basically right now our Python application (using the object oriented analogy) is accepting messages using the port 8080.</p>
-
-<pre><code class="language-sh">oc rsh python-pod # loggin inside our container. 
-
-curl 0.0.0.0:8080/index.html   
-
-#&lt;DOCTYPE...&gt;    
-</code></pre>
-
-<p>Think about it, this is not that different from the object counterpart, we can think of this container as a black box that receive a message <code>/GET index.html</code> and give us a bunch of strings back. Contiuing with the object oriented analogy we need to study how we communicate each object or container.</p>
-
-<h1 id="from-theory-to-practice">From Theory to Practice</h1>
-
-<h2 id="adding-more-containers">Adding more containers</h2>
-
-<p>To demonstrate how containers can talk to each other inside the <em>pod</em>, we are going to add to our existing template a simple container running a shell, this way we can perform some experiments.</p>
+<p>To proof that containers can communicate between each other at <strong>pod</strong> level I decide to run an experiment, I just needed to execute a new container inside the pod.</p>
 
 <pre><code class="language-yaml">- name: sidecar   
   image: busybox
   command: [&quot;sh&quot;, &quot;-c&quot;, &quot;sleep 3600&quot;]
 </code></pre>
 
-<p>This block will create a container called <em>sidecar</em>, we are going to use a base image from busybox (Thinking about OOP again, we can even think of this image as a base class) which include a ssh and the sleep command. Then in the command section we are going to execute the sleep command for 3.6K seconds, this will keep the image alive, so we can run try some ideas.</p>
+<p>This block will create a container named <em>sidecar</em>, we are going to use a base image from Busybox (Thinking about OOP it sound like a base class) which include a ssh and the sleep command. Then in the command section we are going to execute the sleep command for 36000 seconds, this will keep the image alive, so we can run try some ideas.</p>
 
 <p>Our final template will look something like this:</p>
 
@@ -212,35 +202,35 @@ spec:
     command: [&quot;sh&quot;, &quot;-c&quot;, &quot;sleep 3600&quot;]
 </code></pre>
 
-<p>The only difference here is that we just added this new container at the bottom.</p>
+<p>The only difference here is that I just added this new container at the bottom.</p>
 
 <pre><code class="language-sh">oc delete pod python-pod
 oc create -f python.yml
 </code></pre>
 
-<p>We delete the existing pods, and recreate them with our new template.</p>
-
-<p>### Alternative</p>
-
-<p>You can also save that step by editing the Pod template remotely:</p>
-
-<pre><code class="language-sh">oc edit pod python-pod
-</code></pre>
+<p>I re-create the pods applying the template modifications.</p>
 
 <h2 id="messaging">Messaging</h2>
 
-<p>Now that our two containers is running, let see how they share messages. Let&rsquo;s login to our newly created container <em>sidecar</em>.</p>
+<p>First thing I did was to run <code>oc describe</code> to check if everything was fine:</p>
+
+<pre><code class="language-sh">python:
+  Container ID:  docker://5b410a99310a8474455ea684e0a63a7633b9620b8f44ce534050446e14af0456
+  Image:         python
+sidecar:
+  Container ID:  docker://8c31392e2fb1921e9ce2eb6079aba02b52cda6b7cb221d506b6b683dc2f35c0a
+  Image:         docker-registry.default.svc:5000/web-apps/ambassador
+</code></pre>
+
+<p>Here I saw the <strong>pod</strong> having to containers now let see, if they share the same network namespace then I just have to login into the new created container and request the web page using the 8080 port assigned to the <em>python</em> container.</p>
 
 <pre><code class="language-sh">oc rsh -c sidecar python-pod
+
+wget 0.0.0.0:8080
+# index.html           100% |****************|
 </code></pre>
 
-<p>As mentioned before this two containers share the same network namespace, to send and receive messages from the container running in our same area by just asking something in port 8080.</p>
-
-<pre><code class="language-sh">wget 0.0.0.0:8080
-# index.html           100% |*****************|   504  0:00:00 ETA
-</code></pre>
-
-<p>Nice, this message is comming back from our python server, which is running side-by-side. Now we are ready to develop our decorator/ambassador container. In the next article we are going to write the program to enhance the capabilities of the python server, now that we prove that we can talk to it.</p></div>
+<p>It works!, Now the next step is to create the application to handle the request, get the information we want and delegate it to the web server.</p></div>
   <footer class="post-footer">
     
     <ul class="post-tags">
