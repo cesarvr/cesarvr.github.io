@@ -143,9 +143,9 @@ int jail(void *args) {
 
 int main(int argc, char** argv) {
   printf(&quot;Hello, World! ( parent ) \n&quot;);
-
-  clone(jail, stack_memory(), SIGCHLD, 0);
-
+  char *pchild_stack = new char[1024 * 1024];
+  clone(jail, pchild_stack + (1024 * 1024), SIGCHLD, 0);
+  delete(pchild_stack);
   return EXIT_SUCCESS;
 }
 </code></pre>
@@ -181,9 +181,10 @@ int jail(void *args) {
 
 int main(int argc, char** argv) {
   printf(&quot;Hello, World! ( parent ) \n&quot;);
-
-  clone(jail, stack_memory(), SIGCHLD, 0);
+  char *pchild_stack = new char[1024 * 1024];
+  clone(jail, pchild_stack + (1024 * 1024), SIGCHLD, 0);
   wait(nullptr);
+  delete(pchild_stack); 
   return EXIT_SUCCESS;
 }
 </code></pre>
@@ -318,10 +319,11 @@ sh-4.4$
 
 int main(int argc, char** argv) {
   printf(&quot;Hello, World! ( parent ) \n&quot;);
-
-  clone(jail, stack_memory(), CLONE_NEWUTS | SIGCHLD, 0);
+  char *pchild_stack = new char[1024 * 1024];
+  clone(jail, pchild_stack + (1024 * 1024), CLONE_NEWUTS | SIGCHLD, 0);
   #                           ^^ new flag
   wait(nullptr);
+  delete(pchild_stack);
   return EXIT_SUCCESS;
 }
 </code></pre>
@@ -358,10 +360,11 @@ sh-4.4#
 int main(int argc, char** argv) {
   printf(&quot;Hello, World! ( parent ) \n&quot;);
   printf(&quot;parent %d&quot;, getpid());
-
-  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  char *pchild_stack = new char[1024 * 1024];
+  clone(child, pchild_stack + (1024 * 1024), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
   #                            ^^ new flag
   wait(nullptr);
+  delete(pchild_stack);  
   return EXIT_SUCCESS;
 }
 </code></pre>
@@ -475,9 +478,10 @@ int jail(void *args) {
 
 int main(int argc, char** argv) {
   printf(&quot;parent %d&quot;, getpid());
-
-  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  char *pchild_stack = new char[1024 * 1024];
+  clone(child, pchild_stack + (1024 * 1024), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
   wait(nullptr);
+  delete(pchild_stack);
   return EXIT_SUCCESS;
 }
 </code></pre>
@@ -515,9 +519,10 @@ int main(int argc, char** argv) {
 
 int main(int argc, char** argv) {
   printf(&quot;parent %d&quot;, getpid());
-
-  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  char *pchild_stack = new char[1024 * 1024];
+  clone(child, pchild_stack + (1024 * 1024), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
   wait(nullptr);
+  delete(pchild_stack);
   return EXIT_SUCCESS;
 }
 
@@ -548,10 +553,10 @@ int main(int argc, char** argv) {
 
 <pre><code class="language-c">int main(int argc, char** argv) {
   printf(&quot;parent %d&quot;, getpid());
-
-  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  char *pchild_stack = new char[1024 * 1024];
+  clone(child, pchild_stack + (1024 * 1024), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
   wait(nullptr);
-
+  delete(pchild_stack);
   return EXIT_SUCCESS;
 }
 </code></pre>
@@ -560,9 +565,12 @@ int main(int argc, char** argv) {
 
 <pre><code class="language-c">template &lt;typename Function&gt;
 void clone_process(Function&amp;&amp; function, int flags){
- auto pid = clone(function, stack_memory(), flags, 0);
+ char *pchild_stack = new char[1024 * 1024];
+ auto pid = clone(function, pchild_stack + (1024 * 1024), flags, 0);
 
  wait(nullptr);
+ delete(pchild_stack);
+
 }
 </code></pre>
 
