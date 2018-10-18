@@ -7,21 +7,10 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Cesar Valdez</copyright>
-    <lastBuildDate>Wed, 19 Sep 2018 14:30:07 +0100</lastBuildDate>
+    <lastBuildDate>Sat, 28 Jul 2018 19:24:19 +0100</lastBuildDate>
     
 	<atom:link href="/categories/imagestream/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Creating Your Own Istio (Part 1)</title>
-      <link>/post/prometheus/</link>
-      <pubDate>Wed, 19 Sep 2018 14:30:07 +0100</pubDate>
-      
-      <guid>/post/prometheus/</guid>
-      <description>&lt;p&gt;Some days ago I was having some fun writing my WebGL graphics API, when I decide it was time to do some demos. I always like to run some complicated stuff and see how they perform and then do benchmarks like iOS vs Android, etc. And because of that I want those demos to be available in the cloud. I choose to the OpenShift instance because is easier for me.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
-    </item>
     
     <item>
       <title>4 Ways to Build Applications in OpenShift</title>
