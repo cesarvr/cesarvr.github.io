@@ -18,7 +18,7 @@
       <pubDate>Wed, 19 Sep 2018 14:30:07 +0100</pubDate>
       
       <guid>/post/prometheus/</guid>
-      <description>&lt;p&gt;I&amp;rsquo;ll try to introduce you to the art of encapsulating behaviour in multiple containers (like objects in programming languages) and make them co-operate together to develop robust applications.&lt;/p&gt;
+      <description>&lt;p&gt;Let say we have web service that handle some typical business logic, and we need to get some information about how many times a particular endpoint is being hit or imagine that we want to have the option to shut down a particular endpoint on demand.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
