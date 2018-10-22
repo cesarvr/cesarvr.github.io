@@ -359,7 +359,7 @@ int main(int argc, char** argv) {
   printf(&quot;Hello, World! ( parent ) \n&quot;);
   printf(&quot;parent %d&quot;, getpid());
 
-  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  clone(jail, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
   #                            ^^ new flag
   wait(nullptr);
   return EXIT_SUCCESS;
@@ -476,7 +476,7 @@ int jail(void *args) {
 int main(int argc, char** argv) {
   printf(&quot;parent %d&quot;, getpid());
 
-  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  clone(jail, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
   wait(nullptr);
   return EXIT_SUCCESS;
 }
@@ -516,7 +516,7 @@ int main(int argc, char** argv) {
 int main(int argc, char** argv) {
   printf(&quot;parent %d&quot;, getpid());
 
-  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  clone(jail, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
   wait(nullptr);
   return EXIT_SUCCESS;
 }
@@ -549,7 +549,7 @@ int main(int argc, char** argv) {
 <pre><code class="language-c">int main(int argc, char** argv) {
   printf(&quot;parent %d&quot;, getpid());
 
-  clone(child, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
+  clone(jail, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0);
   wait(nullptr);
 
   return EXIT_SUCCESS;
