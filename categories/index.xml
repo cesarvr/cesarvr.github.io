@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on Nube</title>
+    <link>/categories/</link>
+    <description>Recent content in Categories on Nube</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Cesar Valdez</copyright>
+    <lastBuildDate>Fri, 01 Dec 2017 19:51:38 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Android</title>
+      <link>/categories/android/</link>
+      <pubDate>Fri, 01 Dec 2017 19:51:38 +0000</pubDate>
+      
+      <guid>/categories/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Buildconfig</title>
+      <link>/categories/buildconfig/</link>
+      <pubDate>Sat, 28 Jul 2018 19:24:19 +0100</pubDate>
+      
+      <guid>/categories/buildconfig/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>C</title>
+      <link>/categories/c/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/c/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43;</title>
+      <link>/categories/c&#43;&#43;/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/c&#43;&#43;/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Chrome</title>
+      <link>/categories/chrome/</link>
+      <pubDate>Thu, 06 Sep 2018 15:23:40 +0100</pubDate>
+      
+      <guid>/categories/chrome/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Containers</title>
+      <link>/categories/containers/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/containers/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cordova</title>
+      <link>/categories/cordova/</link>
+      <pubDate>Fri, 01 Dec 2017 19:51:38 +0000</pubDate>
+      
+      <guid>/categories/cordova/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Imagestream</title>
+      <link>/categories/imagestream/</link>
+      <pubDate>Sat, 28 Jul 2018 19:24:19 +0100</pubDate>
+      
+      <guid>/categories/imagestream/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ios</title>
+      <link>/categories/ios/</link>
+      <pubDate>Fri, 01 Dec 2017 19:51:38 +0000</pubDate>
+      
+      <guid>/categories/ios/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Javascript</title>
+      <link>/categories/javascript/</link>
+      <pubDate>Thu, 06 Sep 2018 15:23:40 +0100</pubDate>
+      
+      <guid>/categories/javascript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>/categories/linux/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Mobile</title>
+      <link>/categories/mobile/</link>
+      <pubDate>Fri, 01 Dec 2017 19:51:38 +0000</pubDate>
+      
+      <guid>/categories/mobile/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Openshift</title>
+      <link>/categories/openshift/</link>
+      <pubDate>Wed, 19 Sep 2018 14:30:07 +0100</pubDate>
+      
+      <guid>/categories/openshift/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Performance</title>
+      <link>/categories/performance/</link>
+      <pubDate>Thu, 06 Sep 2018 15:23:40 +0100</pubDate>
+      
+      <guid>/categories/performance/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Webhook</title>
+      <link>/categories/webhook/</link>
+      <pubDate>Wed, 19 Sep 2018 14:30:07 +0100</pubDate>
+      
+      <guid>/categories/webhook/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="renderer" content="webkit">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <title>Embedding Javascript v8 - Nube</title>
+  
+  <meta name="description" content="Building V8 Javascript Engine. Introduction I was thinking sometime ago about starting hacking with V8, aside from the fact that I work every day with Javascript, is that the Chromium engineers are doing a very good job making V8 fast and efficient and for some task good Javascript code is faster than C&#43;&#43;, here is a great talk about the sophisticated JIT generation in Javascript.
+After many days of procrastination, I put my hands-on and start the task of downloading the project and prayed that everything would just work, like many things in life it didn&rsquo;t work the first time, here I documented all the steps, if somebody wants to start playing with this, hopefully this will make their life easy.">
+  <meta name="author" content="">
+  
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700,700i" rel="stylesheet">
+  <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/atom-one-dark.min.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
+  
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="icon" href="/img/favicon.ico">
+  
+  <meta name="generator" content="Hugo 0.48">
+  
+  <link rel="alternate" type="application/atom+xml" href="/index.xml" title="Nube">
+  
+</head>
+<body class="single">
+  <header class="header">
+    
+    <p class="title"><a href="/">Nube</a></p>
+    
+    <button class="menu-toggle" type="button"></button>
+    <nav class="menu">
+      <ul>
+        
+        
+        <li class="">
+          <a href="categories/">Categories</a>
+        </li>
+        
+        <li class="">
+          <a href="/about/">About</a>
+        </li>
+        
+        <li class="">
+          <a href="https://github.com/cesarvr">Code</a>
+        </li>
+        
+        <li class="">
+          <a href="/post/">Writing</a>
+        </li>
+        
+      </ul>
+    </nav>
+  </header>
+  <main class="main">
+
+<article class="post post-view">
+  <header class="post-header">
+    <h1 class="post-title">Embedding Javascript v8</h1>
+    <p class="post-meta">2015.11.20</p>
+  </header>
+  <div class="post-content">
+
+<h1 id="building-v8-javascript-engine">Building V8 Javascript Engine.</h1>
+
+<h3 id="introduction">Introduction</h3>
+
+<p>I was thinking sometime ago about starting hacking with V8, aside from the fact that I work every day with Javascript, is that the Chromium engineers are doing a very good job making V8 fast and efficient and for some task good Javascript code is faster than C++, here is a great talk about the sophisticated JIT generation in Javascript.</p>
+
+<p>After many days of procrastination, I put my hands-on and start the task of downloading the project and prayed that everything would just work, like many things in life it didn&rsquo;t work the first time, here I documented all the steps, if somebody wants to start playing with this, hopefully this will make their life easy.</p>
+
+<p>For my hacking session I just make a VM based in Archlinux, but the same step could apply to other Linux Distributions.</p>
+
+<h3 id="building">Building.</h3>
+
+<p>First we need is to install Git and install the all necessary build tools in others dist is called build-essentials in arch is called base-devel.</p>
+
+<pre><code class="language-sh">$ pacman -Sy base-devel git
+</code></pre>
+
+<p>Now we need to download from Chromium project their specific tool depot_tools, this will allow us to checkout specifics projects from their repo in this case V8, then we add this directory to our PATH.</p>
+
+<pre><code class="language-sh">$ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+$ export PATH=$PWD/depot_tools:$PATH
+</code></pre>
+
+<p>If you had python2 by default jump this step, in my case Arch came with Python3 by default so i need to re-direct the global /usr/bin/python to point the /usr/bin/python2.</p>
+
+<pre><code class="language-sh">$ ln -s /usr/bin/python2 /usr/bin/python
+$ ln -s /usb/bin/python2-config /usr/bin/python-config
+</code></pre>
+
+<p>For 64 bits machine like mine I need to made a symlink to libtinfo.so.5</p>
+
+<pre><code class="language-sh">$ ln -s /usr/lib/libncurses.so.5.7 /lib64/libtinfo.so.5
+</code></pre>
+
+<p>If everything go is fine now you should be able to execute gclient from console.</p>
+
+<pre><code class="language-sh">$ gclient config url-v8-git-project
+</code></pre>
+
+<p>This make a folder in your root dir named v8, this could be done better but I’m using a virtual machine, so no problem.</p>
+
+<p>go inside the created dir /home/user/v8 in my case.</p>
+
+<pre><code class="language-sh">$ make x64
+</code></pre>
+
+<p>or if you are in a 32bit machine.</p>
+
+<pre><code class="language-sh">$ make ia32
+</code></pre>
+
+<p><br></p>
+
+<h3 id="what-to-do-now">What to do now ?</h3>
+
+<p>You can now execute the V8 REPL and load Javascript files, do profiling, and tons of other stuff. To had global access just add the binary to the system vars.</p>
+
+<pre><code class="language-sh">$ export $PATH:/home/cesar/v8/out/x64.release/d8
+</code></pre>
+
+<p>Or, what I found more interesting is use VM inside native programs and learn how to take advantage of a high level language like Javascript and give it some new abilities like Socket, Disk, etc. <a href="https://github.com/cesarvr/v8-hacking&gt;">Here</a> you can find a basic Hello World C++ program that run Javascript inside just need to clone it and start hack.</p>
+
+<p>For those interested in how the VM works some useful links:</p>
+
+<ul>
+<li><a href="https://docs.google.com/document/d/1hOaE7vbwdLLXWj3C8hTnnkpE0qSa2P--dtDvwXXEeD0/pub&gt;">how it work inside</a></li>
+<li><a href="http://wingolog.org/tags/v8&gt;">nice Blog, the author write about v8 intrinsics</a></li>
+<li><a href="http://v8.paulfryzel.com/docs/master/&gt;">Unofficial V8 API</a></li>
+</ul>
+</div>
+  <footer class="post-footer">
+    
+  </footer>
+  
+  
+  
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_shortname = 'cesar';
+    (function() { 
+      var d = document, s = d.createElement('script');
+      s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+  <noscript>
+    Please enable JavaScript to view the
+    <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+  </noscript>
+  
+  
+  
+</article>
+</main>
+<footer class="footer">
+  <span>&copy; 2018 Nube</span>
+  <span>&middot;</span>
+  <span>Powered by <a href="https://gohugo.io/" target="_blank">Hugo️️</a>️</span>
+  <span>&middot;</span>
+  <span>Designed by <a href="http://21beats.com/" target="_blank">️21beats️</a>️</span>
+</footer>
+<script src="https://cdn.bootcss.com/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+<script data-no-instant>InstantClick.init();</script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js" data-no-instant></script>
+<script data-no-instant>
+  hljs.initHighlightingOnLoad();
+  addMenuListener();
+  InstantClick.on('change', function() {
+    var blocks = document.querySelectorAll('pre code');
+    for (var i = 0; i < blocks.length; i++) {
+      hljs.highlightBlock(blocks[i]);
+    }
+    addMenuListener();
+  });
+  function addMenuListener() {
+    var $toggle = document.querySelector('.menu-toggle');
+    var $body = document.querySelector('body');
+    $toggle.addEventListener('click', function() {
+      $body.classList.toggle('noscroll');
+    }, false);
+  }
+</script>
+</body>
+</html>
+

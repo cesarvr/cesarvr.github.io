@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Android on Nube</title>
+    <link>/categories/android/</link>
+    <description>Recent content in Android on Nube</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Cesar Valdez</copyright>
+    <lastBuildDate>Fri, 01 Dec 2017 19:51:38 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/android/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to generate a PDF Documents using Cordova, for Android and IOS</title>
+      <link>/post/2017-12-01-cordova-pdf-generator/</link>
+      <pubDate>Fri, 01 Dec 2017 19:51:38 +0000</pubDate>
+      
+      <guid>/post/2017-12-01-cordova-pdf-generator/</guid>
+      <description>Why Some of my work at Red Hat is to design and develop end-to-end mobile/desktop application using Apache Cordova and using Node.JS, One of the typical challenges I face, when working with some costumer, is how to generate reports in PDF format, the usual way to solve this was to use a server side API render the document there and send it to the phone, this is not nice, the first reason, you need network connectivity for this to work, the second is the lack of good and free PDF API&amp;rsquo;s in the server side, so I decide to write a plugin to move this job to the mobile device, the advantages of doing this are:</description>
+    </item>
+    
+  </channel>
+</rss>

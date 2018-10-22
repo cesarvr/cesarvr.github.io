@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="renderer" content="webkit">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <title>Arch Linux install cheat sheet - Nube</title>
+  
+  <meta name="description" content="Arch Linux installation instruction for the impatient.
+Partition fdisk /dev/d #sda all disk in my case. #15 GB partition. Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 1): #press Enter First sector (2048-209715199, default 2048): #press Enter start in the beginning. Last sector, &#43;sectors or &#43;size...(): #type &#43;19G and press Enter. #SWAP 1GB Command (m for help): #type n and press Enter Partition type: Select (default p): #press Enter Partition number (1-4, default 2): #press Enter First sector (): #press Enter Last sector, &#43;sectors or &#43;size.">
+  <meta name="author" content="">
+  
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700,700i" rel="stylesheet">
+  <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/atom-one-dark.min.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
+  
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="icon" href="/img/favicon.ico">
+  
+  <meta name="generator" content="Hugo 0.48">
+  
+  <link rel="alternate" type="application/atom+xml" href="/index.xml" title="Nube">
+  
+</head>
+<body class="single">
+  <header class="header">
+    
+    <p class="title"><a href="/">Nube</a></p>
+    
+    <button class="menu-toggle" type="button"></button>
+    <nav class="menu">
+      <ul>
+        
+        
+        <li class="">
+          <a href="categories/">Categories</a>
+        </li>
+        
+        <li class="">
+          <a href="/about/">About</a>
+        </li>
+        
+        <li class="">
+          <a href="https://github.com/cesarvr">Code</a>
+        </li>
+        
+        <li class="">
+          <a href="/post/">Writing</a>
+        </li>
+        
+      </ul>
+    </nav>
+  </header>
+  <main class="main">
+
+<article class="post post-view">
+  <header class="post-header">
+    <h1 class="post-title">Arch Linux install cheat sheet</h1>
+    <p class="post-meta">2015.9.1</p>
+  </header>
+  <div class="post-content">
+
+<p>Arch Linux installation instruction for the impatient.</p>
+
+<h1 id="partition">Partition</h1>
+
+<pre><code class="language-sh">
+fdisk /dev/d #sda all disk in my case.
+
+#15 GB partition.
+Command (m for help):    #type n and press Enter
+Partition type: Select (default p): #press Enter
+Partition number (1-4, default 1): #press Enter
+First sector (2048-209715199, default 2048): #press Enter start in the beginning.
+Last sector, +sectors or +size...():  #type +19G and press Enter.
+
+
+#SWAP 1GB
+Command (m for help): #type n and press Enter
+Partition type: Select (default p): #press Enter
+Partition number (1-4, default 2): #press Enter
+First sector (): #press Enter
+Last sector, +sectors or +size...():  # +1G press Enter.
+
+#type o *to see if the changes are right.
+#type w *to write the changes
+</code></pre>
+
+<h1 id="formating-and-swap">Formating and Swap.</h1>
+
+<pre><code class="language-sh">mkfs.ext4 /dev/sda1
+mkfs.ext4 /dev/sda2
+
+mkswap /dev/sdaX —&gt; mines is sda2 1GB
+swapon /dev/sdaX —&gt; mines is sda2 1GB
+</code></pre>
+
+<h1 id="mount-and-install">Mount and Install.</h1>
+
+<pre><code class="language-sh">cd /mnt
+mkdir disk
+mount /dev/sda1 disk
+pacstrap disk/ base &lt;— take a coffe
+
+</code></pre>
+
+<pre><code class="language-sh">
+#genfstab generates fstab file based on the devices mounted under the mount point.
+#assuming you are inside /mnt
+genfstab -p disk/ &gt; disk/etc/fstab
+
+</code></pre>
+
+<h1 id="quick-config">Quick config</h1>
+
+<pre><code class="language-sh">#chroot
+arch-chroot mnt/ #folder
+
+
+# echo computer_name &gt; /etc/hostname
+
+#locale configuration
+locale-gen
+
+#choose your locale configuration.
+echo LANG=your_locale &gt; /etc/locale.conf
+
+#example echo LANG=en_IE.ISO-8859-15@EURO &gt; /etc/locale.conf
+#you can uncomment your locale inside the file /etc/locale.conf
+
+#keymap configuration.
+echo KEYMAP=es &gt; /etc/vconsole.conf
+
+#root password
+passwd
+
+#Installing the bootloader.
+pacman -Sy grub  &lt;— install
+grub-install --target=i386-pc --recheck --debug /dev/sdx #sda, never sda1..x
+grub-mkconfig -o /boot/grub/grub.cfg
+</code></pre>
+</div>
+  <footer class="post-footer">
+    
+  </footer>
+  
+  
+  
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_shortname = 'cesar';
+    (function() { 
+      var d = document, s = d.createElement('script');
+      s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+  <noscript>
+    Please enable JavaScript to view the
+    <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+  </noscript>
+  
+  
+  
+</article>
+</main>
+<footer class="footer">
+  <span>&copy; 2018 Nube</span>
+  <span>&middot;</span>
+  <span>Powered by <a href="https://gohugo.io/" target="_blank">Hugo️️</a>️</span>
+  <span>&middot;</span>
+  <span>Designed by <a href="http://21beats.com/" target="_blank">️21beats️</a>️</span>
+</footer>
+<script src="https://cdn.bootcss.com/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+<script data-no-instant>InstantClick.init();</script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js" data-no-instant></script>
+<script data-no-instant>
+  hljs.initHighlightingOnLoad();
+  addMenuListener();
+  InstantClick.on('change', function() {
+    var blocks = document.querySelectorAll('pre code');
+    for (var i = 0; i < blocks.length; i++) {
+      hljs.highlightBlock(blocks[i]);
+    }
+    addMenuListener();
+  });
+  function addMenuListener() {
+    var $toggle = document.querySelector('.menu-toggle');
+    var $body = document.querySelector('body');
+    $toggle.addEventListener('click', function() {
+      $body.classList.toggle('noscroll');
+    }, false);
+  }
+</script>
+</body>
+</html>
+
