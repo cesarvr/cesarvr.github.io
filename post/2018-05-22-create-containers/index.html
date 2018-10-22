@@ -130,11 +130,42 @@ int main() {
 
 <p>Our next step is to invoke the system call to create the child process, for this we are going to use the <a href="http://man7.org/linux/man-pages/man2/clone.2.html">clone</a> system call.</p>
 
+<p>For the <strong>clone</strong> system call to work we need to provide some memory for the new process to run, for this we are going to create a function that allocate some memory for us:</p>
+
+<pre><code class="language-cpp">char* stack_memory() {
+  const int stackSize = 65536;
+  auto *stack = new (std::nothrow) char[stackSize];
+
+  if (stack == nullptr) { 
+    printf(&quot;Cannot allocate memory \n&quot;);
+    exit(EXIT_FAILURE);
+  }  
+
+  return stack+stackSize;  //move the pointer to the end of the array because the stack grows backward. 
+}
+</code></pre>
+
+<p>Here we are going to provide some arbitrary memory size 65K bytes, after we allocate this memory we are going to return a pointer to the end of the array. This is required because when <strong>clone</strong> load this process the stack (the memory the process need to run) grows backward.</p>
+
+<p>Our final version will look like this:</p>
+
 <pre><code class="language-c">#include &lt;iostream&gt;
 #include &lt;sched.h&gt;
 #include &lt;sys/types.h&gt;
 #include &lt;unistd.h&gt;
 #include &lt;sys/wait.h&gt;
+
+char* stack_memory() {
+  const int stackSize = 65536;
+  auto *stack = new (std::nothrow) char[stackSize];
+
+  if (stack == nullptr) { 
+    printf(&quot;Cannot allocate memory \n&quot;);
+    exit(EXIT_FAILURE);
+  }  
+
+  return stack+stackSize;  //move the pointer to the end of the array because the stack grows backward. 
+}
 
 int jail(void *args) {
   printf(&quot;Hello !! ( child ) \n&quot;);
@@ -150,7 +181,7 @@ int main(int argc, char** argv) {
 }
 </code></pre>
 
-<p>The first parameter is our entry point function, <em>second</em> parameter requires a pointer to allocated memory, <em>third</em> (SIGCHLD) this flag tells the process to emit a signal when finished and the <em>fourth</em> and last one is only necessary if we want to pass arguments to the <code>jail</code> function, in this case we pass just <code>0</code>.</p>
+<p>The first parameter is our entry point function, <em>second</em> parameter is our function to allocate memory, <em>third</em> (SIGCHLD) this flag tells the process to emit a signal when finished and the <em>fourth</em> and last one is only necessary if we want to pass arguments to the <code>jail</code> function, in this case we pass just <code>0</code>.</p>
 
 <pre><code>  +--------+             +--------+
   | parent |             |  copy  |
